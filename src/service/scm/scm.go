@@ -22,7 +22,7 @@ const (
 	cmdMerge     = "git merge %s"
 )
 
-func CombineLocal(srcBranchDir, distBranchName string) (distBranchDir string, ok bool) {
+func CombineLocal(srcBranchDir, distBranchName string) (out []string, distBranchDir string, ok bool) {
 	repoUrl, label := GetRemoteUrl(srcBranchDir)
 	branchName, err := GetBranchName(srcBranchDir)
 	if err != nil {
@@ -30,16 +30,20 @@ func CombineLocal(srcBranchDir, distBranchName string) (distBranchDir string, ok
 	}
 
 	distBranchDir = GetBrotherDir(srcBranchDir, distBranchName)
-	_, err = CheckoutBranch(repoUrl, distBranchName, distBranchDir)
+	out, err = CheckoutBranch(repoUrl, distBranchName, distBranchDir)
 	if err != nil {
 		return
 	}
 
 	// merge from same project
-	_, err = MergeFromSameProject(label, branchName, distBranchDir)
+	out, err = MergeFromSameProject(label, branchName, distBranchDir)
 	if err != nil {
 		return
 	}
+
+	ok = true
+
+	return
 
 	// merge from different project
 	//cmdForkStr := fmt.Sprintf(cmdFork, repoUrl)
@@ -49,8 +53,6 @@ func CombineLocal(srcBranchDir, distBranchName string) (distBranchDir string, ok
 	//if err != nil {
 	//	logUtils.Errorf("merge failed, error: ", err.Error())
 	//}
-
-	return
 }
 
 func GetRemoteUrl(dir string) (url, label string) {
