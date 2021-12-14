@@ -5,11 +5,11 @@ import (
 )
 
 var (
-	IsDebug        bool
-	Config         = model.Config{}
+	IsDebug bool
+	Config  = model.Config{}
 
-	ExeDir           string
-	LogDir           string
+	ExeDir string
+	LogDir string
 
 	ZenTaoVersion string
 	SessionVar    string
@@ -17,5 +17,5 @@ var (
 	RequestType   string
 	RequestFix    string
 
-	Verbose     bool
+	Verbose bool
 )

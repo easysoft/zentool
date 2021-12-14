@@ -17,4 +17,3 @@ func GenApiUri(module string, methd string, param string) string {
 
 	return uri
 }
-

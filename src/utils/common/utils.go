@@ -4,7 +4,7 @@ import (
 	"github.com/easysoft/zentaoatf/res"
 	"github.com/easysoft/zentaoatf/src/model"
 	"github.com/easysoft/zentaoatf/src/utils/const"
-	 "github.com/easysoft/zentaoatf/src/utils/string"
+	"github.com/easysoft/zentaoatf/src/utils/string"
 	"github.com/emirpasic/gods/maps"
 	"io/ioutil"
 	"net"

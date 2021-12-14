@@ -8,7 +8,7 @@ const (
 
 	LogDir = "log"
 
-	QiNiuURL         = "https://dl.cnezsoft.com/" + constant.AppName + "/"
+	QiNiuURL    = "https://dl.cnezsoft.com/" + constant.AppName + "/"
 	VersionURL  = QiNiuURL + "version.txt"
 	DownloadURL = QiNiuURL + "%s/%s/" + constant.AppName + ".zip"
 )
