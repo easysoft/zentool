@@ -9,5 +9,5 @@ import (
 func TestMergeLocal(t *testing.T) {
 	logUtils.InitLogger()
 
-	scmService.MergeLocal("/Users/aaron/ci_test_testng_ci_branch", "master")
+	scmService.CombineLocal("/Users/aaron/ci_test_testng_ci_branch", "master")
 }

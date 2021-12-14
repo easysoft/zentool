@@ -1,14 +1,18 @@
 package scmService
 
 import (
+	"errors"
 	"fmt"
 	fileUtils "github.com/easysoft/z/src/utils/file"
+	logUtils "github.com/easysoft/z/src/utils/log"
 	shellUtils "github.com/easysoft/z/src/utils/shell"
 	"path/filepath"
 	"strings"
 )
 
 const (
+	KeywordConflict = "CONFLICT"
+
 	cmdRemote    = "git remote -v"
 	cmdGetBranch = "git rev-parse --abbrev-ref HEAD"
 	cmdClone     = "git clone %s %s"
@@ -18,22 +22,30 @@ const (
 	cmdMerge     = "git merge %s"
 )
 
-func MergeLocal(srcBranchDir, distBranchName string) (distBranchDir string, ok bool) {
-	repoUrl := GetRemoteUrl(srcBranchDir)
-	branchName := GetBranchName(srcBranchDir)
+func CombineLocal(srcBranchDir, distBranchName string) (distBranchDir string, ok bool) {
+	repoUrl, label := GetRemoteUrl(srcBranchDir)
+	branchName, err := GetBranchName(srcBranchDir)
+	if err != nil {
+		return
+	}
 
-	distBranchDir = GetBrotherDir(srcBranchDir, "dict")
-	CheckoutBranch(repoUrl, distBranchName, distBranchDir)
+	distBranchDir = GetBrotherDir(srcBranchDir, distBranchName)
+	_, err = CheckoutBranch(repoUrl, distBranchName, distBranchDir)
+	if err != nil {
+		return
+	}
 
 	// merge from same project
-	cmdMergeStr := fmt.Sprintf(cmdMerge, branchName)
-	shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
+	_, err = MergeFromSameProject(label, branchName, distBranchDir)
+	if err != nil {
+		return
+	}
 
 	// merge from different project
 	//cmdForkStr := fmt.Sprintf(cmdFork, repoUrl)
 	//shellUtils.ExeWithOutput(cmdForkStr, distBranchDir)
 	//cmdFetchAllStr := fmt.Sprintf(cmdFetchAll)
-	//_, err := shellUtils.ExeInDir(cmdFetchAllStr, distBranchDir)
+	//_, err := shellUtils.ExeWithOutput(cmdFetchAllStr, distBranchDir)
 	//if err != nil {
 	//	logUtils.Errorf("merge failed, error: ", err.Error())
 	//}
@@ -41,18 +53,23 @@ func MergeLocal(srcBranchDir, distBranchName string) (distBranchDir string, ok b
 	return
 }
 
-func GetRemoteUrl(dir string) (url string) {
-	outArr := shellUtils.ExeWithOutput(cmdRemote, dir)
+func GetRemoteUrl(dir string) (url, label string) {
+	out, err := shellUtils.ExeWithOutput(cmdRemote, dir)
+	if err != nil {
+		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdGetBranch, err.Error())
+	}
 
-	if len(outArr) < 1 {
+	if len(out) < 1 {
 		return
 	}
 
-	line := outArr[0]
+	line := out[0]
 	fields := strings.Split(line, "\t")
-	if len(outArr) < 2 {
+	if len(out) < 2 {
 		return
 	}
+
+	label = fields[0]
 
 	section := strings.Split(fields[1], " ")
 	url = section[0]
@@ -61,25 +78,53 @@ func GetRemoteUrl(dir string) (url string) {
 	return
 }
 
-func GetBranchName(dir string) (branch string) {
-	outArr := shellUtils.ExeWithOutput(cmdGetBranch, dir)
+func GetBranchName(dir string) (branch string, err error) {
+	out, err := shellUtils.ExeWithOutput(cmdGetBranch, dir)
+	if err != nil {
+		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdGetBranch, err.Error())
+	}
 
-	if len(outArr) < 1 {
+	if len(out) < 1 {
 		return
 	}
 
-	branch = outArr[0]
+	branch = out[0]
 	branch = strings.TrimSpace(branch)
 
 	return
 }
 
-func CheckoutBranch(repoUrl, distBranch, distDir string) {
+func CheckoutBranch(repoUrl, distBranch, distDir string) (out []string, err error) {
+	fileUtils.RmDir(distDir)
+
 	cmdCloneStr := fmt.Sprintf(cmdClone, repoUrl, distDir)
-	shellUtils.ExeWithOutput(cmdCloneStr, "")
+	out, err = shellUtils.ExeWithOutput(cmdCloneStr, "")
+	if err != nil {
+		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdCloneStr, err.Error())
+	}
 
 	cmdCheckoutStr := fmt.Sprintf(cmdCheckout, distBranch)
-	shellUtils.ExeWithOutput(cmdCheckoutStr, distDir)
+	out, err = shellUtils.ExeWithOutput(cmdCheckoutStr, distDir)
+	if err != nil {
+		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdCheckoutStr, err.Error())
+	}
+
+	return
+}
+
+func MergeFromSameProject(label string, branchName string, distBranchDir string) (out []string, err error) {
+	cmdMergeStr := fmt.Sprintf(cmdMerge, fmt.Sprintf("%s/%s", label, branchName))
+	out, err = shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
+	if err != nil {
+		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdMergeStr, err.Error())
+		return
+	}
+
+	msg := strings.Join(out, "\n")
+	if strings.Index(msg, "conflict") > -1 {
+		err = errors.New("Merge Conflict: " + msg)
+		return
+	}
 
 	return
 }
@@ -87,7 +132,7 @@ func CheckoutBranch(repoUrl, distBranch, distDir string) {
 func GetBrotherDir(base, name string) (dir string) {
 	parentDir := filepath.Dir(base)
 
-	dir = filepath.Join(parentDir, dir)
+	dir = filepath.Join(parentDir, name)
 	dir = fileUtils.AbsolutePath(dir)
 
 	return

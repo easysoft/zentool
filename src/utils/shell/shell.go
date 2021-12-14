@@ -31,7 +31,7 @@ func ExeInDir(cmdStr, dir string) (string, error) {
 	return out.String(), err
 }
 
-func ExeWithOutput(cmdStr, dir string) []string {
+func ExeWithOutput(cmdStr, dir string) (output []string, err error) {
 	var cmd *exec.Cmd
 	if commonUtils.IsWin() {
 		cmd = exec.Command("cmd", "/C", cmdStr)
@@ -43,20 +43,21 @@ func ExeWithOutput(cmdStr, dir string) []string {
 		cmd.Dir = dir
 	}
 
-	output := make([]string, 0)
+	output = make([]string, 0)
 
-	stdout, err := cmd.StdoutPipe()
+	var stdout io.ReadCloser
+	stdout, err = cmd.StdoutPipe()
 
 	if err != nil {
 		fmt.Println(err)
-		return output
+		return
 	}
 
 	cmd.Start()
 
 	if err != nil {
 		output = append(output, fmt.Sprint(err))
-		return output
+		return
 	}
 
 	reader := bufio.NewReader(stdout)
@@ -71,7 +72,7 @@ func ExeWithOutput(cmdStr, dir string) []string {
 
 	cmd.Wait()
 
-	return output
+	return
 }
 
 func ExeSysCmd(cmdStr string) (string, error) {
