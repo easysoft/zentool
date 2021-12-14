@@ -3,9 +3,9 @@ package serverUtils
 import (
 	"bytes"
 	"errors"
-	serverModel "github.com/easysoft/zentaoatf/src/server/domain"
-	serverConst "github.com/easysoft/zentaoatf/src/server/utils/const"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	serverModel "github.com/easysoft/z/src/server/domain"
+	serverConst "github.com/easysoft/z/src/server/utils/const"
+	"github.com/easysoft/z/src/utils/vari"
 	"net"
 	"os"
 	"os/exec"

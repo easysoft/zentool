@@ -1,1 +1,4 @@
 go get -u github.com/jteeuwen/go-bindata/...
+
+git checkout -b ci_branch origin/ci_branch
+git branch -a

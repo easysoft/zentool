@@ -2,38 +2,41 @@ package scmService
 
 import (
 	"fmt"
-	fileUtils "github.com/easysoft/zentaoatf/src/utils/file"
-	logUtils "github.com/easysoft/zentaoatf/src/utils/log"
-	shellUtils "github.com/easysoft/zentaoatf/src/utils/shell"
+	fileUtils "github.com/easysoft/z/src/utils/file"
+	shellUtils "github.com/easysoft/z/src/utils/shell"
 	"path/filepath"
 	"strings"
 )
 
 const (
-	cmdRemote = "git remote -v"
+	cmdRemote    = "git remote -v"
 	cmdGetBranch = "git rev-parse --abbrev-ref HEAD"
-	cmdClone = "git clone %s %s"
-	cmdCheckout = "git checkout %s"
-	cmdFork = "git remote add fork %s"
-	cmdFetchAll = "git fetch --all"
-	cmdMerge = "git merge fork/$sourceBranch"
+	cmdClone     = "git clone %s %s"
+	cmdCheckout  = "git checkout %s"
+	cmdFork      = "git remote add fork %s"
+	cmdFetchAll  = "git fetch --all"
+	cmdMerge     = "git merge %s"
 )
 
-func MergeLocal(srcDir, distBranch string) (distDir string, ok bool) {
-	repoUrl := GetRemoteUrl(srcDir)
-	//branchName := GetBranchName(srcDir)
+func MergeLocal(srcBranchDir, distBranchName string) (distBranchDir string, ok bool) {
+	repoUrl := GetRemoteUrl(srcBranchDir)
+	branchName := GetBranchName(srcBranchDir)
 
-	distDir = GetBrotherDir(srcDir, "dict")
-	CheckoutBranch(repoUrl, distBranch, distDir)
+	distBranchDir = GetBrotherDir(srcBranchDir, "dict")
+	CheckoutBranch(repoUrl, distBranchName, distBranchDir)
 
-	cmdForkStr := fmt.Sprintf(cmdFork, repoUrl)
-	shellUtils.ExeWithOutput(cmdForkStr, distDir)
+	// merge from same project
+	cmdMergeStr := fmt.Sprintf(cmdMerge, branchName)
+	shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
 
-	cmdFetchAllStr := fmt.Sprintf(cmdFetchAll)
-	_, err := shellUtils.ExeInDir(cmdFetchAllStr, distDir)
-	if err != nil {
-		logUtils.Errorf("merge failed, error: ", err.Error())
-	}
+	// merge from different project
+	//cmdForkStr := fmt.Sprintf(cmdFork, repoUrl)
+	//shellUtils.ExeWithOutput(cmdForkStr, distBranchDir)
+	//cmdFetchAllStr := fmt.Sprintf(cmdFetchAll)
+	//_, err := shellUtils.ExeInDir(cmdFetchAllStr, distBranchDir)
+	//if err != nil {
+	//	logUtils.Errorf("merge failed, error: ", err.Error())
+	//}
 
 	return
 }
@@ -53,6 +56,7 @@ func GetRemoteUrl(dir string) (url string) {
 
 	section := strings.Split(fields[1], " ")
 	url = section[0]
+	url = strings.TrimSpace(url)
 
 	return
 }
@@ -65,6 +69,7 @@ func GetBranchName(dir string) (branch string) {
 	}
 
 	branch = outArr[0]
+	branch = strings.TrimSpace(branch)
 
 	return
 }

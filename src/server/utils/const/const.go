@@ -1,6 +1,6 @@
 package serverConst
 
-import constant "github.com/easysoft/zentaoatf/src/utils/const"
+import constant "github.com/easysoft/z/src/utils/const"
 
 const (
 	HeartBeatInterval    = 60

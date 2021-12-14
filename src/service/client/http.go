@@ -3,11 +3,11 @@ package client
 import (
 	"encoding/json"
 	"github.com/ajg/form"
-	"github.com/easysoft/zentaoatf/src/model"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
-	i118Utils "github.com/easysoft/zentaoatf/src/utils/i118"
-	"github.com/easysoft/zentaoatf/src/utils/log"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	"github.com/easysoft/z/src/model"
+	"github.com/easysoft/z/src/utils/const"
+	"github.com/easysoft/z/src/utils/i118"
+	"github.com/easysoft/z/src/utils/log"
+	"github.com/easysoft/z/src/utils/vari"
 	"github.com/fatih/color"
 	"github.com/yosssi/gohtml"
 	"io/ioutil"
@@ -26,7 +26,7 @@ func Get(url string) (string, bool) {
 	}
 
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_address") + url)
+		logUtils.Log(i118Utils.Sprintf("server_address") + url)
 	}
 
 	req, reqErr := http.NewRequest("GET", url, nil)
@@ -47,7 +47,7 @@ func Get(url string) (string, bool) {
 
 	bodyStr, _ := ioutil.ReadAll(resp.Body)
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
+		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
 	}
 
 	var bodyJson model.ZentaoResponse
@@ -55,7 +55,7 @@ func Get(url string) (string, bool) {
 	if jsonErr != nil {
 		if strings.Index(string(bodyStr), "<html>") > -1 {
 			if vari.Verbose {
-				logUtils.Screen(i118Utils.Sprintf("server_return") + " HTML - " +
+				logUtils.Log(i118Utils.Sprintf("server_return") + " HTML - " +
 					gohtml.FormatWithLineNo(string(bodyStr)))
 			}
 			return "", false
@@ -88,7 +88,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 
 	jsonStr, _ := json.Marshal(params)
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_address") + url)
+		logUtils.Log(i118Utils.Sprintf("server_address") + url)
 	}
 
 	client := &http.Client{}
@@ -102,7 +102,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 	}
 
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_params") + val)
+		logUtils.Log(i118Utils.Sprintf("server_params") + val)
 	}
 
 	req, reqErr := http.NewRequest("POST", url, strings.NewReader(val))
@@ -125,7 +125,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 
 	bodyStr, _ := ioutil.ReadAll(resp.Body)
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
+		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
 	}
 
 	var bodyJson model.ZentaoResponse
@@ -133,7 +133,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 	if jsonErr != nil {
 		if strings.Index(string(bodyStr), "<html>") > -1 { // some api return a html
 			if vari.Verbose {
-				logUtils.Screen(i118Utils.Sprintf("server_return") + " HTML - " +
+				logUtils.Log(i118Utils.Sprintf("server_return") + " HTML - " +
 					gohtml.FormatWithLineNo(string(bodyStr)))
 			}
 			return string(bodyStr), true
@@ -158,7 +158,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 
 func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_address") + url)
+		logUtils.Log(i118Utils.Sprintf("server_address") + url)
 	}
 	client := &http.Client{}
 
@@ -173,7 +173,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	}
 
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_params") + paramStr)
+		logUtils.Log(i118Utils.Sprintf("server_params") + paramStr)
 	}
 
 	req, reqErr := http.NewRequest("POST", url, strings.NewReader(paramStr))
@@ -199,7 +199,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 
 	bodyStr, _ := ioutil.ReadAll(resp.Body)
 	if vari.Verbose {
-		logUtils.Screen(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
+		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
 	}
 
 	var bodyJson model.ZentaoResponse

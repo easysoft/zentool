@@ -2,11 +2,11 @@ package zentaoService
 
 import (
 	"github.com/bitly/go-simplejson"
-	"github.com/easysoft/zentaoatf/src/service/client"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
-	i118Utils "github.com/easysoft/zentaoatf/src/utils/i118"
-	"github.com/easysoft/zentaoatf/src/utils/log"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	"github.com/easysoft/z/src/service/client"
+	"github.com/easysoft/z/src/utils/const"
+	"github.com/easysoft/z/src/utils/i118"
+	"github.com/easysoft/z/src/utils/log"
+	"github.com/easysoft/z/src/utils/vari"
 	"github.com/fatih/color"
 	"strings"
 )

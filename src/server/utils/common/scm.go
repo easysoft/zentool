@@ -1,8 +1,8 @@
 package serverUtils
 
 import (
-	serverModel "github.com/easysoft/zentaoatf/src/server/domain"
-	fileUtils "github.com/easysoft/zentaoatf/src/utils/file"
+	serverModel "github.com/easysoft/z/src/server/domain"
+	fileUtils "github.com/easysoft/z/src/utils/file"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/mholt/archiver/v3"

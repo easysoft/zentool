@@ -2,8 +2,8 @@ package zentaoUtils
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	constant "github.com/easysoft/z/src/utils/const"
+	"github.com/easysoft/z/src/utils/vari"
 )
 
 func GenApiUri(module string, methd string, param string) string {

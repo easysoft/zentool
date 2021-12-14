@@ -1,7 +1,7 @@
 package vari
 
 import (
-	"github.com/easysoft/zentaoatf/src/model"
+	"github.com/easysoft/z/src/model"
 )
 
 var (

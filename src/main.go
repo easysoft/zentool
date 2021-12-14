@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	configUtils "github.com/easysoft/zentaoatf/src/utils/config"
-	"github.com/easysoft/zentaoatf/src/utils/log"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	configUtils "github.com/easysoft/z/src/utils/config"
+	"github.com/easysoft/z/src/utils/log"
+	"github.com/easysoft/z/src/utils/vari"
 	"github.com/fatih/color"
 	"os"
 	"os/signal"
@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	targetBranch        string
+	targetBranch string
 
 	flagSet *flag.FlagSet
 )
@@ -34,7 +34,7 @@ func main() {
 		os.Args = append(os.Args, "help", ".")
 	}
 
-	logUtils.Log("===" +  os.Args[1])
+	logUtils.Log("===" + os.Args[1])
 
 	switch os.Args[1] {
 	case "help", "-h", "-help", "--help":

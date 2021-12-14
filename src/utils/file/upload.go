@@ -2,8 +2,8 @@ package fileUtils
 
 import (
 	"bytes"
-	i118Utils "github.com/easysoft/zentaoatf/src/utils/i118"
-	logUtils "github.com/easysoft/zentaoatf/src/utils/log"
+	"github.com/easysoft/z/src/utils/i118"
+	"github.com/easysoft/z/src/utils/log"
 	"io"
 	"io/ioutil"
 	"mime/multipart"

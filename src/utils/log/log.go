@@ -2,8 +2,8 @@ package logUtils
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	constant "github.com/easysoft/z/src/utils/const"
+	"github.com/easysoft/z/src/utils/vari"
 	"github.com/sirupsen/logrus"
 	"path/filepath"
 )

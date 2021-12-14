@@ -2,7 +2,7 @@ package fileUtils
 
 import (
 	"fmt"
-	commonUtils "github.com/easysoft/zentaoatf/src/utils/common"
+	commonUtils "github.com/easysoft/z/src/utils/common"
 	"github.com/mholt/archiver/v3"
 	"io"
 	"io/ioutil"

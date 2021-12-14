@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	serverModel "github.com/easysoft/zentaoatf/src/server/domain"
+	serverModel "github.com/easysoft/z/src/server/domain"
 	"io"
 	"log"
 	"net/http"

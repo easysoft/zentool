@@ -1,8 +1,8 @@
-module github.com/easysoft/zentaoatf
+module github.com/easysoft/z
 
 go 1.12
 
-require golang.org/x/text v0.3.2
+require golang.org/x/text v0.3.7
 
 require (
 	github.com/ajg/form v1.5.1
@@ -27,8 +27,8 @@ require (
 	github.com/smartystreets/assertions v1.1.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/xanzy/go-gitlab v0.52.2 // indirect
 	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4
-	golang.org/x/sys v0.0.0-20200515095857-1151b9dac4a9 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/ini.v1 v1.56.0
 	gopkg.in/yaml.v2 v2.3.0 // indirect

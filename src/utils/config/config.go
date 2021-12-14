@@ -1,10 +1,10 @@
 package configUtils
 
 import (
-	fileUtils "github.com/easysoft/zentaoatf/src/utils/file"
-	"github.com/easysoft/zentaoatf/src/utils/i118"
-	logUtils "github.com/easysoft/zentaoatf/src/utils/log"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	fileUtils "github.com/easysoft/z/src/utils/file"
+	"github.com/easysoft/z/src/utils/i118"
+	logUtils "github.com/easysoft/z/src/utils/log"
+	"github.com/easysoft/z/src/utils/vari"
 	"github.com/fatih/color"
 	"os"
 )
@@ -27,4 +27,3 @@ func CheckConfigPermission() {
 		os.Exit(0)
 	}
 }
-

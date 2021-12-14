@@ -1,6 +1,6 @@
 package domain
 
-import serverConst "github.com/easysoft/zentaoatf/src/server/utils/const"
+import serverConst "github.com/easysoft/z/src/server/utils/const"
 
 type OptResult struct {
 	Code    int         `json:"code,omitempty"`

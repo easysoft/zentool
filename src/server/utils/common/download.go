@@ -3,9 +3,9 @@ package serverUtils
 import (
 	"archive/zip"
 	"fmt"
-	errUtils "github.com/easysoft/zentaoatf/src/utils/err"
-	i118Utils "github.com/easysoft/zentaoatf/src/utils/i118"
-	logUtils "github.com/easysoft/zentaoatf/src/utils/log"
+	"github.com/easysoft/z/src/utils/err"
+	"github.com/easysoft/z/src/utils/i118"
+	"github.com/easysoft/z/src/utils/log"
 	"github.com/mholt/archiver/v3"
 	"io/ioutil"
 	"net/http"

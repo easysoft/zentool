@@ -2,10 +2,10 @@ package cron
 
 import (
 	"fmt"
-	"github.com/easysoft/zentaoatf/src/server/service"
-	serverUtils "github.com/easysoft/zentaoatf/src/server/utils/common"
-	serverConst "github.com/easysoft/zentaoatf/src/server/utils/const"
-	cronUtils "github.com/easysoft/zentaoatf/src/server/utils/cron"
+	"github.com/easysoft/z/src/server/service"
+	serverUtils "github.com/easysoft/z/src/server/utils/common"
+	serverConst "github.com/easysoft/z/src/server/utils/const"
+	cronUtils "github.com/easysoft/z/src/server/utils/cron"
 )
 
 type CronService struct {

@@ -1,10 +1,10 @@
 package commonUtils
 
 import (
-	"github.com/easysoft/zentaoatf/res"
-	"github.com/easysoft/zentaoatf/src/model"
-	"github.com/easysoft/zentaoatf/src/utils/const"
-	"github.com/easysoft/zentaoatf/src/utils/string"
+	"github.com/easysoft/z/res"
+	"github.com/easysoft/z/src/model"
+	"github.com/easysoft/z/src/utils/const"
+	"github.com/easysoft/z/src/utils/string"
 	"github.com/emirpasic/gods/maps"
 	"io/ioutil"
 	"net"

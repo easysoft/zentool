@@ -2,11 +2,11 @@ package serverUtils
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
-	dateUtils "github.com/easysoft/zentaoatf/src/utils/date"
-	fileUtils "github.com/easysoft/zentaoatf/src/utils/file"
-	logUtils "github.com/easysoft/zentaoatf/src/utils/log"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	constant "github.com/easysoft/z/src/utils/const"
+	dateUtils "github.com/easysoft/z/src/utils/date"
+	fileUtils "github.com/easysoft/z/src/utils/file"
+	logUtils "github.com/easysoft/z/src/utils/log"
+	"github.com/easysoft/z/src/utils/vari"
 	"io/ioutil"
 	"path"
 	"regexp"
