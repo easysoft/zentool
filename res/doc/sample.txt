@@ -1,0 +1,1 @@
+$>z.exe run demo\lang\bat\1_string_match.bat       执行预合并检查。

@@ -1,0 +1,4 @@
+help    -h        查看帮助信息。
+
+为了方便在任意目录中执行%s命令，建议将其加入环境变量中，具体方法参照以下地址。
+https://www.ztesting.net/book/ztf-doc/add-to-path-46.html

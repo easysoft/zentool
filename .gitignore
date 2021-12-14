@@ -1,0 +1,12 @@
+/scripts/
+/log/
+/.idea/
+/bin/
+/release/
+/test/
+/ztf/
+/product1/
+/zendata-test/
+/res/res.go
+/log-agent/
+/qshell.log

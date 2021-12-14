@@ -1,0 +1,14 @@
+{
+  "language": "en-US",
+  "messages": [
+    {
+      "id": "windows_permission",
+      "translation": "In Windows, open cmd window as the admin"
+    },
+
+    {
+      "id": "for_example",
+      "translation": "e.g. %s"
+    }
+  ]
+}
