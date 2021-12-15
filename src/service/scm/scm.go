@@ -22,9 +22,9 @@ const (
 	cmdMerge     = "git merge %s"
 )
 
-func CombineLocal(srcBranchDir, distBranchName string) (outMerge, outDiff []string, distBranchDir string, ok bool) {
+func CombineLocal(srcBranchDir, distBranchName string) (outMerge, outDiff []string, srcBranchName, distBranchDir string, err error) {
 	repoUrl, label := GetRemoteUrl(srcBranchDir)
-	branchName, err := GetBranchName(srcBranchDir)
+	srcBranchName, err = GetBranchName(srcBranchDir)
 	if err != nil {
 		return
 	}
@@ -36,12 +36,10 @@ func CombineLocal(srcBranchDir, distBranchName string) (outMerge, outDiff []stri
 	}
 
 	// merge from same project
-	outMerge, outDiff, err = MergeFromSameProject(label, branchName, distBranchDir)
+	outMerge, outDiff, err = MergeFromSameProject(label, srcBranchName, distBranchDir)
 	if err != nil {
 		return
 	}
-
-	ok = true
 
 	return
 

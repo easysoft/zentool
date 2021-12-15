@@ -1,7 +1,7 @@
 package model
 
 type GitLabSite struct {
-	Url     string
-	Account string
-	Token   string
+	Url string
+	//Account string
+	Token string
 }

@@ -2,6 +2,8 @@ package zentaoService
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/easysoft/z/src/model"
 	constant "github.com/easysoft/z/src/utils/const"
 	logUtils "github.com/easysoft/z/src/utils/log"
@@ -9,9 +11,10 @@ import (
 	zentaoUtils "github.com/easysoft/z/src/utils/zentao"
 )
 
-func PostMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (ok bool) {
-	ok = Login(site)
+func PostMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (resp model.ZentaoMergeResponse, err error) {
+	ok := Login(site)
 	if !ok {
+		err = errors.New("login to zentao failed")
 		return
 	}
 
@@ -31,7 +34,15 @@ func PostMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (ok bool) {
 		logUtils.Log(string(json))
 	}
 
-	_, ok = PostObject(url, requestObj, true)
+	respStr := ""
+	respStr, ok = PostObject(url, requestObj, true)
+	if !ok {
+		err = errors.New(fmt.Sprintf("sent request to zentao failed, response %#v", resp))
+		return
+	}
+
+	var zentaoMergeResponse model.ZentaoMergeResponse
+	json.Unmarshal([]byte(respStr), &zentaoMergeResponse)
 
 	return
 }

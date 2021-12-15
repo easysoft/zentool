@@ -5,6 +5,7 @@ type ZentaoMerge struct {
 	MergeMsg    string
 	DiffMsg     string
 	UploadMsg   string
+	CreateMrMsg string // 可选
 
 	CIJobName string
 	CIQueueId int64
@@ -22,15 +23,23 @@ type ZentaoResponse struct {
 	Data   string
 }
 
+type ZentaoMergeResponse struct {
+	MRId    int
+	BuildId int
+}
+
 type ZentaoRepoResponse struct {
 	CIServerUrl     string
 	CIServerAccount string
 	CIServerToken   string
 	CIJobName       string
 
-	GitLabProjectId string
-
 	FileServerUrl      string
 	FileServerAccount  string
 	FileServerPassword string
+
+	// 可选，仅在Z创建MR时需要。
+	GitLabUrl       string
+	GitLabToken     string
+	GitLabProjectId string
 }
