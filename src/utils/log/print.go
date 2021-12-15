@@ -45,15 +45,6 @@ func PrintUsage() {
 	fmt.Printf("%s\n", sample)
 }
 
-func PrintTo(str string) {
-	output := color.Output
-	fmt.Fprint(output, str+"\n")
-}
-func PrintTof(format string, params ...interface{}) {
-	output := color.Output
-	fmt.Fprintf(output, format+"\n", params...)
-}
-
 func PrintToWithColor(msg string, attr color.Attribute) {
 	output := color.Output
 
@@ -61,17 +52,6 @@ func PrintToWithColor(msg string, attr color.Attribute) {
 		fmt.Fprint(output, msg+"\n")
 	} else {
 		color.New(attr).Fprintf(output, msg+"\n")
-	}
-}
-
-func PrintToCmd(msg string, attr color.Attribute) {
-	output := color.Output
-
-	if attr == -1 {
-		fmt.Fprint(output, msg+"\n")
-	} else {
-		clr := color.New(attr)
-		clr.Fprint(output, msg+"\n")
 	}
 }
 

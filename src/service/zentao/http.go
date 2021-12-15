@@ -1,4 +1,4 @@
-package client
+package zentaoService
 
 import (
 	"encoding/json"
@@ -8,7 +8,6 @@ import (
 	"github.com/easysoft/z/src/utils/i118"
 	"github.com/easysoft/z/src/utils/log"
 	"github.com/easysoft/z/src/utils/vari"
-	"github.com/fatih/color"
 	"github.com/yosssi/gohtml"
 	"io/ioutil"
 	"net/http"
@@ -32,7 +31,7 @@ func Get(url string) (string, bool) {
 	req, reqErr := http.NewRequest("GET", url, nil)
 	if reqErr != nil {
 		if vari.Verbose {
-			logUtils.PrintToCmd(i118Utils.Sprintf("server_return")+reqErr.Error(), color.FgRed)
+			logUtils.Log(i118Utils.Sprintf("server_return") + reqErr.Error())
 		}
 		return "", false
 	}
@@ -40,7 +39,7 @@ func Get(url string) (string, bool) {
 	resp, respErr := client.Do(req)
 	if respErr != nil {
 		if vari.Verbose {
-			logUtils.PrintToCmd(i118Utils.Sprintf("server_return")+respErr.Error(), color.FgRed)
+			logUtils.Log(i118Utils.Sprintf("server_return") + respErr.Error())
 		}
 		return "", false
 	}
@@ -61,7 +60,7 @@ func Get(url string) (string, bool) {
 			return "", false
 		} else {
 			if vari.Verbose {
-				logUtils.PrintToCmd(jsonErr.Error(), color.FgRed)
+				logUtils.Log(jsonErr.Error())
 			}
 			return "", false
 		}
@@ -108,7 +107,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 	req, reqErr := http.NewRequest("POST", url, strings.NewReader(val))
 	if reqErr != nil {
 		if vari.Verbose {
-			logUtils.PrintToCmd(i118Utils.Sprintf("server_return")+reqErr.Error(), color.FgRed)
+			logUtils.Log(i118Utils.Sprintf("server_return") + reqErr.Error())
 		}
 		return "", false
 	}
@@ -118,7 +117,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 	resp, respErr := client.Do(req)
 	if respErr != nil {
 		if vari.Verbose {
-			logUtils.PrintToCmd(i118Utils.Sprintf("server_return")+respErr.Error(), color.FgRed)
+			logUtils.Log(i118Utils.Sprintf("server_return") + respErr.Error())
 		}
 		return "", false
 	}
@@ -139,7 +138,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 			return string(bodyStr), true
 		} else {
 			if vari.Verbose {
-				logUtils.PrintToCmd(i118Utils.Sprintf("server_return")+jsonErr.Error(), color.FgRed)
+				logUtils.Log(i118Utils.Sprintf("server_return") + jsonErr.Error())
 			}
 			return "", false
 		}
@@ -179,7 +178,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	req, reqErr := http.NewRequest("POST", url, strings.NewReader(paramStr))
 	if reqErr != nil {
 		if vari.Verbose {
-			logUtils.PrintToCmd(reqErr.Error(), color.FgRed)
+			logUtils.Log(reqErr.Error())
 		}
 		ok = false
 		return
@@ -191,7 +190,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	resp, respErr := client.Do(req)
 	if respErr != nil {
 		if vari.Verbose {
-			logUtils.PrintToCmd(respErr.Error(), color.FgRed)
+			logUtils.Log(respErr.Error())
 		}
 		ok = false
 		return
@@ -207,7 +206,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	if jsonErr != nil {
 		if vari.Verbose {
 			if strings.Index(url, "login") == -1 { // jsonErr caused by login request return a html
-				logUtils.PrintToCmd(jsonErr.Error(), color.FgRed)
+				logUtils.Log(jsonErr.Error())
 			}
 		}
 		ok = false

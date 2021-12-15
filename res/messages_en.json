@@ -7,8 +7,30 @@
     },
 
     {
+      "id": "server_address",
+      "translation": "\nRequest Address:\n"
+    },
+    {
+      "id": "server_params",
+      "translation": "Request Params:\n"
+    },
+    {
+      "id": "server_return",
+      "translation": "Server Return:\n"
+    },
+
+    {
       "id": "for_example",
       "translation": "e.g. %s"
+    },
+
+    {
+      "id": "success_to_login",
+      "translation": "Success to login."
+    },
+    {
+      "id": "fail_to_login",
+      "translation": "Failed to login."
     }
   ]
 }

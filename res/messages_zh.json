@@ -8,6 +8,28 @@
     {
       "id": "for_example",
       "translation": "例如 %s"
+    },
+
+    {
+      "id": "server_address",
+      "translation": "\n请求地址：\n"
+    },
+    {
+      "id": "server_params",
+      "translation": "请求参数：\n"
+    },
+    {
+      "id": "server_return",
+      "translation": "服务返回：\n"
+    },
+
+    {
+      "id": "success_to_login",
+      "translation": "登录成功。"
+    },
+    {
+      "id": "fail_to_login",
+      "translation": "登录失败。"
     }
   ]
 }

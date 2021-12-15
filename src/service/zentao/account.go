@@ -2,12 +2,10 @@ package zentaoService
 
 import (
 	"github.com/bitly/go-simplejson"
-	"github.com/easysoft/z/src/service/client"
 	"github.com/easysoft/z/src/utils/const"
 	"github.com/easysoft/z/src/utils/i118"
 	"github.com/easysoft/z/src/utils/log"
 	"github.com/easysoft/z/src/utils/vari"
-	"github.com/fatih/color"
 	"strings"
 )
 
@@ -15,7 +13,7 @@ func Login(baseUrl string, account string, password string) bool {
 	ok := GetConfig(baseUrl)
 
 	if !ok {
-		logUtils.PrintToCmd(i118Utils.Sprintf("fail_to_login"), color.FgRed)
+		logUtils.Log(i118Utils.Sprintf("fail_to_login"))
 		return false
 	}
 
@@ -32,16 +30,16 @@ func Login(baseUrl string, account string, password string) bool {
 	params["password"] = password
 
 	var body string
-	body, ok = client.PostStr(url, params)
+	body, ok = PostStr(url, params)
 	if ok && strings.Index(body, "title") > 0 { // use PostObject to login again for new system
-		_, ok = client.PostObject(url, params, true)
+		_, ok = PostObject(url, params, true)
 	}
 	if ok {
 		if vari.Verbose {
 			logUtils.Log(i118Utils.Sprintf("success_to_login"))
 		}
 	} else {
-		logUtils.PrintToCmd(i118Utils.Sprintf("fail_to_login"), color.FgRed)
+		logUtils.Log(i118Utils.Sprintf("fail_to_login"))
 	}
 
 	return ok
@@ -54,7 +52,7 @@ func GetConfig(baseUrl string) bool {
 
 	// get config
 	url := baseUrl + "?mode=getconfig"
-	body, ok := client.Get(url)
+	body, ok := Get(url)
 	if !ok {
 		return false
 	}
@@ -74,7 +72,7 @@ func GetConfig(baseUrl string) bool {
 		uri = "index.php?m=user&f=login&t=json"
 	}
 	url = baseUrl + uri
-	body, ok = client.Get(url)
+	body, ok = Get(url)
 	if !ok {
 		return false
 	}
