@@ -7,18 +7,19 @@ import (
 	jenkinsService "github.com/easysoft/z/src/service/jenkins"
 	scmService "github.com/easysoft/z/src/service/scm"
 	zentaoService "github.com/easysoft/z/src/service/zentao"
+	constant "github.com/easysoft/z/src/utils/const"
 	fileUtils "github.com/easysoft/z/src/utils/file"
 	logUtils "github.com/easysoft/z/src/utils/log"
 	"path/filepath"
 	"strings"
 )
 
-func Merge(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite) (
+func PreMerge(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite) (
 	resp model.ZentaoMergeResponse, err error) {
-	return MergeAllSteps(srcBranchDir, distBranchName, zentaoSite, false, false, false)
+	return PreMergeAllSteps(srcBranchDir, distBranchName, zentaoSite, false, false, false)
 }
 
-func MergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, createBuild, waitBuildCompleted, createMr bool) (
+func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createMr bool) (
 	resp model.ZentaoMergeResponse, err error) {
 	outMerge, outDiff, srcBranchName, distBranchDir, errCombine :=
 		scmService.CombineLocal(srcBranchDir, distBranchName)
@@ -39,14 +40,16 @@ func MergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoS
 	uploadResult, uploadErr := fileUtils.Upload(zentaoBuild.FileServerUrl, files, params)
 	mergerInfo.UploadMsg = uploadErr.Error()
 
-	if createBuild && errCombine == nil && uploadErr == nil {
-		jenkinsSite := model.JenkinsSite{
-			Url: zentaoBuild.CIServerUrl, Account: zentaoBuild.CIServerAccount, Token: zentaoBuild.CIServerToken}
-		queueId, buildId := jenkinsService.BuildJob(zentaoBuild.CIJobName, uploadResult.FileDir, jenkinsSite, waitBuildCompleted)
+	if execCIBuild && errCombine == nil && uploadErr == nil {
+		if zentaoBuild.CIServerType == constant.Jenkins {
+			jenkinsSite := model.JenkinsSite{
+				Url: zentaoBuild.CIServerUrl, Account: zentaoBuild.CIServerAccount, Token: zentaoBuild.CIServerToken}
+			queueId, buildId := jenkinsService.BuildJob(zentaoBuild.CIJobName, uploadResult.FileDir, jenkinsSite, waitBuildCompleted)
 
-		mergerInfo.CIJobName = zentaoBuild.CIJobName
-		mergerInfo.CIQueueId = queueId
-		mergerInfo.CIBuildId = buildId
+			mergerInfo.CIJobName = zentaoBuild.CIJobName
+			mergerInfo.CIQueueId = queueId
+			mergerInfo.CIBuildId = buildId
+		}
 	}
 
 	if createMr {

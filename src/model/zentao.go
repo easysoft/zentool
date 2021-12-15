@@ -1,5 +1,7 @@
 package model
 
+import constant "github.com/easysoft/z/src/utils/const"
+
 type ZentaoMerge struct {
 	MergeResult bool
 	MergeMsg    string
@@ -29,14 +31,16 @@ type ZentaoMergeResponse struct {
 }
 
 type ZentaoRepoResponse struct {
+	FileServerUrl      string
+	FileServerAccount  string
+	FileServerPassword string
+
+	// 可选，仅在执行构建时需要。
+	CIServerType    constant.CIServerType
 	CIServerUrl     string
 	CIServerAccount string
 	CIServerToken   string
 	CIJobName       string
-
-	FileServerUrl      string
-	FileServerAccount  string
-	FileServerPassword string
 
 	// 可选，仅在Z创建MR时需要。
 	GitLabUrl       string
