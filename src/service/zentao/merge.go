@@ -9,8 +9,8 @@ import (
 	zentaoUtils "github.com/easysoft/z/src/utils/zentao"
 )
 
-func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.ZentaoBuild) {
-	ok := Login(site)
+func PostMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (ok bool) {
+	ok = Login(site)
 	if !ok {
 		return
 	}
@@ -22,17 +22,16 @@ func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.Zen
 		params = ""
 	}
 
-	url := site.BaseUrl + zentaoUtils.GenApiUri("repo", "info", params)
+	url := site.BaseUrl + zentaoUtils.GenApiUri("merge", "info", params)
 
-	requestObj := map[string]interface{}{"repoUrl": repoUrl}
+	requestObj := map[string]interface{}{"data": merge}
 
 	if vari.Verbose {
 		json, _ := json.Marshal(requestObj)
 		logUtils.Log(string(json))
 	}
 
-	dataStr, ok := PostObject(url, requestObj, true)
-	json.Unmarshal([]byte(dataStr), &build)
+	_, ok = PostObject(url, requestObj, true)
 
 	return
 }

@@ -2,6 +2,7 @@ package zentaoService
 
 import (
 	"github.com/bitly/go-simplejson"
+	"github.com/easysoft/z/src/model"
 	"github.com/easysoft/z/src/utils/const"
 	"github.com/easysoft/z/src/utils/i118"
 	"github.com/easysoft/z/src/utils/log"
@@ -9,8 +10,8 @@ import (
 	"strings"
 )
 
-func Login(baseUrl string, account string, password string) bool {
-	ok := GetConfig(baseUrl)
+func Login(site model.ZentaoSite) bool {
+	ok := GetConfig(site.BaseUrl)
 
 	if !ok {
 		logUtils.Log(i118Utils.Sprintf("fail_to_login"))
@@ -23,11 +24,11 @@ func Login(baseUrl string, account string, password string) bool {
 	} else {
 		uri = "index.php?m=user&f=login&t=json"
 	}
-	url := baseUrl + uri
+	url := site.BaseUrl + uri
 
 	params := make(map[string]string)
-	params["account"] = account
-	params["password"] = password
+	params["account"] = site.Account
+	params["password"] = site.Password
 
 	var body string
 	body, ok = PostStr(url, params)
