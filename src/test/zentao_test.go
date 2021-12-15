@@ -24,5 +24,10 @@ func TestMerge(t *testing.T) {
 		Account:  ZentaoAccount,
 		Password: ZentaoPassword,
 	}
-	action.Merge("/Users/aaron/ci_test_testng_ci_branch", "master", site, true)
+
+	action.Merge("/Users/aaron/ci_test_testng_ci_branch", "master", site)
+
+	// full test
+	action.MergeAllSteps("/Users/aaron/ci_test_testng_ci_branch", "master", site,
+		true, true, true)
 }
