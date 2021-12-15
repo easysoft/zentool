@@ -22,7 +22,7 @@ const (
 	cmdMerge     = "git merge %s"
 )
 
-func CombineLocal(srcBranchDir, distBranchName string) (outMerge, outDiff []string, srcBranchName, distBranchDir string, err error) {
+func CombineCodesLocally(srcBranchDir, distBranchName string) (outMerge, outDiff []string, srcBranchName, distBranchDir string, err error) {
 	repoUrl, label := GetRemoteUrl(srcBranchDir)
 	srcBranchName, err = GetBranchName(srcBranchDir)
 	if err != nil {

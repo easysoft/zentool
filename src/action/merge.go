@@ -19,13 +19,10 @@ func PreMerge(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite) 
 	return PreMergeAllSteps(srcBranchDir, distBranchName, zentaoSite, false, false, false)
 }
 
-func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createMr bool) (
+func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createGitLabMr bool) (
 	resp model.ZentaoMergeResponse, err error) {
-	outMerge, outDiff, srcBranchName, distBranchDir, errCombine :=
-		scmService.CombineLocal(srcBranchDir, distBranchName)
 
-	zipFile := filepath.Join(filepath.Dir(distBranchDir), "result.zip")
-	fileUtils.ZipFiles(zipFile, distBranchDir)
+	outMerge, outDiff, srcBranchName, distBranchDir, errCombine := scmService.CombineCodesLocally(srcBranchDir, distBranchName)
 
 	mergerInfo := model.ZentaoMerge{
 		MergeResult: errCombine == nil,
@@ -33,13 +30,23 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 		DiffMsg:     strings.Join(outDiff, "\n"),
 	}
 
-	zentaoBuild := zentaoService.GetRepoDefaultBuild("http://192.168.1.161:51080/root/ci_test_testng.git", zentaoSite)
+	zentaoBuild, errGetRepo := zentaoService.GetRepoDefaultBuild("http://192.168.1.161:51080/root/ci_test_testng.git", zentaoSite)
 
-	files := []string{""}
-	params := map[string]string{"account": zentaoBuild.FileServerAccount, "password": zentaoBuild.FileServerPassword}
-	uploadResult, uploadErr := fileUtils.Upload(zentaoBuild.FileServerUrl, files, params)
-	mergerInfo.UploadMsg = uploadErr.Error()
+	var uploadResult model.UploadResponse
+	var uploadErr error
 
+	// upload file
+	if errGetRepo == nil && errCombine == nil {
+		zipFile := filepath.Join(filepath.Dir(distBranchDir), "result.zip")
+		fileUtils.ZipFiles(zipFile, distBranchDir)
+
+		files := []string{""}
+		params := map[string]string{"account": zentaoBuild.FileServerAccount, "password": zentaoBuild.FileServerPassword}
+		uploadResult, uploadErr = fileUtils.Upload(zentaoBuild.FileServerUrl, files, params)
+		mergerInfo.UploadMsg = uploadErr.Error()
+	}
+
+	// exec build on CI platform
 	if execCIBuild && errCombine == nil && uploadErr == nil {
 		if zentaoBuild.CIServerType == constant.Jenkins {
 			jenkinsSite := model.JenkinsSite{
@@ -52,7 +59,8 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 		}
 	}
 
-	if createMr {
+	// create MR in gitlab
+	if createGitLabMr {
 		gitlabSite := model.GitLabSite{Url: zentaoBuild.GitLabUrl, Token: zentaoBuild.GitLabToken}
 		mr, err := gitlabService.CreateMr(zentaoBuild.GitLabProjectId, srcBranchName, distBranchName, gitlabSite)
 
@@ -63,8 +71,8 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 		}
 	}
 
-	resp, err = zentaoService.PostMergeInfo(mergerInfo, zentaoSite)
-	logUtils.Logf("zentao return: mergeId=%d, buildId=%d", resp.MRId, resp.BuildId)
+	resp, err = zentaoService.SubmitMergeInfo(mergerInfo, zentaoSite)
+	logUtils.Logf("zentao return: %#v", resp)
 
 	return
 }

@@ -11,7 +11,7 @@ import (
 	zentaoUtils "github.com/easysoft/z/src/utils/zentao"
 )
 
-func PostMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (resp model.ZentaoMergeResponse, err error) {
+func SubmitMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (resp model.ZentaoMergeResponse, err error) {
 	ok := Login(site)
 	if !ok {
 		err = errors.New("login to zentao failed")

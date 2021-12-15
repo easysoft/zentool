@@ -2,6 +2,7 @@ package zentaoService
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/easysoft/z/src/model"
 	constant "github.com/easysoft/z/src/utils/const"
 	logUtils "github.com/easysoft/z/src/utils/log"
@@ -9,9 +10,10 @@ import (
 	zentaoUtils "github.com/easysoft/z/src/utils/zentao"
 )
 
-func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.ZentaoRepoResponse) {
+func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.ZentaoRepoResponse, err error) {
 	ok := Login(site)
 	if !ok {
+		err = errors.New("login fail")
 		return
 	}
 
@@ -32,6 +34,11 @@ func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.Zen
 	}
 
 	dataStr, ok := PostObject(url, requestObj, true)
+	if !ok {
+		err = errors.New("get repo default build fail")
+		return
+	}
+
 	json.Unmarshal([]byte(dataStr), &build)
 
 	return
