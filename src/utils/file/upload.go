@@ -2,8 +2,11 @@ package fileUtils
 
 import (
 	"bytes"
+	"encoding/json"
+	"github.com/easysoft/z/src/model"
 	"github.com/easysoft/z/src/utils/i118"
 	"github.com/easysoft/z/src/utils/log"
+	"github.com/easysoft/z/src/utils/vari"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -11,7 +14,7 @@ import (
 	"os"
 )
 
-func Upload(url string, files []string, extraParams map[string]string) {
+func Upload(url string, files []string, extraParams map[string]string) (uploadResult model.UploadResponse, err error) {
 	bodyBuffer := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuffer)
 
@@ -30,16 +33,26 @@ func Upload(url string, files []string, extraParams map[string]string) {
 	bodyWriter.Close()
 
 	resp, err := http.Post(url, contentType, bodyBuffer)
+	if err != nil {
+		return
+	}
+
+	bodyStr, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
-
-	if err != nil {
-		logUtils.Error(i118Utils.Sprintf("fail_to_upload_file", err.Error()))
+	if vari.Verbose {
+		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logUtils.Error(i118Utils.Sprintf("fail_to_parse_upload_file_response", err.Error()))
+		logUtils.Logf("read upload response error %s", err.Error())
+		return
 	}
 
-	logUtils.Log(i118Utils.Sprintf("upload_file_result", resp.Status, string(respBody)))
+	err = json.Unmarshal(bodyStr, &uploadResult)
+	if err != nil {
+		logUtils.Logf("parse upload response error %s", err.Error())
+		return
+	}
+
+	return
 }

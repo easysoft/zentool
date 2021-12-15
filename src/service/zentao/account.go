@@ -11,7 +11,7 @@ import (
 )
 
 func Login(site model.ZentaoSite) bool {
-	ok := GetConfig(site.BaseUrl)
+	ok := GetConfig(site.Url)
 
 	if !ok {
 		logUtils.Log(i118Utils.Sprintf("fail_to_login"))
@@ -24,7 +24,7 @@ func Login(site model.ZentaoSite) bool {
 	} else {
 		uri = "index.php?m=user&f=login&t=json"
 	}
-	url := site.BaseUrl + uri
+	url := site.Url + uri
 
 	params := make(map[string]string)
 	params["account"] = site.Account

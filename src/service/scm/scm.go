@@ -22,7 +22,7 @@ const (
 	cmdMerge     = "git merge %s"
 )
 
-func CombineLocal(srcBranchDir, distBranchName string) (out []string, distBranchDir string, ok bool) {
+func CombineLocal(srcBranchDir, distBranchName string) (outMerge, outDiff []string, distBranchDir string, ok bool) {
 	repoUrl, label := GetRemoteUrl(srcBranchDir)
 	branchName, err := GetBranchName(srcBranchDir)
 	if err != nil {
@@ -30,13 +30,13 @@ func CombineLocal(srcBranchDir, distBranchName string) (out []string, distBranch
 	}
 
 	distBranchDir = GetBrotherDir(srcBranchDir, distBranchName)
-	out, err = CheckoutBranch(repoUrl, distBranchName, distBranchDir)
+	outMerge, err = CheckoutBranch(repoUrl, distBranchName, distBranchDir)
 	if err != nil {
 		return
 	}
 
 	// merge from same project
-	out, err = MergeFromSameProject(label, branchName, distBranchDir)
+	outMerge, outDiff, err = MergeFromSameProject(label, branchName, distBranchDir)
 	if err != nil {
 		return
 	}
@@ -114,19 +114,25 @@ func CheckoutBranch(repoUrl, distBranch, distDir string) (out []string, err erro
 	return
 }
 
-func MergeFromSameProject(label string, branchName string, distBranchDir string) (out []string, err error) {
+func MergeFromSameProject(label string, branchName string, distBranchDir string) (outMerge, outDiff []string, err error) {
 	cmdMergeStr := fmt.Sprintf(cmdMerge, fmt.Sprintf("%s/%s", label, branchName))
-	out, err = shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
+	outMerge, err = shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
 	if err != nil {
 		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdMergeStr, err.Error())
 		return
 	}
 
-	msg := strings.Join(out, "\n")
+	msg := strings.Join(outMerge, "\n")
 	if strings.Index(msg, "conflict") > -1 {
 		err = errors.New("Merge Conflict: " + msg)
-		return
 	}
+
+	outDiff = GetDiffInfo(label, branchName, distBranchDir)
+
+	return
+}
+
+func GetDiffInfo(label string, branchName string, distBranchDir string) (out []string) {
 
 	return
 }

@@ -22,7 +22,7 @@ func PostMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (ok bool) {
 		params = ""
 	}
 
-	url := site.BaseUrl + zentaoUtils.GenApiUri("merge", "info", params)
+	url := site.Url + zentaoUtils.GenApiUri("merge", "info", params)
 
 	requestObj := map[string]interface{}{"data": merge}
 

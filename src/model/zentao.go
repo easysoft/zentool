@@ -4,19 +4,26 @@ type ZentaoMerge struct {
 	MergeResult bool
 	MergeMsg    string
 	DiffMsg     string
+	UploadMsg   string
 
-	CIJobId   int
-	CIQueueId int
+	CIJobName string
+	CIQueueId int64
+	CIBuildId int64
 }
 
 type ZentaoBuild struct {
-	ServerUrl   string
-	ServerToken string
-	BuildName   string
+	CIServerUrl     string
+	CIServerAccount string
+	CIServerToken   string
+	CIJobName       string
+
+	FileServerUrl      string
+	FileServerAccount  string
+	FileServerPassword string
 }
 
 type ZentaoSite struct {
-	BaseUrl  string
+	Url      string
 	Account  string
 	Password string
 }

@@ -22,7 +22,7 @@ func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.Zen
 		params = ""
 	}
 
-	url := site.BaseUrl + zentaoUtils.GenApiUri("repo", "info", params)
+	url := site.Url + zentaoUtils.GenApiUri("repo", "info", params)
 
 	requestObj := map[string]interface{}{"repoUrl": repoUrl}
 
