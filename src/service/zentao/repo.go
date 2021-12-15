@@ -9,7 +9,7 @@ import (
 	zentaoUtils "github.com/easysoft/z/src/utils/zentao"
 )
 
-func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.ZentaoBuild) {
+func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.ZentaoRepoResponse) {
 	ok := Login(site)
 	if !ok {
 		return

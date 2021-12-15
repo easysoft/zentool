@@ -11,23 +11,26 @@ type ZentaoMerge struct {
 	CIBuildId int64
 }
 
-type ZentaoBuild struct {
-	CIServerUrl     string
-	CIServerAccount string
-	CIServerToken   string
-	CIJobName       string
-
-	FileServerUrl      string
-	FileServerAccount  string
-	FileServerPassword string
-}
-
 type ZentaoSite struct {
 	Url      string
 	Account  string
 	Password string
 }
+
 type ZentaoResponse struct {
 	Status string
 	Data   string
+}
+
+type ZentaoRepoResponse struct {
+	CIServerUrl     string
+	CIServerAccount string
+	CIServerToken   string
+	CIJobName       string
+
+	GitLabProjectId string
+
+	FileServerUrl      string
+	FileServerAccount  string
+	FileServerPassword string
 }
