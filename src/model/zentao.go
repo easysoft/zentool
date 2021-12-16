@@ -7,11 +7,14 @@ type ZentaoMerge struct {
 	MergeMsg    string
 	DiffMsg     string
 	UploadMsg   string
-	CreateMrMsg string // 可选
 
+	// 可选，仅在执行构建时提供。
 	CIJobName string
 	CIQueueId int64
 	CIBuildId int64
+
+	// 可选，仅在Z创建MR时提供。
+	CreateMrMsg string
 }
 
 type ZentaoSite struct {
@@ -26,8 +29,8 @@ type ZentaoResponse struct {
 }
 
 type ZentaoMergeResponse struct {
-	MRId    int
-	BuildId int
+	GitLabMRId int
+	CIBuildId  int
 }
 
 type ZentaoRepoResponse struct {
