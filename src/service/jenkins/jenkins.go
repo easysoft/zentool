@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/bndr/gojenkins"
 	"github.com/easysoft/z/src/model"
+	i118Utils "github.com/easysoft/z/src/utils/i118"
 	logUtils "github.com/easysoft/z/src/utils/log"
 	"time"
 )
@@ -15,13 +16,13 @@ func BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete
 	jenkins := gojenkins.CreateJenkins(nil, site.Url, site.Account, site.Token)
 	_, err := jenkins.Init(ctx)
 	if err != nil {
-		logUtils.Errorf("connect to jenkins error %s", err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("connect_jenkins_error", err.Error()))
 		return
 	}
 
 	job, err := jenkins.GetJob(ctx, jobName)
 	if err != nil {
-		logUtils.Errorf("jenkins get job error %s", err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("get_jenkins_job_error", err.Error()))
 		return
 	}
 
@@ -30,13 +31,13 @@ func BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete
 	}
 	queueId, err = jenkins.BuildJob(ctx, job.GetName(), params)
 	if err != nil {
-		logUtils.Errorf("jenkins build job error %s", err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("exec_jenkins_job_error", err.Error()))
 		return
 	}
 
 	build, err := jenkins.GetBuild(ctx, job.GetName(), queueId)
 	if err != nil {
-		logUtils.Errorf("jenkins get build error %s", err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("get_jenkins_build_error", err.Error()))
 		return
 	}
 	buildId = build.GetBuildNumber()
@@ -56,9 +57,9 @@ func BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete
 }
 
 func logBuildStatus(job gojenkins.Job, queueId int64, build gojenkins.Build) {
-	logUtils.Logf("job %s, queue %d, build %d-%s with result: %v\n",
+	logUtils.Logf(i118Utils.Sprintf("jenkins_task_info",
 		job.GetName(), queueId,
-		build.GetBuildNumber(), build.Info().DisplayName, build.GetResult())
+		build.GetBuildNumber(), build.Info().DisplayName, build.GetResult()))
 
 	return
 }

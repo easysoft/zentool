@@ -25,13 +25,13 @@ func Get(url string) (string, bool) {
 	}
 
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_address") + url)
+		logUtils.Log(i118Utils.Sprintf("server_address", url))
 	}
 
 	req, reqErr := http.NewRequest("GET", url, nil)
 	if reqErr != nil {
 		if vari.Verbose {
-			logUtils.Log(i118Utils.Sprintf("server_return") + reqErr.Error())
+			logUtils.Log(i118Utils.Sprintf("server_return", reqErr.Error()))
 		}
 		return "", false
 	}
@@ -39,14 +39,14 @@ func Get(url string) (string, bool) {
 	resp, respErr := client.Do(req)
 	if respErr != nil {
 		if vari.Verbose {
-			logUtils.Log(i118Utils.Sprintf("server_return") + respErr.Error())
+			logUtils.Log(i118Utils.Sprintf("server_return", respErr.Error()))
 		}
 		return "", false
 	}
 
 	bodyStr, _ := ioutil.ReadAll(resp.Body)
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
+		logUtils.Log(i118Utils.Sprintf("server_return", logUtils.ConvertUnicode(bodyStr)))
 	}
 
 	var bodyJson model.ZentaoResponse
@@ -54,8 +54,8 @@ func Get(url string) (string, bool) {
 	if jsonErr != nil {
 		if strings.Index(string(bodyStr), "<html>") > -1 {
 			if vari.Verbose {
-				logUtils.Log(i118Utils.Sprintf("server_return") + " HTML - " +
-					gohtml.FormatWithLineNo(string(bodyStr)))
+				logUtils.Log(i118Utils.Sprintf("server_return",
+					" HTML - "+gohtml.FormatWithLineNo(string(bodyStr))))
 			}
 			return "", false
 		} else {
@@ -87,7 +87,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 
 	jsonStr, _ := json.Marshal(params)
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_address") + url)
+		logUtils.Log(i118Utils.Sprintf("server_address", url))
 	}
 
 	client := &http.Client{}
@@ -101,13 +101,13 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 	}
 
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_params") + val)
+		logUtils.Log(i118Utils.Sprintf("server_params", val))
 	}
 
 	req, reqErr := http.NewRequest("POST", url, strings.NewReader(val))
 	if reqErr != nil {
 		if vari.Verbose {
-			logUtils.Log(i118Utils.Sprintf("server_return") + reqErr.Error())
+			logUtils.Log(i118Utils.Sprintf("server_return", reqErr.Error()))
 		}
 		return "", false
 	}
@@ -117,14 +117,14 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 	resp, respErr := client.Do(req)
 	if respErr != nil {
 		if vari.Verbose {
-			logUtils.Log(i118Utils.Sprintf("server_return") + respErr.Error())
+			logUtils.Log(i118Utils.Sprintf("server_return", respErr.Error()))
 		}
 		return "", false
 	}
 
 	bodyStr, _ := ioutil.ReadAll(resp.Body)
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
+		logUtils.Log(i118Utils.Sprintf("server_return", logUtils.ConvertUnicode(bodyStr)))
 	}
 
 	var bodyJson model.ZentaoResponse
@@ -132,13 +132,13 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 	if jsonErr != nil {
 		if strings.Index(string(bodyStr), "<html>") > -1 { // some api return a html
 			if vari.Verbose {
-				logUtils.Log(i118Utils.Sprintf("server_return") + " HTML - " +
-					gohtml.FormatWithLineNo(string(bodyStr)))
+				logUtils.Log(i118Utils.Sprintf("server_return",
+					" HTML - "+gohtml.FormatWithLineNo(string(bodyStr))))
 			}
 			return string(bodyStr), true
 		} else {
 			if vari.Verbose {
-				logUtils.Log(i118Utils.Sprintf("server_return") + jsonErr.Error())
+				logUtils.Log(i118Utils.Sprintf("server_return", jsonErr.Error()))
 			}
 			return "", false
 		}
@@ -157,7 +157,7 @@ func PostObject(url string, params interface{}, useFormFormat bool) (string, boo
 
 func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_address") + url)
+		logUtils.Log(i118Utils.Sprintf("server_address", url))
 	}
 	client := &http.Client{}
 
@@ -172,13 +172,13 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	}
 
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_params") + paramStr)
+		logUtils.Log(i118Utils.Sprintf("server_params", paramStr))
 	}
 
 	req, reqErr := http.NewRequest("POST", url, strings.NewReader(paramStr))
 	if reqErr != nil {
 		if vari.Verbose {
-			logUtils.Log(reqErr.Error())
+			logUtils.Log(i118Utils.Sprintf("server_return", reqErr.Error()))
 		}
 		ok = false
 		return
@@ -190,7 +190,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	resp, respErr := client.Do(req)
 	if respErr != nil {
 		if vari.Verbose {
-			logUtils.Log(respErr.Error())
+			logUtils.Log(i118Utils.Sprintf("server_return", respErr.Error()))
 		}
 		ok = false
 		return
@@ -198,7 +198,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 
 	bodyStr, _ := ioutil.ReadAll(resp.Body)
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
+		logUtils.Log(i118Utils.Sprintf("server_return", logUtils.ConvertUnicode(bodyStr)))
 	}
 
 	var bodyJson model.ZentaoResponse
@@ -206,7 +206,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	if jsonErr != nil {
 		if vari.Verbose {
 			if strings.Index(url, "login") == -1 { // jsonErr caused by login request return a html
-				logUtils.Log(jsonErr.Error())
+				logUtils.Log(i118Utils.Sprintf("server_return", jsonErr.Error()))
 			}
 		}
 		ok = false

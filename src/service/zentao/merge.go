@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/easysoft/z/src/model"
 	constant "github.com/easysoft/z/src/utils/const"
-	logUtils "github.com/easysoft/z/src/utils/log"
 	"github.com/easysoft/z/src/utils/vari"
 	zentaoUtils "github.com/easysoft/z/src/utils/zentao"
 )
@@ -28,11 +27,6 @@ func SubmitMergeInfo(merge model.ZentaoMerge, site model.ZentaoSite) (resp model
 	url := site.Url + zentaoUtils.GenApiUri("merge", "info", params)
 
 	requestObj := map[string]interface{}{"data": merge}
-
-	if vari.Verbose {
-		json, _ := json.Marshal(requestObj)
-		logUtils.Log(string(json))
-	}
 
 	respStr := ""
 	respStr, ok = PostObject(url, requestObj, true)

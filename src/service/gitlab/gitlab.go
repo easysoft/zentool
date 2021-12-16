@@ -3,9 +3,9 @@ package gitlabService
 import (
 	"fmt"
 	"github.com/easysoft/z/src/model"
+	i118Utils "github.com/easysoft/z/src/utils/i118"
 	logUtils "github.com/easysoft/z/src/utils/log"
 	"github.com/xanzy/go-gitlab"
-	"log"
 	"net/http"
 	"net/http/httptest"
 )
@@ -23,23 +23,8 @@ func CreateMr(projectId, srcBranch, distBranch string, site model.GitLabSite) (m
 
 	mr, _, err = client.MergeRequests.CreateMergeRequest(projectId, &opt)
 	if err != nil {
-		logUtils.Errorf("gitlab create merge request error %s", err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("create_mr_error", err.Error()))
 		return
-	}
-
-	return
-}
-
-func ListUser(site model.GitLabSite) (url string) {
-	_, _, client := GetClient(site)
-
-	users, _, err := client.Users.ListUsers(&gitlab.ListUsersOptions{})
-	if err != nil {
-		logUtils.Errorf("gitlab list user error %s", err.Error())
-		return
-	}
-	for _, user := range users {
-		log.Println(user.Username, user.Name, user.CreatedAt.Format("2006-01-02"))
 	}
 
 	return
@@ -51,7 +36,7 @@ func GetClient(site model.GitLabSite) (*http.ServeMux, *httptest.Server, *gitlab
 
 	client, err := gitlab.NewClient(site.Token, gitlab.WithBaseURL(site.Url))
 	if err != nil {
-		logUtils.Errorf("connect to gitlab error %s", err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("connect_gitlab_error", err.Error()))
 	}
 
 	return mux, server, client

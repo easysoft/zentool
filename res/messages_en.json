@@ -8,15 +8,15 @@
 
     {
       "id": "server_address",
-      "translation": "\nRequest Address:\n"
+      "translation": "Request Address: %s\n"
     },
     {
       "id": "server_params",
-      "translation": "Request Params:\n"
+      "translation": "Request Params: %s\n"
     },
     {
       "id": "server_return",
-      "translation": "Server Return:\n"
+      "translation": "Server Return: %s\n"
     },
 
     {
@@ -30,7 +30,52 @@
     },
     {
       "id": "fail_to_login",
-      "translation": "Failed to login."
+      "translation": "Fail to login."
+    },
+
+    {
+      "id": "create_mr_error",
+      "translation": "Create gitlab merge request error %s."
+    },
+    {
+      "id": "connect_gitlab_error",
+      "translation": "Connect to gitlab error %s."
+    },
+    {
+      "id": "connect_jenkins_error",
+      "translation": "Connect to jenkins error %s."
+    },
+    {
+      "id": "get_jenkins_job_error",
+      "translation": "Get jenkins job error %s."
+    },
+    {
+      "id": "exec_jenkins_job_error",
+      "translation": "Execute jenkins job error %s."
+    },
+    {
+      "id": "get_jenkins_build_error",
+      "translation": "Get jenkins build error %s."
+    },
+    {
+      "id": "jenkins_task_info",
+      "translation": "Jenkins job %s, queue %d, build %d-%s with result: %#v."
+    },
+    {
+      "id": "fail_to_execute_cmd",
+      "translation": "Execute command %s error: %s."
+    },
+    {
+      "id": "read_upload_response_error",
+      "translation": "Read upload response error %s."
+    },
+    {
+      "id": "parse_upload_response_error",
+      "translation": "Parse upload response error %s."
+    },
+    {
+      "id": "invalid_input",
+      "translation": "Invalid Input."
     }
   ]
 }

@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"github.com/easysoft/z/src/utils/file"
 	"github.com/easysoft/z/src/utils/i118"
-	"github.com/easysoft/z/src/utils/lang"
 	"github.com/easysoft/z/src/utils/log"
 	"github.com/fatih/color"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -53,22 +51,6 @@ func InputForCheckout(productId *string, moduleId *string, suiteId *string, task
 	}
 
 	InputForBool(independentFile, false, "enter_co_independent")
-
-	numbs, names, labels := langUtils.GetSupportLanguageOptions(nil)
-	fmtParam := make([]string, 0)
-	dft := ""
-	for idx, label := range labels {
-		if names[idx] == *scriptLang {
-			dft = strconv.Itoa(idx + 1)
-			label += " *"
-		}
-		fmtParam = append(fmtParam, label)
-	}
-
-	langStr := GetInput("("+strings.Join(numbs, "|")+")", dft, "enter_co_language", strings.Join(fmtParam, "\n"))
-	langNumb, _ := strconv.Atoi(langStr)
-
-	*scriptLang = names[langNumb-1]
 }
 
 func InputForDir(dir *string, dft string, i118Key string) {
@@ -87,7 +69,7 @@ func InputForBool(in *bool, defaultVal bool, fmtStr string, fmtParam ...interfac
 		} else {
 			msg = "no"
 		}
-		logUtils.PrintTo(msg)
+		logUtils.Logf(msg)
 		return
 	}
 
@@ -111,7 +93,7 @@ func GetInput(regx string, defaultVal string, fmtStr string, params ...interface
 		if ret == "" && defaultVal != "" {
 			ret = defaultVal
 
-			logUtils.PrintTo(ret)
+			logUtils.Log(ret)
 		}
 
 		temp := strings.ToLower(ret)

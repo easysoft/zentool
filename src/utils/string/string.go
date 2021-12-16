@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	constant "github.com/easysoft/z/src/utils/const"
 	"github.com/mattn/go-runewidth"
 	"strings"
 	"unicode"
@@ -49,14 +48,6 @@ func U2s(form string) (to string, err error) {
 		to += string(r)
 	}
 	return
-}
-
-func BoolToPass(b bool) string {
-	if b {
-		return constant.PASS.String()
-	} else {
-		return constant.FAIL.String()
-	}
 }
 
 func FindInArr(str string, arr []string) bool {

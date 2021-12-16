@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	fileUtils "github.com/easysoft/z/src/utils/file"
+	i118Utils "github.com/easysoft/z/src/utils/i118"
 	logUtils "github.com/easysoft/z/src/utils/log"
 	shellUtils "github.com/easysoft/z/src/utils/shell"
 	"path/filepath"
@@ -56,7 +57,7 @@ func CombineCodesLocally(srcBranchDir, distBranchName string) (outMerge, outDiff
 func GetRemoteUrl(dir string) (url, label string) {
 	out, err := shellUtils.ExeWithOutput(cmdRemote, dir)
 	if err != nil {
-		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdGetBranch, err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdGetBranch, err.Error()))
 	}
 
 	if len(out) < 1 {
@@ -81,7 +82,7 @@ func GetRemoteUrl(dir string) (url, label string) {
 func GetBranchName(dir string) (branch string, err error) {
 	out, err := shellUtils.ExeWithOutput(cmdGetBranch, dir)
 	if err != nil {
-		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdGetBranch, err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdGetBranch, err.Error()))
 	}
 
 	if len(out) < 1 {
@@ -100,13 +101,13 @@ func CheckoutBranch(repoUrl, distBranch, distDir string) (out []string, err erro
 	cmdCloneStr := fmt.Sprintf(cmdClone, repoUrl, distDir)
 	out, err = shellUtils.ExeWithOutput(cmdCloneStr, "")
 	if err != nil {
-		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdCloneStr, err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdCloneStr, err.Error()))
 	}
 
 	cmdCheckoutStr := fmt.Sprintf(cmdCheckout, distBranch)
 	out, err = shellUtils.ExeWithOutput(cmdCheckoutStr, distDir)
 	if err != nil {
-		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdCheckoutStr, err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdCheckoutStr, err.Error()))
 	}
 
 	return
@@ -116,7 +117,7 @@ func MergeFromSameProject(label string, branchName string, distBranchDir string)
 	cmdMergeStr := fmt.Sprintf(cmdMerge, fmt.Sprintf("%s/%s", label, branchName))
 	outMerge, err = shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
 	if err != nil {
-		logUtils.Errorf("failed to execute cmd %s., error: %s", cmdMergeStr, err.Error())
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdMergeStr, err.Error()))
 		return
 	}
 

@@ -30,6 +30,51 @@
     {
       "id": "fail_to_login",
       "translation": "登录失败。"
+    },
+
+    {
+      "id": "create_mr_error",
+      "translation": "创建GitLab合并请求错误 %s。"
+    },
+    {
+      "id": "connect_gitlab_error",
+      "translation": "连接到GitLab错误 %s。"
+    },
+    {
+      "id": "connect_jenkins_error",
+      "translation": "连接到Jenkins错误 %s。"
+    },
+    {
+      "id": "get_jenkins_job_error",
+      "translation": "获取Jenkins任务错误 %s。"
+    },
+    {
+      "id": "exec_jenkins_job_error",
+      "translation": "执行Jenkins任务错误 %s。"
+    },
+    {
+      "id": "get_jenkins_build_error",
+      "translation": "获取Jenkins执行错误 %s。"
+    },
+    {
+      "id": "jenkins_task_info",
+      "translation": "Jenkins任务%s, 队列%d, 执行%d-%s的结果为 %#v。"
+    },
+    {
+      "id": "fail_to_execute_cmd",
+      "translation": "执行命令错误 %s。"
+    },
+    {
+      "id": "read_upload_response_error",
+      "translation": "读取上传响应错误 %s。"
+    },
+    {
+      "id": "parse_upload_response_error",
+      "translation": "解析上传响应错误 %s。"
+    },
+    {
+      "id": "invalid_input",
+      "translation": "无效的输入。"
     }
   ]
 }

@@ -8,15 +8,14 @@ import (
 )
 
 const (
-	gitlabUrl     = "http://192.168.1.161:51080/"
-	gitlabAccount = ""
-	gitlabToken   = "bKWnURUTkWT8rbV9Fkrm"
+	gitlabUrl   = "http://192.168.1.161:51080/"
+	gitlabToken = "bKWnURUTkWT8rbV9Fkrm"
 )
 
 func TestCreateMr(t *testing.T) {
 	logUtils.InitLogger()
 
-	gitlabSite := model.GitLabSite{Url: gitlabUrl, Account: gitlabAccount, Token: gitlabToken}
+	gitlabSite := model.GitLabSite{Url: gitlabUrl, Token: gitlabToken}
 
 	mr, err := gitlabService.CreateMr("2", "ci_branch", "master", gitlabSite)
 

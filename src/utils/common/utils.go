@@ -32,14 +32,6 @@ func RemoveBlankLine(str string) string {
 	return ret
 }
 
-func BoolToPass(b bool) string {
-	if b {
-		return constant.PASS.String()
-	} else {
-		return constant.FAIL.String()
-	}
-}
-
 func GetOs() string {
 	osName := runtime.GOOS
 

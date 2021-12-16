@@ -40,17 +40,17 @@ func Upload(url string, files []string, extraParams map[string]string) (uploadRe
 	bodyStr, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if vari.Verbose {
-		logUtils.Log(i118Utils.Sprintf("server_return") + logUtils.ConvertUnicode(bodyStr))
+		logUtils.Log(i118Utils.Sprintf("server_return", logUtils.ConvertUnicode(bodyStr)))
 	}
 
 	if err != nil {
-		logUtils.Logf("read upload response error %s", err.Error())
+		logUtils.Logf(i118Utils.Sprintf("read_upload_response_error", err.Error()))
 		return
 	}
 
 	err = json.Unmarshal(bodyStr, &uploadResult)
 	if err != nil {
-		logUtils.Logf("parse upload response error %s", err.Error())
+		logUtils.Logf(i118Utils.Sprintf("parse_upload_response_error", err.Error()))
 		return
 	}
 

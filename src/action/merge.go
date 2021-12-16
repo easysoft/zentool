@@ -9,7 +9,6 @@ import (
 	zentaoService "github.com/easysoft/z/src/service/zentao"
 	constant "github.com/easysoft/z/src/utils/const"
 	fileUtils "github.com/easysoft/z/src/utils/file"
-	logUtils "github.com/easysoft/z/src/utils/log"
 	"path/filepath"
 	"strings"
 )
@@ -72,7 +71,6 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 	}
 
 	resp, err = zentaoService.SubmitMergeInfo(mergerInfo, zentaoSite)
-	logUtils.Logf("zentao return: %#v", resp)
 
 	return
 }
