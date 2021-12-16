@@ -18,7 +18,7 @@ func GetConfig() (zentaoSite model.ZentaoSite) {
 	if commonUtils.IsRelease() {
 		exe := strings.ToLower(os.Args[0])
 		file = fileUtils.AbsoluteFile(exe)
-		logUtils.Logf("===%s", file)
+		//logUtils.Logf("exe file %s", file)
 	}
 
 	bytes := fileUtils.ReadConfFromBin(file)
