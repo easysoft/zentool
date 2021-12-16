@@ -2,16 +2,11 @@ package commonUtils
 
 import (
 	"github.com/easysoft/z/res"
-	"github.com/easysoft/z/src/model"
 	"github.com/easysoft/z/src/utils/const"
-	"github.com/easysoft/z/src/utils/string"
-	"github.com/emirpasic/gods/maps"
 	"io/ioutil"
-	"net"
 	"os"
 	"path"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
@@ -70,124 +65,13 @@ func IgnoreFile(path string) bool {
 	}
 }
 
-func GetFieldVal(config model.Config, key string) string {
-	key = stringUtils.Ucfirst(key)
-
-	immutable := reflect.ValueOf(config)
-	val := immutable.FieldByName(key).String()
-
-	return val
-}
-
-func SetFieldVal(config *model.Config, key string, val string) string {
-	key = stringUtils.Ucfirst(key)
-
-	mutable := reflect.ValueOf(config).Elem()
-	mutable.FieldByName(key).SetString(val)
-
-	return val
-}
-
-func LinkedMapToMap(mp maps.Map) map[string]string {
-	ret := make(map[string]string, 0)
-
-	for _, keyIfs := range mp.Keys() {
-		valueIfs, _ := mp.Get(keyIfs)
-
-		key := strings.TrimSpace(keyIfs.(string))
-		value := strings.TrimSpace(valueIfs.(string))
-
-		ret[key] = value
-	}
-
-	return ret
-}
-
-func GetIp() string {
-	ifaces, err := net.Interfaces()
-	if err != nil {
-		return ""
-	}
-
-	ipMap := map[string]string{}
-	for _, iface := range ifaces {
-		if iface.Flags&net.FlagUp == 0 {
-			continue // interface down
-		}
-		if iface.Flags&net.FlagLoopback != 0 {
-			continue // loopback interface
-		}
-		addrs, err := iface.Addrs()
-		if err != nil {
-			return ""
-		}
-		for _, addr := range addrs {
-			ip := getIpFromAddr(addr)
-			if ip == nil {
-				continue
-			}
-
-			ipType := getIpType(ip)
-			ipMap[ipType] = ip.String()
-		}
-	}
-
-	if ipMap["public"] != "" {
-		return ipMap["public"]
-	} else if ipMap["private"] != "" {
-		return ipMap["private"]
-	} else {
-		return ""
-	}
-}
-func getIpFromAddr(addr net.Addr) net.IP {
-	var ip net.IP
-	switch v := addr.(type) {
-	case *net.IPNet:
-		ip = v.IP
-	case *net.IPAddr:
-		ip = v.IP
-	}
-	if ip == nil || ip.IsLoopback() {
-		return nil
-	}
-	ip = ip.To4()
-	if ip == nil {
-		return nil // not an ipv4 address
-	}
-
-	return ip
-}
-
-func getIpType(IP net.IP) string {
-	if IP.IsLoopback() || IP.IsLinkLocalMulticast() || IP.IsLinkLocalUnicast() {
-		return ""
-	}
-	if ip4 := IP.To4(); ip4 != nil {
-		switch true {
-		case ip4[0] == 10:
-			return "private"
-		case ip4[0] == 172 && ip4[1] >= 16 && ip4[1] <= 31:
-			return "private"
-		case ip4[0] == 192 && ip4[1] == 168:
-			return "private"
-		default:
-			return "public"
-		}
-	}
-	return ""
-}
-
 func IsRelease() bool {
 	arg1 := strings.ToLower(os.Args[0])
 	name := filepath.Base(arg1)
-	return strings.Index(name, constant.AppName) == 0 && strings.Index(arg1, "go-build") < 0
 
-	//if _, err := os.Stat("res"); os.IsNotExist(err) {
-	//	return true
-	//}
-	//
-	//return false
+	//log.Printf("%s, %s",arg1, name)
+
+	return strings.Index(name, constant.AppName) == 0 && strings.Index(arg1, "go-build") < 0
 }
 
 func GetDebugParamForRun(args []string) (debug string, ret []string) {

@@ -165,7 +165,7 @@ func GetBrotherDir(base, name string) (dir string) {
 	parentDir := filepath.Dir(base)
 
 	dir = filepath.Join(parentDir, name)
-	dir = fileUtils.AbsolutePath(dir)
+	dir = fileUtils.AbsoluteDir(dir)
 
 	return
 }

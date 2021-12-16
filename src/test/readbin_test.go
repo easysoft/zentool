@@ -1,6 +1,7 @@
 package testing
 
 import (
+	commService "github.com/easysoft/z/src/service/comm"
 	fileUtils "github.com/easysoft/z/src/utils/file"
 	logUtils "github.com/easysoft/z/src/utils/log"
 	"testing"
@@ -9,7 +10,10 @@ import (
 func TestReadBin(t *testing.T) {
 	logUtils.InitLogger()
 
-	confStr := fileUtils.ReadConfFromBin("/Users/aaron/z")
+	srcBranchDir := fileUtils.GetWorkDir()
+	logUtils.Logf("%#v", srcBranchDir)
 
-	logUtils.Logf("%s", confStr)
+	conf := commService.GetConfig()
+
+	logUtils.Logf("%#v", conf)
 }

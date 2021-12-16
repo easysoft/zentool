@@ -77,12 +77,16 @@ func IsDir(f string) bool {
 	return fi.IsDir()
 }
 
-func AbsolutePath(pth string) string {
+func AbsoluteDir(pth string) string {
+	pth = AbsoluteFile(pth)
+	pth = AddPathSepIfNeeded(pth)
+
+	return pth
+}
+func AbsoluteFile(pth string) string {
 	if !IsAbosutePath(pth) {
 		pth, _ = filepath.Abs(pth)
 	}
-
-	pth = AddPathSepIfNeeded(pth)
 
 	return pth
 }
@@ -115,11 +119,11 @@ func GetFilesFromParams(arguments []string) []string {
 	for _, arg := range arguments {
 		if strings.Index(arg, "-") != 0 {
 			if arg == "." {
-				arg = AbsolutePath(".")
+				arg = AbsoluteDir(".")
 			} else if strings.Index(arg, "."+string(os.PathSeparator)) == 0 {
-				arg = AbsolutePath(".") + arg[2:]
+				arg = AbsoluteDir(".") + arg[2:]
 			} else if !IsAbosutePath(arg) {
-				arg = AbsolutePath(".") + arg
+				arg = AbsoluteDir(".") + arg
 			}
 
 			ret = append(ret, arg)
@@ -131,7 +135,17 @@ func GetFilesFromParams(arguments []string) []string {
 	return ret
 }
 
-func GetZTFDir() (dir string, isDebug bool) { // where ztf command in
+func GetWorkDir() string { // where we run file in
+	dir, _ := os.Getwd()
+
+	dir, _ = filepath.Abs(dir)
+	dir = AddPathSepIfNeeded(dir)
+
+	//fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
+	return dir
+}
+
+func GetExeDir() (dir string, isDebug bool) { // where ztf command in
 	if commonUtils.IsRelease() { // release
 		p, _ := exec.LookPath(os.Args[0])
 		if strings.Index(p, string(os.PathSeparator)) > -1 {

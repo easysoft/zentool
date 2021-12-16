@@ -2,7 +2,10 @@ package main
 
 import (
 	"flag"
+	"github.com/easysoft/z/src/action"
 	configUtils "github.com/easysoft/z/src/utils/config"
+	constant "github.com/easysoft/z/src/utils/const"
+	i118Utils "github.com/easysoft/z/src/utils/i118"
 	"github.com/easysoft/z/src/utils/log"
 	"github.com/easysoft/z/src/utils/vari"
 	"github.com/fatih/color"
@@ -12,7 +15,9 @@ import (
 )
 
 var (
-	targetBranch string
+	srcBranchDir   string
+	distBranchName string
+	language       string
 
 	flagSet *flag.FlagSet
 )
@@ -27,7 +32,9 @@ func main() {
 	}()
 
 	flagSet = flag.NewFlagSet("z", flag.ContinueOnError)
-	flagSet.StringVar(&targetBranch, "t", "", "")
+	flagSet.StringVar(&srcBranchDir, "s", "", "")
+	flagSet.StringVar(&distBranchName, "d", "", "")
+	flagSet.StringVar(&language, "l", string(constant.LanguageZH), "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
 	if len(os.Args) == 1 {
@@ -40,23 +47,8 @@ func main() {
 
 	default: // run
 		flagSet.Parse(os.Args[1:])
-
-		if len(os.Args) > 1 {
-			args := []string{os.Args[0], "run"}
-			args = append(args, os.Args[1:]...)
-
-			run(args)
-		} else {
-			logUtils.PrintUsage()
-		}
-	}
-}
-
-func run(args []string) {
-	if len(args) >= 1 {
-
-	} else {
-		logUtils.PrintUsage()
+		i118Utils.InitI118(language)
+		action.PreMerge(srcBranchDir, distBranchName)
 	}
 }
 

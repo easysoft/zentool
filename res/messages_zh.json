@@ -75,6 +75,10 @@
     {
       "id": "invalid_input",
       "translation": "无效的输入。"
+    },
+    {
+      "id": "read_config",
+      "translation": "从文件%s读取配置内容为：%s。"
     }
   ]
 }

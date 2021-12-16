@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func ReadConfFromBin(filePath string) string {
+func ReadConfFromBin(filePath string) []byte {
 	file, err := os.Open(filePath)
 	if err != nil {
 		os.Exit(1)
@@ -15,7 +15,7 @@ func ReadConfFromBin(filePath string) string {
 
 	bytes, _ := getBackwardLine(file, 0)
 
-	return string(bytes)
+	return bytes
 }
 
 func getBackwardLine(file *os.File, start int64) (lineBytes []byte, cursor int64) {

@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/easysoft/z/src/model"
+	commService "github.com/easysoft/z/src/service/comm"
 	gitlabService "github.com/easysoft/z/src/service/gitlab"
 	jenkinsService "github.com/easysoft/z/src/service/jenkins"
 	scmService "github.com/easysoft/z/src/service/scm"
@@ -13,9 +14,16 @@ import (
 	"strings"
 )
 
-func PreMerge(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite) (
-	resp model.ZentaoMergeResponse, err error) {
-	return PreMergeAllSteps(srcBranchDir, distBranchName, zentaoSite, false, false, false)
+func PreMerge(srcBranchDir, distBranchName string) (resp model.ZentaoMergeResponse, err error) {
+	if srcBranchDir == "" {
+		srcBranchDir = fileUtils.GetWorkDir()
+	}
+
+	commService.GetConfig()
+	return
+
+	//conf := commService.GetConfig()
+	//return PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
 }
 
 func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createGitLabMr bool) (

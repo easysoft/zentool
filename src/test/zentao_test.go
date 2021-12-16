@@ -25,7 +25,8 @@ func TestMerge(t *testing.T) {
 		Password: ZentaoPassword,
 	}
 
-	action.PreMerge("/Users/aaron/ci_test_testng_ci_branch", "master", site)
+	action.PreMergeAllSteps("/Users/aaron/ci_test_testng_ci_branch", "master", site,
+		false, false, false)
 
 	// full test
 	action.PreMergeAllSteps("/Users/aaron/ci_test_testng_ci_branch", "master", site,

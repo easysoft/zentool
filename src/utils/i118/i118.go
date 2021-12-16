@@ -73,7 +73,7 @@ func InitRes(jsonPath string) {
 		if commonUtils.IsWin() {
 			jsonPath = "C:\\dev\\project\\go\\ztf\\" + jsonPath
 		} else {
-			jsonPath = "/Users/aaron/rd/project/zentao/go/ztf/" + jsonPath
+			jsonPath = "/Users/aaron/rd/project/zentao/go/z/" + jsonPath
 		}
 	}
 

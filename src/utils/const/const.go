@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	AppName   = "ztf"
+	AppName   = "z"
 	ConfigVer = 2.0
 )
 

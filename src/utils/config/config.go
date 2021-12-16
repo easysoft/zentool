@@ -10,7 +10,7 @@ import (
 )
 
 func InitConfig() {
-	vari.ExeDir, vari.IsDebug = fileUtils.GetZTFDir()
+	vari.ExeDir, vari.IsDebug = fileUtils.GetExeDir()
 	CheckConfigPermission()
 
 	// internationalization

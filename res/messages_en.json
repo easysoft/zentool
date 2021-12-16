@@ -76,6 +76,10 @@
     {
       "id": "invalid_input",
       "translation": "Invalid Input."
+    },
+    {
+      "id": "read_config",
+      "translation": "Read config from file %s, content：%s。"
     }
   ]
 }
