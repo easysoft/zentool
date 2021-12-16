@@ -1,1 +1,2 @@
-$>z.exe run demo\lang\bat\1_string_match.bat       执行预合并检查。
+$>z.exe -d main                         合并当前目录（分支）的代码到主分支。
+$>z.exe -s project/branch_dev -d main   合并指定目录（分支）的代码到主分支。
