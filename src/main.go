@@ -41,16 +41,17 @@ func main() {
 		os.Args = append(os.Args, "help", ".")
 	}
 
-	flagSet.Parse(os.Args[1:])
+	act := os.Args[1]
+
+	flagSet.Parse(os.Args[2:])
 	i118Utils.InitI118(language)
 	configUtils.InitConfig(language)
 
-	switch os.Args[1] {
-	case "help", "-h", "-help", "--help":
-		logUtils.PrintUsage()
-
-	default: // run
+	switch act {
+	case "mr":
 		action.PreMerge(srcBranchDir, distBranchName)
+	default:
+		logUtils.PrintUsage()
 	}
 }
 
