@@ -1,7 +1,7 @@
 package model
 
 type JenkinsSite struct {
-	Url     string
-	Account string
-	Token   string
+	Url     string `json:"url"`
+	Account string `json:"account"`
+	Token   string `json:"token"`
 }

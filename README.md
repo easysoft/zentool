@@ -39,7 +39,7 @@ data:
 8. 禅道返回响应结果，包含以下字段信息；
 ```
 gitLabMRId int
-gIBuildId  int
+ciBuildId  int
 ```
 
 ## Licenses

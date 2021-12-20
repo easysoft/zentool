@@ -3,50 +3,50 @@ package model
 import constant "github.com/easysoft/z/src/utils/const"
 
 type ZentaoMerge struct {
-	MergeResult bool
-	MergeMsg    string
-	DiffMsg     string
-	UploadMsg   string
+	MergeResult bool   `json:"version"`
+	MergeMsg    string `json:"version"`
+	DiffMsg     string `json:"version"`
+	UploadMsg   string `json:"version"`
 
 	// 可选，仅在执行构建时提供。
-	CIJobName string
-	CIQueueId int64
-	CIBuildId int64
+	CIJobName string `json:"version"`
+	CIQueueId int64  `json:"version"`
+	CIBuildId int64  `json:"version"`
 
 	// 可选，仅在Z创建MR时提供。
-	CreateMrMsg string
+	CreateMrMsg string `json:"version"`
 }
 
 type ZentaoSite struct {
-	Url      string
-	Account  string
-	Password string
+	Url      string `json:"version"`
+	Account  string `json:"version"`
+	Password string `json:"version"`
 }
 
 type ZentaoResponse struct {
-	Status string
-	Data   string
+	Status string `json:"version"`
+	Data   string `json:"version"`
 }
 
 type ZentaoMergeResponse struct {
-	GitLabMRId int
-	CIBuildId  int
+	GitLabMRId int `json:"gitLabMRId"`
+	CIBuildId  int `json:"ciBuildId"`
 }
 
 type ZentaoRepoResponse struct {
-	FileServerUrl      string
-	FileServerAccount  string
-	FileServerPassword string
+	FileServerUrl      string `json:"fileServerUrl"`
+	FileServerAccount  string `json:"fileServerAccount"`
+	FileServerPassword string `json:"fileServerPassword"`
 
 	// 可选，仅在执行构建时需要。
-	CIServerType    constant.CIServerType
-	CIServerUrl     string
-	CIServerAccount string
-	CIServerToken   string
-	CIJobName       string
+	CIServerType    constant.CIServerType `json:"ciServerType"`
+	CIServerUrl     string                `json:"ciServerUrl"`
+	CIServerAccount string                `json:"ciServerAccount"`
+	CIServerToken   string                `json:"ciServerToken"`
+	CIJobName       string                `json:"ciJobName"`
 
 	// 可选，仅在Z创建MR时需要。
-	GitLabUrl       string
-	GitLabToken     string
-	GitLabProjectId string
+	GitLabUrl       string `json:"gitLabUrl"`
+	GitLabToken     string `json:"gitLabToken"`
+	GitLabProjectId string `json:"gitLabProjectId"`
 }

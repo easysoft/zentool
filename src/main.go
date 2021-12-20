@@ -43,6 +43,7 @@ func main() {
 
 	flagSet.Parse(os.Args[1:])
 	i118Utils.InitI118(language)
+	configUtils.InitConfig(language)
 
 	switch os.Args[1] {
 	case "help", "-h", "-help", "--help":
@@ -55,7 +56,6 @@ func main() {
 
 func init() {
 	cleanup()
-	configUtils.InitConfig()
 	logUtils.InitLogger()
 }
 

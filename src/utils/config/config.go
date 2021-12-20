@@ -9,12 +9,12 @@ import (
 	"os"
 )
 
-func InitConfig() {
+func InitConfig(language string) {
 	vari.ExeDir, vari.IsDebug = fileUtils.GetExeDir()
 	CheckConfigPermission()
 
 	// internationalization
-	i118Utils.InitI118(vari.Config.Language)
+	i118Utils.InitI118(language)
 }
 
 func CheckConfigPermission() {

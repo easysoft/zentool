@@ -1,6 +1,6 @@
 package model
 
 type UploadResponse struct {
-	Status  string
-	FileDir string
+	Status  string `json:"status"`
+	FileDir string `json:"fileDir"`
 }

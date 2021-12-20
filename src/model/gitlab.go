@@ -1,7 +1,7 @@
 package model
 
 type GitLabSite struct {
-	Url string
+	Url string `json:"url"`
 	//Account string
-	Token string
+	Token string `json:"token"`
 }
