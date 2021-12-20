@@ -32,7 +32,7 @@ func main() {
 	}()
 
 	flagSet = flag.NewFlagSet("z", flag.ContinueOnError)
-	flagSet.StringVar(&srcBranchDir, "s", "", "")
+	flagSet.StringVar(&srcBranchDir, "s", "./", "")
 	flagSet.StringVar(&distBranchName, "d", "", "")
 	flagSet.StringVar(&language, "l", string(constant.LanguageZH), "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
@@ -41,13 +41,14 @@ func main() {
 		os.Args = append(os.Args, "help", ".")
 	}
 
+	flagSet.Parse(os.Args[1:])
+	i118Utils.InitI118(language)
+
 	switch os.Args[1] {
 	case "help", "-h", "-help", "--help":
 		logUtils.PrintUsage()
 
 	default: // run
-		flagSet.Parse(os.Args[1:])
-		i118Utils.InitI118(language)
 		action.PreMerge(srcBranchDir, distBranchName)
 	}
 }

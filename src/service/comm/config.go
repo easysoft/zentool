@@ -1,6 +1,7 @@
 package commService
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/easysoft/z/src/model"
 	commonUtils "github.com/easysoft/z/src/utils/common"
@@ -21,10 +22,11 @@ func GetConfig() (zentaoSite model.ZentaoSite) {
 		//logUtils.Logf("exe file %s", file)
 	}
 
-	bytes := fileUtils.ReadConfFromBin(file)
-	logUtils.Logf(i118Utils.Sprintf("read_config", file, string(bytes)))
+	bts := fileUtils.ReadConfFromBin(file)
+	bts = bytes.TrimSpace(bts)
+	logUtils.Logf(i118Utils.Sprintf("read_config", file, string(bts)))
 
-	json.Unmarshal(bytes, &zentaoSite)
+	json.Unmarshal(bts, &zentaoSite)
 
 	return
 }

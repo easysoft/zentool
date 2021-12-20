@@ -26,9 +26,12 @@ const (
 )
 
 func CombineCodesLocally(srcBranchDir, distBranchName string) (
-	outMerge, outDiff []string, srcBranchName, distBranchDir string, err error) {
+	outMerge, outDiff []string, repoUrl, srcBranchName, distBranchDir string, err error) {
 
-	repoUrl, label := GetRemoteUrl(srcBranchDir)
+	srcBranchDir = fileUtils.AbsoluteFile(srcBranchDir)
+
+	var label string
+	repoUrl, label = GetRemoteUrl(srcBranchDir)
 	srcBranchName, err = GetBranchName(srcBranchDir)
 	if err != nil {
 		return

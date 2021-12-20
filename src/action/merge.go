@@ -20,16 +20,16 @@ func PreMerge(srcBranchDir, distBranchName string) (resp model.ZentaoMergeRespon
 	}
 
 	commService.GetConfig()
-	return
 
-	//conf := commService.GetConfig()
-	//return PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
+	conf := commService.GetConfig()
+	return PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
 }
 
 func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createGitLabMr bool) (
 	resp model.ZentaoMergeResponse, err error) {
 
-	outMerge, outDiff, srcBranchName, distBranchDir, errCombine := scmService.CombineCodesLocally(srcBranchDir, distBranchName)
+	outMerge, outDiff, repoUrl, srcBranchName, distBranchDir, errCombine :=
+		scmService.CombineCodesLocally(srcBranchDir, distBranchName)
 
 	mergerInfo := model.ZentaoMerge{
 		MergeResult: errCombine == nil,
@@ -37,7 +37,7 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 		DiffMsg:     strings.Join(outDiff, "\n"),
 	}
 
-	zentaoBuild, errGetRepo := zentaoService.GetRepoDefaultBuild("http://192.168.1.161:51080/root/ci_test_testng.git", zentaoSite)
+	zentaoBuild, errGetRepo := zentaoService.GetRepoDefaultBuild(repoUrl, zentaoSite)
 
 	var uploadResult model.UploadResponse
 	var uploadErr error

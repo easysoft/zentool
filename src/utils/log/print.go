@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/easysoft/z/src/utils/common"
 	"github.com/easysoft/z/src/utils/const"
+	i118Utils "github.com/easysoft/z/src/utils/i118"
 	"github.com/fatih/color"
 	"os"
 	"regexp"
@@ -17,17 +18,12 @@ var (
 )
 
 func PrintUsage() {
-	PrintToWithColor("Usage: ", color.FgCyan)
+	PrintToWithColor(i118Utils.Sprintf("usage"), color.FgCyan)
 
 	usage := commonUtils.ReadResData(usageFile)
-	exeFile := constant.AppName
-	if commonUtils.IsWin() {
-		exeFile += ".exe"
-	}
-	usage = fmt.Sprintf(usage, exeFile)
 	fmt.Printf("%s\n", usage)
 
-	PrintToWithColor("\nExample: ", color.FgCyan)
+	PrintToWithColor("\n"+i118Utils.Sprintf("example"), color.FgCyan)
 	sample := commonUtils.ReadResData(sampleFile)
 	if !commonUtils.IsWin() {
 		regx, _ := regexp.Compile(`\\`)
@@ -35,12 +31,6 @@ func PrintUsage() {
 
 		regx, _ = regexp.Compile(constant.AppName + `.exe`)
 		sample = regx.ReplaceAllString(sample, constant.AppName)
-
-		regx, _ = regexp.Compile(`/bat/`)
-		sample = regx.ReplaceAllString(sample, "/shell/")
-
-		regx, _ = regexp.Compile(`\.bat\s{4}`)
-		sample = regx.ReplaceAllString(sample, ".shell")
 	}
 	fmt.Printf("%s\n", sample)
 }

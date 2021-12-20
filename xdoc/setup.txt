@@ -4,3 +4,4 @@ git checkout -b ci_branch origin/ci_branch
 git branch -a
 
 echo '{"Url":"http://127.0.0.1:20080","Account":"admin","Password":"P2ssw0rd2"}' >> bin/z/0.6/mac/z/z
+echo '{"Url":"http://127.0.0.1:20080","Account":"admin","Password":"P2ssw0rd2"}' >> z.exe

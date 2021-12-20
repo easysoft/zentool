@@ -9,7 +9,14 @@
       "id": "for_example",
       "translation": "例如 %s"
     },
-
+    {
+      "id": "usage",
+      "translation": "帮助："
+    },
+    {
+      "id": "example",
+      "translation": "示例："
+    },
     {
       "id": "server_address",
       "translation": "\n请求地址：\n"
