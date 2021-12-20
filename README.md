@@ -17,7 +17,7 @@ git checkout ci_branch
 ```
 3. 进入或使用-s指定被合并分支所在的目录，执行命令；
 ```
-z.exe -s /Users/aaron/ci_test_testng -d master --verbose
+z.exe mr -s /Users/aaron/ci_test_testng -d master --verbose
 ```
 4. 工具会签出目标分支（这里是主分支master）的代码，进行预合并；
 5. 工具向禅道发送请求，存入代码库地址repoUrl参数，获取以下文件服务器配置；
