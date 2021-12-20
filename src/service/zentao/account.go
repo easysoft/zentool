@@ -65,5 +65,18 @@ func GetConfig(baseUrl string) bool {
 	vari.RequestType, _ = json.Get("requestType").String()
 	vari.RequestFix, _ = json.Get("requestFix").String()
 
+	// check site path by calling login interface
+	uri := ""
+	if vari.RequestType == constant.RequestTypePathInfo {
+		uri = "user-login.json"
+	} else {
+		uri = "index.php?m=user&f=login&t=json"
+	}
+	url = baseUrl + uri
+	body, ok = Get(url)
+	if !ok {
+		return false
+	}
+
 	return true
 }
