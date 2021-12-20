@@ -77,24 +77,23 @@ func Get(url string) (string, bool) {
 	}
 }
 
-func PostObject(url string, params interface{}, useFormFormat bool) (string, bool) {
+func PostObject(url string, data interface{}, useFormFormat bool) (string, bool) {
 	if vari.RequestType == constant.RequestTypePathInfo {
 		url = url + "?" + vari.SessionVar + "=" + vari.SessionId
 	} else {
 		url = url + "&" + vari.SessionVar + "=" + vari.SessionId
 	}
 	url = url + "&XDEBUG_SESSION_START=PHPSTORM"
-
-	jsonStr, _ := json.Marshal(params)
 	if vari.Verbose {
 		logUtils.Log(i118Utils.Sprintf("server_address", url))
 	}
 
+	jsonStr, _ := json.Marshal(data)
 	client := &http.Client{}
 
 	val := string(jsonStr)
 	if useFormFormat {
-		val, _ = form.EncodeToString(params)
+		val, _ = form.EncodeToString(data)
 		// convert data to post fomat
 		re3, _ := regexp.Compile(`([^&]*?)=`)
 		val = re3.ReplaceAllStringFunc(string(val), replacePostData)
