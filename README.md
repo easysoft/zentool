@@ -20,7 +20,7 @@ git checkout ci_branch
 z.exe mr -s /Users/aaron/ci_test_testng_branch -d master --verbose
 ```
 4. 工具会签出目标分支（这里是主分支master）的代码，进行预合并；
-5. 工具向禅道发送请求，存入代码库地址repoUrl参数，获取以下文件服务器配置；
+5. 工具向禅道发送请求，传入代码库地址repoUrl参数，获取以下文件服务器配置；
 ```
 data:
     fileServerUrl      string
