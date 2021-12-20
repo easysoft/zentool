@@ -45,9 +45,9 @@ func CombineCodesLocally(srcBranchDir, distBranchName string) (
 
 	// merge from same project
 	outMerge, outDiff, err = MergeFromSameProject(label, srcBranchName, distBranchDir)
-	if err != nil {
-		return
-	}
+	//if err != nil {
+	//	return
+	//}
 
 	outDiff, err = GetDiffInfo(repoUrl, srcBranchName, distBranchName, distBranchDir)
 

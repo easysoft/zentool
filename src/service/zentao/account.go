@@ -32,7 +32,7 @@ func Login(site model.ZentaoSite) bool {
 
 	var body string
 	body, ok = PostStr(url, params)
-	if ok && strings.Index(body, "title") > 0 { // use PostObject to login again for new system
+	if !ok || (ok && strings.Index(body, "title") > 0) { // use PostObject to login again for new system
 		_, ok = PostObject(url, params, true)
 	}
 	if ok {
@@ -64,19 +64,6 @@ func GetConfig(baseUrl string) bool {
 	vari.SessionVar, _ = json.Get("sessionVar").String()
 	vari.RequestType, _ = json.Get("requestType").String()
 	vari.RequestFix, _ = json.Get("requestFix").String()
-
-	// check site path by calling login interface
-	uri := ""
-	if vari.RequestType == constant.RequestTypePathInfo {
-		uri = "user-login.json"
-	} else {
-		uri = "index.php?m=user&f=login&t=json"
-	}
-	url = baseUrl + uri
-	body, ok = Get(url)
-	if !ok {
-		return false
-	}
 
 	return true
 }

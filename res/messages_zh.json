@@ -19,15 +19,15 @@
     },
     {
       "id": "server_address",
-      "translation": "\n请求地址：\n"
+      "translation": "\n请求地址：%s\n"
     },
     {
       "id": "server_params",
-      "translation": "请求参数：\n"
+      "translation": "请求参数：%s\n"
     },
     {
       "id": "server_return",
-      "translation": "服务返回：\n"
+      "translation": "服务返回：%s\n"
     },
 
     {

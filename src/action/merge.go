@@ -22,7 +22,9 @@ func PreMerge(srcBranchDir, distBranchName string) (resp model.ZentaoMergeRespon
 	commService.GetConfig()
 
 	conf := commService.GetConfig()
-	return PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
+	resp, err = PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
+
+	return
 }
 
 func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createGitLabMr bool) (
