@@ -3,5 +3,5 @@ go get -u github.com/jteeuwen/go-bindata/...
 git checkout -b ci_branch origin/ci_branch
 git branch -a
 
-echo '{"Url":"http://127.0.0.1:20080","Account":"admin","Password":"P2ssw0rd2"}' >> bin/z/0.6/mac/z/z
-echo '{"Url":"http://192.168.1.161:8080/zentao","Account":"Admin","Password":"Admin123#"}' >> z.exe
+echo '{"url":"http://127.0.0.1:20080","account":"admin","password":"P2ssw0rd2"}' >> bin/z/0.6/mac/z/z
+echo '{\"url\":\"http://192.168.1.161:8080/zentao\",\"account\":\"Admin\",\"password\":\"Admin123#\"}' >> z.exe

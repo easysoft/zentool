@@ -3,29 +3,29 @@ package model
 import constant "github.com/easysoft/z/src/utils/const"
 
 type ZentaoMerge struct {
-	MergeResult bool   `json:"version"`
-	MergeMsg    string `json:"version"`
-	DiffMsg     string `json:"version"`
-	UploadMsg   string `json:"version"`
+	MergeResult bool   `json:"mergeResult"`
+	MergeMsg    string `json:"mergeMsg"`
+	DiffMsg     string `json:"diffMsg"`
+	UploadMsg   string `json:"uploadMsg"`
 
 	// 可选，仅在执行构建时提供。
-	CIJobName string `json:"version"`
-	CIQueueId int64  `json:"version"`
-	CIBuildId int64  `json:"version"`
+	CIJobName string `json:"ciJobName"`
+	CIQueueId int64  `json:"ciQueueId"`
+	CIBuildId int64  `json:"ciBuildId"`
 
 	// 可选，仅在Z创建MR时提供。
-	CreateMrMsg string `json:"version"`
+	CreateMrMsg string `json:"createMrMsg"`
 }
 
 type ZentaoSite struct {
-	Url      string `json:"version"`
-	Account  string `json:"version"`
-	Password string `json:"version"`
+	Url      string `json:"url"`
+	Account  string `json:"account"`
+	Password string `json:"password"`
 }
 
 type ZentaoResponse struct {
-	Status string `json:"version"`
-	Data   string `json:"version"`
+	Status string `json:"status"`
+	Data   string `json:"data"`
 }
 
 type ZentaoMergeResponse struct {

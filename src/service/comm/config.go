@@ -13,30 +13,36 @@ import (
 )
 
 func GetConfig() (zentaoSite model.ZentaoSite) {
-	file := "/Users/aaron/z" // just for debug in IDE
 	//logUtils.Logf("is release %t", commonUtils.IsRelease())
-
 	if !commonUtils.IsRelease() {
 		zentaoSite = model.ZentaoSite{
 			Url:      "http://192.168.1.161:8080/zentao",
 			Account:  "Admin",
 			Password: "Admin123#",
 		}
-		zentaoSite.Url = commonUtils.AddSlashForUrl(zentaoSite.Url)
-		return
+
+		TrimConfigField(&zentaoSite)
+		//return
 	}
 
+	//file := "/Users/aaron/rd/project/zentao/go/z/bin/z/0.6/mac/z/z" // just for debug in IDE
 	exe := strings.ToLower(os.Args[0])
-	file = fileUtils.AbsoluteFile(exe)
-	//logUtils.Logf("exe file %s", file)
+	file := fileUtils.AbsoluteFile(exe)
 
 	bts := fileUtils.ReadConfFromBin(file)
 	bts = bytes.TrimSpace(bts)
-	logUtils.Logf(i118Utils.Sprintf("read_config", file, string(bts)))
 
-	json.Unmarshal(bts, &zentaoSite)
+	content := strings.TrimSpace(string(bts))
+	logUtils.Logf(i118Utils.Sprintf("read_config", file, content))
+	json.Unmarshal([]byte(content), &zentaoSite)
 
-	zentaoSite.Url = commonUtils.AddSlashForUrl(zentaoSite.Url)
+	TrimConfigField(&zentaoSite)
 
 	return
+}
+
+func TrimConfigField(zentaoSite *model.ZentaoSite) {
+	zentaoSite.Url = commonUtils.AddSlashForUrl(strings.TrimSpace(zentaoSite.Url))
+	zentaoSite.Account = strings.TrimSpace(zentaoSite.Account)
+	zentaoSite.Password = strings.TrimSpace(zentaoSite.Password)
 }
