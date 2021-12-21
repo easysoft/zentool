@@ -1,4 +1,4 @@
-package gitlabService
+package service
 
 import (
 	"fmt"
@@ -10,10 +10,15 @@ import (
 	"net/http/httptest"
 )
 
-const ()
+type GitLabService struct {
+}
 
-func CreateMr(projectId, srcBranch, distBranch string, site model.GitLabSite) (mr *gitlab.MergeRequest, err error) {
-	_, _, client := GetClient(site)
+func NewGitLabService() *GitLabService {
+	return &GitLabService{}
+}
+
+func (s *GitLabService) CreateMr(projectId, srcBranch, distBranch string, site model.GitLabSite) (mr *gitlab.MergeRequest, err error) {
+	_, _, client := s.GetClient(site)
 
 	opt := gitlab.CreateMergeRequestOptions{
 		SourceBranch: gitlab.String(srcBranch),
@@ -30,7 +35,7 @@ func CreateMr(projectId, srcBranch, distBranch string, site model.GitLabSite) (m
 	return
 }
 
-func GetClient(site model.GitLabSite) (*http.ServeMux, *httptest.Server, *gitlab.Client) {
+func (s *GitLabService) GetClient(site model.GitLabSite) (*http.ServeMux, *httptest.Server, *gitlab.Client) {
 	mux := http.NewServeMux()
 	server := httptest.NewServer(mux)
 

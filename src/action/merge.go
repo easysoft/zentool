@@ -3,11 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/easysoft/z/src/model"
-	commService "github.com/easysoft/z/src/service/comm"
-	gitlabService "github.com/easysoft/z/src/service/gitlab"
-	jenkinsService "github.com/easysoft/z/src/service/jenkins"
-	scmService "github.com/easysoft/z/src/service/scm"
-	zentaoService "github.com/easysoft/z/src/service/zentao"
+	"github.com/easysoft/z/src/service"
 	constant "github.com/easysoft/z/src/utils/const"
 	fileUtils "github.com/easysoft/z/src/utils/file"
 	i118Utils "github.com/easysoft/z/src/utils/i118"
@@ -16,24 +12,38 @@ import (
 	"strings"
 )
 
-func PreMerge(srcBranchDir, distBranchName string) (resp model.ZentaoMergeResponse, err error) {
+type MergeAction struct {
+	ConfigService  *service.ConfigService  `inject:""`
+	ZentaoService  *service.ZentaoService  `inject:""`
+	ScmService     *service.ScmService     `inject:""`
+	GitLabService  *service.GitLabService  `inject:""`
+	JenkinsService *service.JenkinsService `inject:""`
+}
+
+func NewMergeAction() *MergeAction {
+	return &MergeAction{}
+}
+
+func (a *MergeAction) PreMerge(srcBranchDir, distBranchName string) (resp model.ZentaoMergeResponse, err error) {
 	if srcBranchDir == "" {
 		srcBranchDir = fileUtils.GetWorkDir()
 	}
 
-	commService.GetConfig()
+	a.ConfigService.GetConfig()
 
-	conf := commService.GetConfig()
-	resp, err = PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
+	conf := a.ConfigService.GetConfig()
+	resp, err = a.PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
 
 	return
 }
 
-func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createGitLabMr bool) (
+func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
+	zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createGitLabMr bool) (
+
 	resp model.ZentaoMergeResponse, err error) {
 
 	outMerge, outDiff, repoUrl, srcBranchName, distBranchDir, errCombine :=
-		scmService.CombineCodesLocally(srcBranchDir, distBranchName)
+		a.ScmService.CombineCodesLocally(srcBranchDir, distBranchName)
 
 	mergerInfo := model.ZentaoMerge{
 		MergeResult: errCombine == nil,
@@ -41,7 +51,7 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 		DiffMsg:     strings.Join(outDiff, "\n"),
 	}
 
-	zentaoBuild, errGetRepo := zentaoService.GetRepoDefaultBuild(repoUrl, zentaoSite)
+	zentaoBuild, errGetRepo := a.ZentaoService.GetRepoDefaultBuild(repoUrl, zentaoSite)
 	if errGetRepo != nil {
 		logUtils.Errorf(i118Utils.Sprintf("get_repo_default_build_fail", errGetRepo.Error()))
 		return
@@ -72,7 +82,7 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 			jenkinsSite := model.JenkinsSite{
 				Url: zentaoBuild.CIServerUrl, Account: zentaoBuild.CIServerAccount, Token: zentaoBuild.CIServerToken}
 
-			queueId, buildId, errBuildJob := jenkinsService.BuildJob(zentaoBuild.CIJobName, uploadResult.FileDir, jenkinsSite, waitBuildCompleted)
+			queueId, buildId, errBuildJob := a.JenkinsService.BuildJob(zentaoBuild.CIJobName, uploadResult.FileDir, jenkinsSite, waitBuildCompleted)
 
 			mergerInfo.CIJobName = zentaoBuild.CIJobName
 			mergerInfo.CIQueueId = queueId
@@ -88,7 +98,7 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 	// create MR in gitlab
 	if createGitLabMr {
 		gitlabSite := model.GitLabSite{Url: zentaoBuild.GitLabUrl, Token: zentaoBuild.GitLabToken}
-		mr, errCreateMr := gitlabService.CreateMr(zentaoBuild.GitLabProjectId, srcBranchName, distBranchName, gitlabSite)
+		mr, errCreateMr := a.GitLabService.CreateMr(zentaoBuild.GitLabProjectId, srcBranchName, distBranchName, gitlabSite)
 
 		if errCreateMr != nil {
 			mergerInfo.CreateMrMsg = errCreateMr.Error()
@@ -100,7 +110,7 @@ func PreMergeAllSteps(srcBranchDir, distBranchName string, zentaoSite model.Zent
 		}
 	}
 
-	resp, err = zentaoService.SubmitMergeInfo(mergerInfo, zentaoSite)
+	resp, err = a.ZentaoService.SubmitMergeInfo(mergerInfo, zentaoSite)
 
 	return
 }

@@ -49,7 +49,7 @@ func main() {
 
 	switch act {
 	case "mr":
-		action.PreMerge(srcBranchDir, distBranchName)
+		action.NewMergeAction().PreMerge(srcBranchDir, distBranchName)
 	default:
 		logUtils.PrintUsage()
 	}

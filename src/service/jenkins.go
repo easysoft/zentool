@@ -1,4 +1,4 @@
-package jenkinsService
+package service
 
 import (
 	"context"
@@ -9,9 +9,14 @@ import (
 	"time"
 )
 
-const ()
+type JenkinsService struct {
+}
 
-func BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete bool) (
+func NewJenkinsService() *JenkinsService {
+	return &JenkinsService{}
+}
+
+func (s *JenkinsService) BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete bool) (
 	queueId, buildId int64, err error) {
 
 	ctx := context.Background()
@@ -44,21 +49,21 @@ func BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete
 	}
 	buildId = build.GetBuildNumber()
 
-	logBuildStatus(*job, queueId, *build)
+	s.logBuildStatus(*job, queueId, *build)
 
 	if waitBuildComplete {
 		for build.IsRunning(ctx) {
 			time.Sleep(5000 * time.Millisecond)
 			build.Poll(ctx)
 
-			logBuildStatus(*job, queueId, *build)
+			s.logBuildStatus(*job, queueId, *build)
 		}
 	}
 
 	return
 }
 
-func logBuildStatus(job gojenkins.Job, queueId int64, build gojenkins.Build) {
+func (s *JenkinsService) logBuildStatus(job gojenkins.Job, queueId int64, build gojenkins.Build) {
 	logUtils.Logf(i118Utils.Sprintf("jenkins_task_info",
 		job.GetName(), queueId,
 		build.GetBuildNumber(), build.Info().DisplayName, build.GetResult()))

@@ -1,4 +1,4 @@
-package commService
+package service
 
 import (
 	"bytes"
@@ -12,7 +12,14 @@ import (
 	"strings"
 )
 
-func GetConfig() (zentaoSite model.ZentaoSite) {
+type ConfigService struct {
+}
+
+func NewConfigService() *ConfigService {
+	return &ConfigService{}
+}
+
+func (s *ConfigService) GetConfig() (zentaoSite model.ZentaoSite) {
 	//logUtils.Logf("is release %t", commonUtils.IsRelease())
 	if !commonUtils.IsRelease() {
 		zentaoSite = model.ZentaoSite{
@@ -21,7 +28,7 @@ func GetConfig() (zentaoSite model.ZentaoSite) {
 			Password: "Admin123#",
 		}
 
-		TrimConfigField(&zentaoSite)
+		s.TrimConfigField(&zentaoSite)
 		//return
 	}
 
@@ -36,12 +43,12 @@ func GetConfig() (zentaoSite model.ZentaoSite) {
 	logUtils.Logf(i118Utils.Sprintf("read_config", file, content))
 	json.Unmarshal([]byte(content), &zentaoSite)
 
-	TrimConfigField(&zentaoSite)
+	s.TrimConfigField(&zentaoSite)
 
 	return
 }
 
-func TrimConfigField(zentaoSite *model.ZentaoSite) {
+func (s *ConfigService) TrimConfigField(zentaoSite *model.ZentaoSite) {
 	zentaoSite.Url = commonUtils.AddSlashForUrl(strings.TrimSpace(zentaoSite.Url))
 	zentaoSite.Account = strings.TrimSpace(zentaoSite.Account)
 	zentaoSite.Password = strings.TrimSpace(zentaoSite.Password)

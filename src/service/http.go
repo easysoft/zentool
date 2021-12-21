@@ -1,4 +1,4 @@
-package zentaoService
+package service
 
 import (
 	"encoding/json"
@@ -15,7 +15,14 @@ import (
 	"strings"
 )
 
-func Get(url string) (string, bool) {
+type HttpService struct {
+}
+
+func NewHttpService() *HttpService {
+	return &HttpService{}
+}
+
+func (s *HttpService) Get(url string) (string, bool) {
 	client := &http.Client{}
 
 	if vari.RequestType == constant.RequestTypePathInfo {
@@ -77,7 +84,7 @@ func Get(url string) (string, bool) {
 	}
 }
 
-func PostObject(url string, data interface{}, useFormFormat bool) (string, bool) {
+func (s *HttpService) PostObject(url string, data interface{}, useFormFormat bool) (string, bool) {
 	if vari.RequestType == constant.RequestTypePathInfo {
 		url = url + "?" + vari.SessionVar + "=" + vari.SessionId
 	} else {
@@ -96,7 +103,7 @@ func PostObject(url string, data interface{}, useFormFormat bool) (string, bool)
 		val, _ = form.EncodeToString(data)
 		// convert data to post fomat
 		re3, _ := regexp.Compile(`([^&]*?)=`)
-		val = re3.ReplaceAllStringFunc(string(val), replacePostData)
+		val = re3.ReplaceAllStringFunc(string(val), s.replacePostData)
 	}
 
 	if vari.Verbose {
@@ -154,7 +161,7 @@ func PostObject(url string, data interface{}, useFormFormat bool) (string, bool)
 	}
 }
 
-func PostStr(url string, params map[string]string) (msg string, ok bool) {
+func (s *HttpService) PostStr(url string, params map[string]string) (msg string, ok bool) {
 	if vari.Verbose {
 		logUtils.Log(i118Utils.Sprintf("server_address", url))
 	}
@@ -225,7 +232,7 @@ func PostStr(url string, params map[string]string) (msg string, ok bool) {
 	}
 }
 
-func replacePostData(str string) string {
+func (s *HttpService) replacePostData(str string) string {
 	str = strings.ToLower(str[:1]) + str[1:]
 
 	if strings.Index(str, ".") > -1 {

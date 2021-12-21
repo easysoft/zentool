@@ -1,4 +1,4 @@
-package scmService
+package service
 
 import (
 	"errors"
@@ -25,20 +25,27 @@ const (
 	//cmdFetchAll  = "git fetch --all"
 )
 
-func CombineCodesLocally(srcBranchDir, distBranchName string) (
+type ScmService struct {
+}
+
+func NewScmService() *ScmService {
+	return &ScmService{}
+}
+
+func (s *ScmService) CombineCodesLocally(srcBranchDir, distBranchName string) (
 	outMerge, outDiff []string, repoUrl, srcBranchName, distBranchDir string, err error) {
 
 	srcBranchDir = fileUtils.AbsoluteFile(srcBranchDir)
 
 	var label string
 	repoUrl, label = GetRemoteUrl(srcBranchDir)
-	srcBranchName, err = GetBranchName(srcBranchDir)
+	srcBranchName, err = s.GetBranchName(srcBranchDir)
 	if err != nil {
 		return
 	}
 
-	distBranchDir = GetBrotherDir(srcBranchDir, distBranchName)
-	outMerge, err = CheckoutBranch(repoUrl, distBranchName, distBranchDir)
+	distBranchDir = s.GetBrotherDir(srcBranchDir, distBranchName)
+	outMerge, err = s.CheckoutBranch(repoUrl, distBranchName, distBranchDir)
 	if err != nil {
 		return
 	}
@@ -49,7 +56,7 @@ func CombineCodesLocally(srcBranchDir, distBranchName string) (
 	//	return
 	//}
 
-	outDiff, err = GetDiffInfo(repoUrl, srcBranchName, distBranchName, distBranchDir)
+	outDiff, err = s.GetDiffInfo(repoUrl, srcBranchName, distBranchName, distBranchDir)
 
 	return
 
@@ -88,7 +95,7 @@ func GetRemoteUrl(dir string) (url, label string) {
 	return
 }
 
-func CheckoutBranch(repoUrl, distBranch, distDir string) (out []string, err error) {
+func (s *ScmService) CheckoutBranch(repoUrl, distBranch, distDir string) (out []string, err error) {
 	fileUtils.RmDir(distDir)
 
 	cmdCloneStr := fmt.Sprintf(cmdClone, repoUrl, distDir)
@@ -124,13 +131,13 @@ func MergeFromSameProject(label string, srcBranchName string, distBranchDir stri
 	return
 }
 
-func GetDiffInfo(repoUrl, srcBranch, distBranch, distDir string) (out []string, err error) {
+func (s *ScmService) GetDiffInfo(repoUrl, srcBranch, distBranch, distDir string) (out []string, err error) {
 	distDir = distDir + "-diff"
 
 	fileUtils.RmDir(distDir)
 
 	// checkout distBranch
-	CheckoutBranch(repoUrl, distBranch, distDir)
+	s.CheckoutBranch(repoUrl, distBranch, distDir)
 
 	// checkout srcBranch
 	cmdCheckoutStr := fmt.Sprintf(cmdCheckout, srcBranch)
@@ -148,7 +155,7 @@ func GetDiffInfo(repoUrl, srcBranch, distBranch, distDir string) (out []string, 
 	return
 }
 
-func GetBranchName(dir string) (branch string, err error) {
+func (s *ScmService) GetBranchName(dir string) (branch string, err error) {
 	out, err := shellUtils.ExeWithOutput(cmdGetBranch, dir)
 	if err != nil {
 		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdGetBranch, err.Error()))
@@ -164,7 +171,7 @@ func GetBranchName(dir string) (branch string, err error) {
 	return
 }
 
-func GetBrotherDir(base, name string) (dir string) {
+func (s *ScmService) GetBrotherDir(base, name string) (dir string) {
 	parentDir := filepath.Dir(base)
 
 	dir = filepath.Join(parentDir, name)
