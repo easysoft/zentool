@@ -89,6 +89,10 @@
     },
 
     {
+      "id": "http_request_fail",
+      "translation": "HTTP请求失败，响应：%s。"
+    },
+    {
       "id": "get_repo_default_build_fail",
       "translation": "获取代码库信息失败，错误：%s。"
     },

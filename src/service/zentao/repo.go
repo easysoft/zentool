@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/easysoft/z/src/model"
 	constant "github.com/easysoft/z/src/utils/const"
+	i118Utils "github.com/easysoft/z/src/utils/i118"
 	"github.com/easysoft/z/src/utils/vari"
 	zentaoUtils "github.com/easysoft/z/src/utils/zentao"
 )
@@ -29,13 +30,13 @@ func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.Zen
 
 	dataStr, ok := PostObject(url, requestObj, true)
 	if !ok {
-		err = errors.New("get repo default build fail")
+		err = errors.New(i118Utils.Sprintf("http_request_fail", dataStr))
 		return
 	}
 
 	json.Unmarshal([]byte(dataStr), &build)
 	if build.FileServerUrl == "" {
-		err = errors.New("get repo default build fail")
+		err = errors.New(i118Utils.Sprintf("get_repo_default_build_fail", dataStr))
 	}
 
 	return
