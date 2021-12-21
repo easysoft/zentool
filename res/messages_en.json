@@ -88,6 +88,23 @@
     {
       "id": "read_config",
       "translation": "Read config from file %s, content：%s。"
+    },
+
+    {
+      "id": "get_repo_default_build_fail",
+      "translation": "Get repo default build fail, error: %s."
+    },
+    {
+      "id": "upload_combined_code_fail",
+      "translation": "Upload combined code fail, error: %s."
+    },
+    {
+      "id": "build_jenkins_job_fail",
+      "translation": "Execute jenkins job fail, error: %s."
+    },
+    {
+      "id": "create_gitlab_mr_fail",
+      "translation": "Create GitLab Merge Request fail, error: %s."
     }
   ]
 }

@@ -11,10 +11,12 @@ import (
 
 const ()
 
-func BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete bool) (queueId, buildId int64) {
+func BuildJob(jobName, workDir string, site model.JenkinsSite, waitBuildComplete bool) (
+	queueId, buildId int64, err error) {
+
 	ctx := context.Background()
 	jenkins := gojenkins.CreateJenkins(nil, site.Url, site.Account, site.Token)
-	_, err := jenkins.Init(ctx)
+	_, err = jenkins.Init(ctx)
 	if err != nil {
 		logUtils.Errorf(i118Utils.Sprintf("connect_jenkins_error", err.Error()))
 		return

@@ -34,6 +34,9 @@ func GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.Zen
 	}
 
 	json.Unmarshal([]byte(dataStr), &build)
+	if build.FileServerUrl == "" {
+		err = errors.New("get repo default build fail")
+	}
 
 	return
 }

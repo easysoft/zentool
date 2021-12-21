@@ -86,6 +86,23 @@
     {
       "id": "read_config",
       "translation": "从文件%s读取配置内容为：%s。"
+    },
+
+    {
+      "id": "get_repo_default_build_fail",
+      "translation": "获取代码库信息失败，错误：%s。"
+    },
+    {
+      "id": "upload_combined_code_fail",
+      "translation": "上传代码包失败，错误：%s。"
+    },
+    {
+      "id": "build_jenkins_job_fail",
+      "translation": "执行Jenkins构建失败，错误：%s。"
+    },
+    {
+      "id": "create_gitlab_mr_fail",
+      "translation": "创建GitLab合并请求，错误：%s。"
     }
   ]
 }
