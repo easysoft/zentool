@@ -22,7 +22,7 @@ func GetCaseByDirAndFile(files []string) []string {
 	cases := make([]string, 0)
 
 	for _, file := range files {
-		if !fileUtils.IsAbosutePath(file) && vari.ServerWorkDir != "" {
+		if !fileUtils.IsAbsolutePath(file) && vari.ServerWorkDir != "" {
 			file = vari.ServerProjectDir + file
 		}
 		GetAllScriptsInDir(file, &cases)

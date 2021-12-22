@@ -18,6 +18,11 @@
       "translation": "示例："
     },
     {
+      "id": "inject_fail",
+      "translation": "对象注入失败，错误：%s。"
+    },
+
+    {
       "id": "server_address",
       "translation": "\n请求地址：%s\n"
     },

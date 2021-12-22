@@ -3,6 +3,7 @@ package fileUtils
 import (
 	"fmt"
 	commonUtils "github.com/easysoft/z/src/utils/common"
+	constant "github.com/easysoft/z/src/utils/const"
 	"github.com/mholt/archiver/v3"
 	"io"
 	"io/ioutil"
@@ -84,23 +85,23 @@ func AbsoluteDir(pth string) string {
 	return pth
 }
 func AbsoluteFile(pth string) string {
-	if !IsAbosutePath(pth) {
+	if !IsAbsolutePath(pth) {
 		pth, _ = filepath.Abs(pth)
 	}
 
 	return pth
 }
 
-func IsAbosutePath(pth string) bool {
+func IsAbsolutePath(pth string) bool {
 	return path.IsAbs(pth) ||
 		strings.Index(pth, ":") == 1 // windows
 }
 
 func AddPathSepIfNeeded(pth string) string {
-	sepa := string(os.PathSeparator)
+	sep := constant.PthSep
 
-	if strings.LastIndex(pth, sepa) < len(pth)-1 {
-		pth += sepa
+	if strings.LastIndex(pth, sep) < len(pth)-1 {
+		pth += sep
 	}
 	return pth
 }
@@ -122,7 +123,7 @@ func GetFilesFromParams(arguments []string) []string {
 				arg = AbsoluteDir(".")
 			} else if strings.Index(arg, "."+string(os.PathSeparator)) == 0 {
 				arg = AbsoluteDir(".") + arg[2:]
-			} else if !IsAbosutePath(arg) {
+			} else if !IsAbsolutePath(arg) {
 				arg = AbsoluteDir(".") + arg
 			}
 
@@ -217,4 +218,21 @@ func ZipFiles(dist string, dir string) error {
 	err := zip.Archive(paths, dist)
 
 	return err
+}
+
+func GetParent(fileOrDir string) (dir string) {
+	fileOrDir = RemoveLastSep(fileOrDir)
+	dir = filepath.Dir(fileOrDir)
+
+	return
+}
+func RemoveLastSep(fileOrDir string) (dir string) {
+	sep := constant.PthSep
+
+	dir = fileOrDir
+	if strings.LastIndex(dir, sep) == len(dir)-1 {
+		dir = fileOrDir[:len(dir)-1]
+	}
+
+	return
 }

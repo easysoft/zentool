@@ -65,19 +65,19 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 
 	// upload file
 	if errGetRepo == nil && errCombine == nil {
-		zipFile := filepath.Join(filepath.Dir(distBranchDir), "result.zip")
+		zipFile := filepath.Join(fileUtils.GetParent(distBranchDir), "result.zip")
 		fileUtils.ZipFiles(zipFile, distBranchDir)
 
 		files := []string{zipFile}
 		params := map[string]string{"account": zentaoBuild.FileServerAccount, "password": zentaoBuild.FileServerPassword}
 		uploadResult, uploadErr = fileUtils.Upload(zentaoBuild.FileServerUrl, files, params)
 
-		msg := ""
+		msg := "success"
 		if uploadErr != nil {
 			msg = uploadErr.Error()
 			logUtils.Errorf(i118Utils.Sprintf("upload_combined_code_fail", uploadErr.Error()))
 		}
-		mergerInfo.UploadMsg = fmt.Sprintf("status %t, %s", uploadResult.Status, msg)
+		mergerInfo.UploadMsg = fmt.Sprintf("status %t, %s。", uploadResult.Status, msg)
 	}
 
 	// exec build on CI platform

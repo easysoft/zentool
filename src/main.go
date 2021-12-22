@@ -2,12 +2,13 @@ package main
 
 import (
 	"flag"
-	"github.com/easysoft/z/src/action"
+	"github.com/easysoft/z/src/module"
 	configUtils "github.com/easysoft/z/src/utils/config"
 	constant "github.com/easysoft/z/src/utils/const"
 	i118Utils "github.com/easysoft/z/src/utils/i118"
 	"github.com/easysoft/z/src/utils/log"
 	"github.com/easysoft/z/src/utils/vari"
+	"github.com/facebookgo/inject"
 	"github.com/fatih/color"
 	"os"
 	"os/signal"
@@ -47,9 +48,23 @@ func main() {
 	i118Utils.InitI118(language)
 	configUtils.InitConfig(language)
 
+	modules := module.NewModules()
+	// inject objects
+	var g inject.Graph
+	if err := g.Provide(
+		&inject.Object{Value: modules},
+	); err != nil {
+		logUtils.Errorf(i118Utils.Sprintf("inject_fail", err.Error()))
+		return
+	}
+	if err := g.Populate(); err != nil {
+		logUtils.Errorf(i118Utils.Sprintf("inject_fail", err.Error()))
+		return
+	}
+
 	switch act {
 	case "mr":
-		action.NewMergeAction().PreMerge(srcBranchDir, distBranchName)
+		modules.MergeAction.PreMerge(srcBranchDir, distBranchName)
 	default:
 		logUtils.PrintUsage()
 	}

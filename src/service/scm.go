@@ -132,7 +132,7 @@ func MergeFromSameProject(label string, srcBranchName string, distBranchDir stri
 }
 
 func (s *ScmService) GetDiffInfo(repoUrl, srcBranch, distBranch, distDir string) (out []string, err error) {
-	distDir = distDir + "-diff"
+	distDir = fileUtils.RemoveLastSep(distDir) + "-diff"
 
 	fileUtils.RmDir(distDir)
 
@@ -172,7 +172,7 @@ func (s *ScmService) GetBranchName(dir string) (branch string, err error) {
 }
 
 func (s *ScmService) GetBrotherDir(base, name string) (dir string) {
-	parentDir := filepath.Dir(base)
+	parentDir := fileUtils.GetParent(base)
 
 	dir = filepath.Join(parentDir, name)
 	dir = fileUtils.AbsoluteDir(dir)

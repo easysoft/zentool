@@ -31,6 +31,10 @@
       "id": "example",
       "translation": "Example: "
     },
+    {
+      "id": "inject_fail",
+      "translation": "Object inject fail, err: %s."
+    },
 
     {
       "id": "success_to_login",

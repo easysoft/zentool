@@ -11,6 +11,8 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/bndr/gojenkins v1.1.0 // indirect
 	github.com/emirpasic/gods v1.12.0
+	github.com/facebookgo/inject v0.0.0-20180706035515-f23751cae28b // indirect
+	github.com/facebookgo/structtag v0.0.0-20150214074306-217e25fb9691 // indirect
 	github.com/fatih/color v1.9.0
 	github.com/go-errors/errors v1.0.2 // indirect
 	github.com/go-git/go-git/v5 v5.2.0
