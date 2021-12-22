@@ -7,6 +7,8 @@ import (
 )
 
 func ReadConfFromBin(filePath string) []byte {
+	filePath = "/Users/aaron/rd/project/zentao/go/z/bin/z/0.6/linux/z/z" // just for debug in IDE
+
 	file, err := os.Open(filePath)
 	if err != nil {
 		os.Exit(1)
@@ -38,11 +40,13 @@ func getBackwardLine(file *os.File, start int64) (lineBytes []byte, cursor int64
 
 		lineBytes = append(lineBytes, char...)
 
-		if char[0] == 0 {
+		if char[0] == '`' {
 			zeroCount++
-			if zeroCount >= 7 {
+			if zeroCount >= 16 {
 				break
 			}
+		} else {
+			zeroCount = 0
 		}
 
 		if cursor == -filesize {
@@ -50,7 +54,7 @@ func getBackwardLine(file *os.File, start int64) (lineBytes []byte, cursor int64
 		}
 	}
 
-	lineBytes = bytes.Trim(lineBytes, "\x00")
+	lineBytes = bytes.Trim(lineBytes, "`")
 
 	lineBytes = reverse(lineBytes)
 

@@ -32,7 +32,6 @@ func (s *ConfigService) GetConfig() (zentaoSite model.ZentaoSite) {
 		//return
 	}
 
-	//file := "/Users/aaron/rd/project/zentao/go/z/bin/z/0.6/mac/z/z" // just for debug in IDE
 	exe := strings.ToLower(os.Args[0])
 	file := fileUtils.AbsoluteFile(exe)
 
