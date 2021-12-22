@@ -58,7 +58,6 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 	zentaoBuild, errGetRepo := a.ZentaoService.GetRepoDefaultBuild(repoUrl, zentaoSite)
 	if errGetRepo != nil {
 		logUtils.Errorf(i118Utils.Sprintf("get_repo_default_build_fail", errGetRepo.Error()))
-		return
 	}
 
 	var uploadResult model.UploadResponse
@@ -69,15 +68,16 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 		zipFile := filepath.Join(filepath.Dir(distBranchDir), "result.zip")
 		fileUtils.ZipFiles(zipFile, distBranchDir)
 
-		files := []string{""}
+		files := []string{zipFile}
 		params := map[string]string{"account": zentaoBuild.FileServerAccount, "password": zentaoBuild.FileServerPassword}
 		uploadResult, uploadErr = fileUtils.Upload(zentaoBuild.FileServerUrl, files, params)
-		mergerInfo.UploadMsg = uploadErr.Error()
 
+		msg := ""
 		if uploadErr != nil {
+			msg = uploadErr.Error()
 			logUtils.Errorf(i118Utils.Sprintf("upload_combined_code_fail", uploadErr.Error()))
-			return
 		}
+		mergerInfo.UploadMsg = fmt.Sprintf("status %t, %s", uploadResult.Status, msg)
 	}
 
 	// exec build on CI platform
@@ -86,7 +86,7 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 			jenkinsSite := model.JenkinsSite{
 				Url: zentaoBuild.CIServerUrl, Account: zentaoBuild.CIServerAccount, Token: zentaoBuild.CIServerToken}
 
-			queueId, buildId, errBuildJob := a.JenkinsService.BuildJob(zentaoBuild.CIJobName, uploadResult.FileDir, jenkinsSite, waitBuildCompleted)
+			queueId, buildId, errBuildJob := a.JenkinsService.BuildJob(zentaoBuild.CIJobName, uploadResult.FilePath, jenkinsSite, waitBuildCompleted)
 
 			mergerInfo.CIJobName = zentaoBuild.CIJobName
 			mergerInfo.CIQueueId = queueId
@@ -94,7 +94,6 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 
 			if errBuildJob != nil {
 				logUtils.Errorf(i118Utils.Sprintf("build_jenkins_job_fail", errBuildJob.Error()))
-				return
 			}
 		}
 	}
@@ -107,7 +106,6 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 		if errCreateMr != nil {
 			mergerInfo.CreateMrMsg = errCreateMr.Error()
 			logUtils.Errorf(i118Utils.Sprintf("create_gitlab_mr_fail", errCreateMr.Error()))
-			return
 
 		} else {
 			mergerInfo.CreateMrMsg = fmt.Sprintf("success to create mr %s", mr.Title)
