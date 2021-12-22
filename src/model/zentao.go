@@ -3,18 +3,22 @@ package model
 import constant "github.com/easysoft/z/src/utils/const"
 
 type ZentaoMerge struct {
-	MergeResult bool   `json:"mergeResult"`
+	MergeStatus bool   `json:"mergeStatus"`
 	MergeMsg    string `json:"mergeMsg"`
 	DiffMsg     string `json:"diffMsg"`
 	UploadMsg   string `json:"uploadMsg"`
 
+	RepoUrl        string `json:"repoUrl"`
+	RepoSrcBranch  string `json:"repoSrcBranch"`
+	RepoDistBranch string `json:"repoDistBranch"`
+
 	// 可选，仅在执行构建时提供。
-	CIJobName string `json:"ciJobName"`
-	CIQueueId int64  `json:"ciQueueId"`
-	CIBuildId int64  `json:"ciBuildId"`
+	CIJobName string `json:"ciJobName,omitempty"`
+	CIQueueId int64  `json:"ciQueueId,omitempty"`
+	CIBuildId int64  `json:"ciBuildId,omitempty"`
 
 	// 可选，仅在Z创建MR时提供。
-	CreateMrMsg string `json:"createMrMsg"`
+	CreateMrMsg string `json:"createMrMsg,omitempty"`
 }
 
 type ZentaoSite struct {
@@ -39,14 +43,14 @@ type ZentaoRepoResponse struct {
 	FileServerPassword string `json:"fileServerPassword"`
 
 	// 可选，仅在执行构建时需要。
-	CIServerType    constant.CIServerType `json:"ciServerType"`
-	CIServerUrl     string                `json:"ciServerUrl"`
-	CIServerAccount string                `json:"ciServerAccount"`
-	CIServerToken   string                `json:"ciServerToken"`
-	CIJobName       string                `json:"ciJobName"`
+	CIServerType    constant.CIServerType `json:"ciServerType,omitempty"`
+	CIServerUrl     string                `json:"ciServerUrl,omitempty"`
+	CIServerAccount string                `json:"ciServerAccount,omitempty"`
+	CIServerToken   string                `json:"ciServerToken,omitempty"`
+	CIJobName       string                `json:"ciJobName,omitempty"`
 
 	// 可选，仅在Z创建MR时需要。
-	GitLabUrl       string `json:"gitLabUrl"`
-	GitLabToken     string `json:"gitLabToken"`
-	GitLabProjectId string `json:"gitLabProjectId"`
+	GitLabUrl       string `json:"gitLabUrl,omitempty"`
+	GitLabToken     string `json:"gitLabToken,omitempty"`
+	GitLabProjectId string `json:"gitLabProjectId,omitempty"`
 }

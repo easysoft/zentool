@@ -46,9 +46,13 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 		a.ScmService.CombineCodesLocally(srcBranchDir, distBranchName)
 
 	mergerInfo := model.ZentaoMerge{
-		MergeResult: errCombine == nil,
+		MergeStatus: errCombine == nil,
 		MergeMsg:    strings.Join(outMerge, "\n"),
 		DiffMsg:     strings.Join(outDiff, "\n"),
+
+		RepoUrl:        repoUrl,
+		RepoSrcBranch:  srcBranchName,
+		RepoDistBranch: distBranchName,
 	}
 
 	zentaoBuild, errGetRepo := a.ZentaoService.GetRepoDefaultBuild(repoUrl, zentaoSite)

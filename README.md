@@ -31,10 +31,14 @@ data:
 7. 工具使用以下请求参数，向禅道发送合并信息；
 ```
 data:
-    mergeResult bool
+    mergeStatus bool
     mergeMsg    string
     diffMsg     string
     uploadMsg   string
+
+	repoUrl string
+	repoSrcBranch string
+	repoDistBranch string
 ```
 8. 禅道返回响应结果，包含以下字段信息；
 ```
