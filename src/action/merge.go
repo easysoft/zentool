@@ -80,6 +80,8 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 			msg = uploadErr.Error()
 			logUtils.Errorf(i118Utils.Sprintf("upload_combined_code_fail", uploadErr.Error()))
 		}
+
+		mergerInfo.UploadPath = uploadResult.FilePath
 		mergerInfo.UploadMsg = fmt.Sprintf("status %t, %s。", uploadResult.Status, msg)
 	}
 

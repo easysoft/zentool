@@ -7,6 +7,7 @@ type ZentaoMerge struct {
 	MergeMsg    string `json:"mergeMsg"`
 	DiffMsg     string `json:"diffMsg"`
 	UploadMsg   string `json:"uploadMsg"`
+	UploadPath  string `json:"uploadPath"`
 
 	RepoUrl        string `json:"repoUrl"`
 	RepoSrcBranch  string `json:"repoSrcBranch"`
