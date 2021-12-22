@@ -35,6 +35,10 @@
       "id": "inject_fail",
       "translation": "Object inject fail, err: %s."
     },
+    {
+      "id": "read_file_fail",
+      "translation": "Fail to read file %s, error %s."
+    },
 
     {
       "id": "success_to_login",
@@ -91,7 +95,11 @@
     },
     {
       "id": "read_config",
-      "translation": "Read config from file %s, content：%s。"
+      "translation": "Read config from file %s, content：%s."
+    },
+    {
+      "id": "read_config_fail",
+      "translation": "Fail to retrieve config."
     },
 
     {

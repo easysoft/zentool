@@ -19,8 +19,7 @@ func NewConfigService() *ConfigService {
 	return &ConfigService{}
 }
 
-func (s *ConfigService) GetConfig() (zentaoSite model.ZentaoSite) {
-	//logUtils.Logf("is release %t", commonUtils.IsRelease())
+func (s *ConfigService) GetConfig() (zentaoSite model.ZentaoSite, err error) {
 	if !commonUtils.IsRelease() {
 		zentaoSite = model.ZentaoSite{
 			Url:      "http://192.168.1.161:8080/zentao",
@@ -29,16 +28,18 @@ func (s *ConfigService) GetConfig() (zentaoSite model.ZentaoSite) {
 		}
 
 		s.TrimConfigField(&zentaoSite)
-		//return
 	}
 
 	exe := strings.ToLower(os.Args[0])
 	file := fileUtils.AbsoluteFile(exe)
+	if !commonUtils.IsRelease() {
+		file = "/Users/aaron/rd/project/zentao/go/z/bin/z/0.6/linux/z/z" // just for debug in IDE
+	}
 
-	bts := fileUtils.ReadConfFromBin(file)
+	bts, err := fileUtils.ReadConfFromBin(file)
 	bts = bytes.TrimSpace(bts)
-
 	content := strings.TrimSpace(string(bts))
+
 	logUtils.Logf(i118Utils.Sprintf("read_config", file, content))
 	json.Unmarshal([]byte(content), &zentaoSite)
 

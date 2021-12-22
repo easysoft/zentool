@@ -29,9 +29,12 @@ func (a *MergeAction) PreMerge(srcBranchDir, distBranchName string) (resp model.
 		srcBranchDir = fileUtils.GetWorkDir()
 	}
 
-	a.ConfigService.GetConfig()
+	conf, err := a.ConfigService.GetConfig()
+	if err != nil {
+		logUtils.Errorf(i118Utils.Sprintf("read_config_fail"))
+		return
+	}
 
-	conf := a.ConfigService.GetConfig()
 	resp, err = a.PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
 
 	return

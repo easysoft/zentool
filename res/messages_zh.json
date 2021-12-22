@@ -21,6 +21,10 @@
       "id": "inject_fail",
       "translation": "对象注入失败，错误：%s。"
     },
+    {
+      "id": "read_file_fail",
+      "translation": "打开文件%s失败，错误：%s。"
+    },
 
     {
       "id": "server_address",
@@ -91,6 +95,10 @@
     {
       "id": "read_config",
       "translation": "从文件%s读取配置内容为：%s。"
+    },
+    {
+      "id": "read_config_fail",
+      "translation": "获取配置信息失败。"
     },
 
     {

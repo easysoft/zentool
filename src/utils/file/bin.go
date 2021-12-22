@@ -2,29 +2,32 @@ package fileUtils
 
 import (
 	"bytes"
+	"errors"
+	i118Utils "github.com/easysoft/z/src/utils/i118"
+	logUtils "github.com/easysoft/z/src/utils/log"
 	"io"
 	"os"
 )
 
-func ReadConfFromBin(filePath string) []byte {
-	filePath = "/Users/aaron/rd/project/zentao/go/z/bin/z/0.6/linux/z/z" // just for debug in IDE
-
+func ReadConfFromBin(filePath string) (bytes []byte, err error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		os.Exit(1)
+		logUtils.Error(i118Utils.Sprintf("read_file_fail", filePath, err.Error()))
+		return
 	}
 	defer file.Close()
 
-	bytes, _ := getBackwardLine(file, 0)
+	bytes, err = getBackwardLine(file, 0)
 
-	return bytes
+	return
 }
 
-func getBackwardLine(file *os.File, start int64) (lineBytes []byte, cursor int64) {
-	cursor = start
+func getBackwardLine(file *os.File, start int64) (lineBytes []byte, err error) {
+	cursor := start
 	stat, _ := file.Stat()
 	filesize := stat.Size()
 
+	totalCount := 0
 	zeroCount := 0
 	for {
 		cursor--
@@ -51,6 +54,14 @@ func getBackwardLine(file *os.File, start int64) (lineBytes []byte, cursor int64
 
 		if cursor == -filesize {
 			break
+		}
+
+		totalCount++
+		if totalCount > 1000 {
+			msg := "ERROR: CAN NOT FOUND CONFIG TERMINATOR"
+			lineBytes = []byte(msg)
+			err = errors.New(msg)
+			return
 		}
 	}
 

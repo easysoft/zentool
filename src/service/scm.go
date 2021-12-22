@@ -33,7 +33,9 @@ func NewScmService() *ScmService {
 }
 
 func (s *ScmService) CombineCodesLocally(srcBranchDir, distBranchName string) (
-	outMerge, outDiff []string, repoUrl, srcBranchName, distBranchDir string, err error) {
+	outMerge, outDiff []string, repoUrl, srcBranchName, distBranchDir string, errCombine error) {
+
+	var err error
 
 	srcBranchDir = fileUtils.AbsoluteFile(srcBranchDir)
 
@@ -50,11 +52,7 @@ func (s *ScmService) CombineCodesLocally(srcBranchDir, distBranchName string) (
 		return
 	}
 
-	// merge from same project
-	outMerge, outDiff, err = MergeFromSameProject(label, srcBranchName, distBranchDir)
-	//if err != nil {
-	//	return
-	//}
+	outMerge, outDiff, errCombine = MergeFromSameProject(label, srcBranchName, distBranchDir)
 
 	outDiff, err = s.GetDiffInfo(repoUrl, srcBranchName, distBranchName, distBranchDir)
 
@@ -120,11 +118,10 @@ func MergeFromSameProject(label string, srcBranchName string, distBranchDir stri
 	outMerge, err = shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
 	if err != nil {
 		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdMergeStr, err.Error()))
-		return
 	}
 
 	msg := strings.Join(outMerge, "\n")
-	if strings.Index(msg, "conflict") > -1 {
+	if strings.Index(msg, "conflict") > -1 || strings.Index(msg, "CONFLICT") > -1 {
 		err = errors.New("Merge Conflict: " + msg)
 	}
 
