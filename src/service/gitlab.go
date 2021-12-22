@@ -17,13 +17,13 @@ func NewGitLabService() *GitLabService {
 	return &GitLabService{}
 }
 
-func (s *GitLabService) CreateMr(projectId, srcBranch, distBranch string, site model.GitLabSite) (mr *gitlab.MergeRequest, err error) {
+func (s *GitLabService) CreateMr(projectId, srcBranch, srcBranchRemote, distBranch string, site model.GitLabSite) (mr *gitlab.MergeRequest, err error) {
 	_, _, client := s.GetClient(site)
 
 	opt := gitlab.CreateMergeRequestOptions{
-		SourceBranch: gitlab.String(srcBranch),
+		SourceBranch: gitlab.String(srcBranchRemote),
 		TargetBranch: gitlab.String(distBranch),
-		Title:        gitlab.String(fmt.Sprintf("%s to %s, created by zentao", srcBranch, distBranch)),
+		Title:        gitlab.String(fmt.Sprintf("%s to %s, created by zentao", srcBranchRemote, distBranch)),
 	}
 
 	mr, _, err = client.MergeRequests.CreateMergeRequest(projectId, &opt)

@@ -120,6 +120,10 @@
     {
       "id": "create_gitlab_mr_fail",
       "translation": "创建GitLab合并请求，错误：%s。"
+    },
+    {
+      "id": "no_remote_branch",
+      "translation": "本地分支%s没有对应的远程分支，退出。"
     }
   ]
 }

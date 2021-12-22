@@ -9,9 +9,10 @@ type ZentaoMerge struct {
 	UploadMsg   string `json:"uploadMsg"`
 	UploadPath  string `json:"uploadPath"`
 
-	RepoUrl        string `json:"repoUrl"`
-	RepoSrcBranch  string `json:"repoSrcBranch"`
-	RepoDistBranch string `json:"repoDistBranch"`
+	RepoUrl             string `json:"repoUrl"`
+	RepoSrcBranch       string `json:"repoSrcBranch"`
+	RepoSrcBranchRemote string `json:"repoSrcBranchRemote"`
+	RepoDistBranch      string `json:"repoDistBranch"`
 
 	// 可选，仅在执行构建时提供。
 	CIJobName string `json:"ciJobName,omitempty"`

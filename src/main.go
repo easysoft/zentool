@@ -64,6 +64,10 @@ func main() {
 
 	switch act {
 	case "mr":
+		if distBranchName == "" {
+			logUtils.PrintUsage()
+			return
+		}
 		modules.MergeAction.PreMerge(srcBranchDir, distBranchName)
 	default:
 		logUtils.PrintUsage()

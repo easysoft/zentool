@@ -45,17 +45,23 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 
 	resp model.ZentaoMergeResponse, err error) {
 
-	outMerge, outDiff, repoUrl, srcBranchName, distBranchDir, errCombine :=
+	outMerge, outDiff, repoUrl, srcBranchName, srcBranchNameRemote, distBranchDir, errCombine :=
 		a.ScmService.CombineCodesLocally(srcBranchDir, distBranchName)
+
+	if srcBranchNameRemote == "" {
+		logUtils.Errorf(i118Utils.Sprintf("no_remote_branch", srcBranchName))
+		return
+	}
 
 	mergerInfo := model.ZentaoMerge{
 		MergeStatus: errCombine == nil,
 		MergeMsg:    strings.Join(outMerge, "\n"),
 		DiffMsg:     strings.Join(outDiff, "\n"),
 
-		RepoUrl:        repoUrl,
-		RepoSrcBranch:  srcBranchName,
-		RepoDistBranch: distBranchName,
+		RepoUrl:             repoUrl,
+		RepoSrcBranch:       srcBranchName,
+		RepoSrcBranchRemote: srcBranchNameRemote,
+		RepoDistBranch:      distBranchName,
 	}
 
 	zentaoBuild, errGetRepo := a.ZentaoService.GetRepoDefaultBuild(repoUrl, zentaoSite)
@@ -106,7 +112,7 @@ func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
 	// create MR in gitlab
 	if createGitLabMr {
 		gitlabSite := model.GitLabSite{Url: zentaoBuild.GitLabUrl, Token: zentaoBuild.GitLabToken}
-		mr, errCreateMr := a.GitLabService.CreateMr(zentaoBuild.GitLabProjectId, srcBranchName, distBranchName, gitlabSite)
+		mr, errCreateMr := a.GitLabService.CreateMr(zentaoBuild.GitLabProjectId, srcBranchName, srcBranchNameRemote, distBranchName, gitlabSite)
 
 		if errCreateMr != nil {
 			mergerInfo.CreateMrMsg = errCreateMr.Error()

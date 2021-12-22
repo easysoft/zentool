@@ -14,12 +14,13 @@ import (
 const (
 	KeywordConflict = "CONFLICT"
 
-	cmdRemote    = "git remote -v"
-	cmdGetBranch = "git rev-parse --abbrev-ref HEAD"
-	cmdClone     = "git clone %s %s"
-	cmdCheckout  = "git checkout %s"
-	cmdMerge     = "git merge %s"
-	cmdDiff      = "git diff %s %s"
+	cmdRemote          = "git remote -v"
+	cmdGetBranch       = "git rev-parse --abbrev-ref HEAD"
+	cmdGetRemoteBranch = "git config --list | grep -v grep | grep branch.%s.merge"
+	cmdClone           = "git clone %s %s"
+	cmdCheckout        = "git checkout %s"
+	cmdMerge           = "git merge %s"
+	cmdDiff            = "git diff %s %s"
 
 	//cmdFork      = "git remote add fork %s"
 	//cmdFetchAll  = "git fetch --all"
@@ -33,7 +34,7 @@ func NewScmService() *ScmService {
 }
 
 func (s *ScmService) CombineCodesLocally(srcBranchDir, distBranchName string) (
-	outMerge, outDiff []string, repoUrl, srcBranchName, distBranchDir string, errCombine error) {
+	outMerge, outDiff []string, repoUrl, srcBranchName, srcBranchNameRemote, distBranchDir string, errCombine error) {
 
 	var err error
 
@@ -41,7 +42,7 @@ func (s *ScmService) CombineCodesLocally(srcBranchDir, distBranchName string) (
 
 	var label string
 	repoUrl, label = GetRemoteUrl(srcBranchDir)
-	srcBranchName, err = s.GetBranchName(srcBranchDir)
+	srcBranchName, srcBranchNameRemote, err = s.GetBranchName(srcBranchDir)
 	if err != nil {
 		return
 	}
@@ -152,18 +153,32 @@ func (s *ScmService) GetDiffInfo(repoUrl, srcBranch, distBranch, distDir string)
 	return
 }
 
-func (s *ScmService) GetBranchName(dir string) (branch string, err error) {
+func (s *ScmService) GetBranchName(dir string) (branchName, branchNameRemote string, err error) {
 	out, err := shellUtils.ExeWithOutput(cmdGetBranch, dir)
 	if err != nil {
 		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdGetBranch, err.Error()))
 	}
-
 	if len(out) < 1 {
 		return
 	}
 
-	branch = out[0]
-	branch = strings.TrimSpace(branch)
+	branchName = out[0]
+	branchName = strings.TrimSpace(branchName)
+
+	cmdStr := fmt.Sprintf(cmdGetRemoteBranch, branchName)
+	out, err = shellUtils.ExeWithOutput(cmdStr, dir)
+	if err != nil {
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdStr, err.Error()))
+	}
+	if len(out) < 1 {
+		return
+	}
+
+	arr := strings.Split(out[0], "=")
+	if len(arr) > 1 {
+		branchNameRemote = arr[1]
+	}
+	branchNameRemote = strings.TrimSpace(branchNameRemote)
 
 	return
 }

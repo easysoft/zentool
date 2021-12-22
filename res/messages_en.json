@@ -121,6 +121,10 @@
     {
       "id": "create_gitlab_mr_fail",
       "translation": "Create GitLab Merge Request fail, error: %s."
+    },
+    {
+      "id": "no_remote_branch",
+      "translation": "Local branch %s has no remote branch, exist."
     }
   ]
 }
