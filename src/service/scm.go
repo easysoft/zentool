@@ -79,6 +79,7 @@ func (s *ScmService) CombineCodes(srcBranchDir, distBranchName string) (
 	//if err != nil {
 	//	logUtils.Errorf("merge failed, error: ", err.Error())
 	//}
+
 }
 
 func GetRemoteUrl(dir string) (url, label string) {
