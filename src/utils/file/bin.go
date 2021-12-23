@@ -43,7 +43,7 @@ func getBackwardLine(file *os.File, start int64) (lineBytes []byte, err error) {
 
 		lineBytes = append(lineBytes, char...)
 
-		if char[0] == '`' {
+		if char[0] == '~' {
 			zeroCount++
 			if zeroCount >= 16 {
 				break
@@ -65,7 +65,7 @@ func getBackwardLine(file *os.File, start int64) (lineBytes []byte, err error) {
 		}
 	}
 
-	lineBytes = bytes.Trim(lineBytes, "`")
+	lineBytes = bytes.Trim(lineBytes, "~")
 
 	lineBytes = reverse(lineBytes)
 

@@ -14,13 +14,16 @@ import (
 const (
 	KeywordConflict = "CONFLICT"
 
-	cmdRemote          = "git remote -v"
-	cmdGetBranch       = "git rev-parse --abbrev-ref HEAD"
-	cmdGetRemoteBranch = "git config --list | grep -v grep | grep branch.%s.merge"
-	cmdClone           = "git clone %s %s"
-	cmdCheckout        = "git checkout %s"
-	cmdMerge           = "git merge %s"
-	cmdDiff            = "git diff %s %s"
+	cmdStatus             = "git status"
+	cmdRemote             = "git remote -v"
+	cmdGetBranch          = "git rev-parse --abbrev-ref HEAD"
+	cmdGetRemoteBranch    = "git config --list | grep -v grep | grep branch.%s.merge"
+	cmdGetRemoteRepoLabel = "git config --list | grep -v grep | grep branch.%s.remote"
+	cmdClone              = "git clone %s %s"
+	cmdCheckout           = "git checkout %s"
+	cmdMerge              = "git merge %s"
+	cmdDiff               = "git diff %s %s"
+	cmdDiffRemote         = "git diff --stat %s %s/%s"
 
 	//cmdFork      = "git remote add fork %s"
 	//cmdFetchAll  = "git fetch --all"
@@ -33,29 +36,38 @@ func NewScmService() *ScmService {
 	return &ScmService{}
 }
 
-func (s *ScmService) CombineCodesLocally(srcBranchDir, distBranchName string) (
-	outMerge, outDiff []string, repoUrl, srcBranchName, srcBranchNameRemote, distBranchDir string, errCombine error) {
-
-	var err error
+func (s *ScmService) CombineCodes(srcBranchDir, distBranchName string) (
+	outMerge, outDiff []string, repoUrl, srcBranchName, srcBranchNameRemote, distBranchDir string, errRet error) {
 
 	srcBranchDir = fileUtils.AbsoluteFile(srcBranchDir)
 
-	var label string
-	repoUrl, label = GetRemoteUrl(srcBranchDir)
-	srcBranchName, srcBranchNameRemote, err = s.GetBranchName(srcBranchDir)
-	if err != nil {
+	var localRepoLabel string
+	repoUrl, localRepoLabel = GetRemoteUrl(srcBranchDir)
+
+	srcBranchName, errRet = s.GetLocalBranchName(srcBranchDir)
+	if errRet != nil {
+		return
+	}
+
+	srcBranchNameRemote, errRet = s.GetRemoteBranchName(srcBranchName, srcBranchDir)
+	if errRet != nil {
+		return
+	}
+
+	errRet = s.CheckStatus(srcBranchName, srcBranchDir)
+	if errRet != nil {
 		return
 	}
 
 	distBranchDir = s.GetBrotherDir(srcBranchDir, distBranchName)
-	outMerge, err = s.CheckoutBranch(repoUrl, distBranchName, distBranchDir)
-	if err != nil {
+	outMerge, errRet = s.CheckoutBranch(repoUrl, distBranchName, distBranchDir)
+	if errRet != nil {
 		return
 	}
 
-	outMerge, outDiff, errCombine = MergeFromSameProject(label, srcBranchName, distBranchDir)
+	outMerge, errRet = MergeFromSameProject(localRepoLabel, srcBranchName, distBranchDir)
 
-	outDiff, err = s.GetDiffInfo(repoUrl, srcBranchName, distBranchName, distBranchDir)
+	outDiff, _ = s.GetDiffInfo(repoUrl, srcBranchName, distBranchName, distBranchDir) // not to overwrite merge error
 
 	return
 
@@ -113,7 +125,7 @@ func (s *ScmService) CheckoutBranch(repoUrl, distBranch, distDir string) (out []
 }
 
 func MergeFromSameProject(label string, srcBranchName string, distBranchDir string) (
-	outMerge, outDiff []string, err error) {
+	outMerge []string, err error) {
 
 	cmdMergeStr := fmt.Sprintf(cmdMerge, fmt.Sprintf("%s/%s", label, srcBranchName))
 	outMerge, err = shellUtils.ExeWithOutput(cmdMergeStr, distBranchDir)
@@ -153,7 +165,50 @@ func (s *ScmService) GetDiffInfo(repoUrl, srcBranch, distBranch, distDir string)
 	return
 }
 
-func (s *ScmService) GetBranchName(dir string) (branchName, branchNameRemote string, err error) {
+func (s *ScmService) CheckStatus(branchName, dir string) (err error) {
+	err = s.CheckUpStatus(dir)
+	if err != nil {
+		return
+	}
+
+	err = s.CheckDownStatus(branchName, dir)
+
+	return
+}
+func (s *ScmService) CheckUpStatus(dir string) (err error) {
+	out, err := shellUtils.ExeWithOutput(cmdStatus, dir)
+	if err != nil {
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdStatus, err.Error()))
+	}
+
+	msg := strings.Join(out, "\n")
+	if strings.Index(msg, "\"git") > -1 {
+		err = errors.New(i118Utils.Sprintf("changes_not_commit"))
+	}
+
+	return
+}
+func (s *ScmService) CheckDownStatus(branchName, dir string) (err error) {
+	// get repo remote label
+	remoteRepoLabel, err := s.GetRemoteRepoLabel(branchName, dir)
+	if err != nil {
+		return
+	}
+
+	cmdStr := fmt.Sprintf(cmdDiffRemote, branchName, remoteRepoLabel, branchName)
+	out, err := shellUtils.ExeWithOutput(cmdStr, dir)
+	if err != nil {
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdStr, err.Error()))
+	}
+
+	if len(out) > 0 {
+		err = errors.New(i118Utils.Sprintf("changes_not_fetch"))
+	}
+
+	return
+}
+
+func (s *ScmService) GetLocalBranchName(dir string) (branchName string, err error) {
 	out, err := shellUtils.ExeWithOutput(cmdGetBranch, dir)
 	if err != nil {
 		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdGetBranch, err.Error()))
@@ -165,12 +220,17 @@ func (s *ScmService) GetBranchName(dir string) (branchName, branchNameRemote str
 	branchName = out[0]
 	branchName = strings.TrimSpace(branchName)
 
+	return
+}
+
+func (s *ScmService) GetRemoteBranchName(branchName, dir string) (branchNameRemote string, err error) {
 	cmdStr := fmt.Sprintf(cmdGetRemoteBranch, branchName)
-	out, err = shellUtils.ExeWithOutput(cmdStr, dir)
+	out, err := shellUtils.ExeWithOutput(cmdStr, dir)
 	if err != nil {
 		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdStr, err.Error()))
 	}
 	if len(out) < 1 {
+		err = errors.New(i118Utils.Sprintf("no_remote_branch", branchName))
 		return
 	}
 
@@ -180,6 +240,11 @@ func (s *ScmService) GetBranchName(dir string) (branchName, branchNameRemote str
 	}
 	branchNameRemote = strings.TrimSpace(branchNameRemote)
 
+	if branchNameRemote == "" {
+		err = errors.New(i118Utils.Sprintf("no_remote_branch", branchName))
+		return
+	}
+
 	return
 }
 
@@ -188,6 +253,30 @@ func (s *ScmService) GetBrotherDir(base, name string) (dir string) {
 
 	dir = filepath.Join(parentDir, name)
 	dir = fileUtils.AbsoluteDir(dir)
+
+	return
+}
+
+func (s *ScmService) GetRemoteRepoLabel(branchName, dir string) (label string, err error) {
+	cmdStr := fmt.Sprintf(cmdGetRemoteRepoLabel, branchName)
+	out, err := shellUtils.ExeWithOutput(cmdStr, dir)
+	if err != nil {
+		logUtils.Errorf(i118Utils.Sprintf("fail_to_execute_cmd", cmdStr, err.Error()))
+	}
+	if len(out) < 1 {
+		err = errors.New(i118Utils.Sprintf("no_remote_label", branchName))
+		return
+	}
+
+	arr := strings.Split(out[0], "=")
+	if len(arr) > 1 {
+		label = arr[1]
+	}
+	label = strings.TrimSpace(label)
+
+	if label == "" {
+		err = errors.New(i118Utils.Sprintf("no_remote_label", branchName))
+	}
 
 	return
 }

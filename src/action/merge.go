@@ -24,7 +24,7 @@ func NewMergeAction() *MergeAction {
 	return &MergeAction{}
 }
 
-func (a *MergeAction) PreMerge(srcBranchDir, distBranchName string) (resp model.ZentaoMergeResponse, err error) {
+func (a *MergeAction) Merge(srcBranchDir, distBranchName string) (resp model.ZentaoMergeResponse, err error) {
 	if srcBranchDir == "" {
 		srcBranchDir = fileUtils.GetWorkDir()
 	}
@@ -35,21 +35,21 @@ func (a *MergeAction) PreMerge(srcBranchDir, distBranchName string) (resp model.
 		return
 	}
 
-	resp, err = a.PreMergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
+	resp, err = a.MergeAllSteps(srcBranchDir, distBranchName, conf, false, false, false)
 
 	return
 }
 
-func (a *MergeAction) PreMergeAllSteps(srcBranchDir, distBranchName string,
+func (a *MergeAction) MergeAllSteps(srcBranchDir, distBranchName string,
 	zentaoSite model.ZentaoSite, execCIBuild, waitBuildCompleted, createGitLabMr bool) (
 
 	resp model.ZentaoMergeResponse, err error) {
 
 	outMerge, outDiff, repoUrl, srcBranchName, srcBranchNameRemote, distBranchDir, errCombine :=
-		a.ScmService.CombineCodesLocally(srcBranchDir, distBranchName)
+		a.ScmService.CombineCodes(srcBranchDir, distBranchName)
 
-	if srcBranchNameRemote == "" {
-		logUtils.Errorf(i118Utils.Sprintf("no_remote_branch", srcBranchName))
+	if errCombine != nil {
+		logUtils.Errorf(errCombine.Error())
 		return
 	}
 

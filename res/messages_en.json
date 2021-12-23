@@ -125,6 +125,18 @@
     {
       "id": "no_remote_branch",
       "translation": "Local branch %s has no remote branch, exist."
+    },
+    {
+      "id": "no_remote_label",
+      "translation": "Can't find the label refer to remote repo(e.x. origin), exist."
+    },
+    {
+      "id": "changes_not_commit",
+      "translation": "Please commit and push your local changes firstly, exist."
+    },
+    {
+      "id": "changes_not_fetch",
+      "translation": "Please fetch remote changes firstly, exist."
     }
   ]
 }

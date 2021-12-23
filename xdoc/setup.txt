@@ -5,4 +5,4 @@ git branch -a
 
 echo '{"url":"http://127.0.0.1:20080","account":"admin","password":"P2ssw0rd2"}' >> bin/z/0.6/mac/z/z
 
-echo '````````````````{\"url\":\"http://192.168.1.161:8080/zentao\",\"account\":\"Admin\",\"password\":\"Admin123#\"}' >> bin/z/0.6/linux/z/z
+echo '~~~~~~~~~~~~~~~~{\"url\":\"http://192.168.1.161:8080/zentao\",\"account\":\"Admin\",\"password\":\"Admin123#\"}' >> bin/z/0.6/linux/z/z

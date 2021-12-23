@@ -68,7 +68,7 @@ func main() {
 			logUtils.PrintUsage()
 			return
 		}
-		modules.MergeAction.PreMerge(srcBranchDir, distBranchName)
+		modules.MergeAction.Merge(srcBranchDir, distBranchName)
 	default:
 		logUtils.PrintUsage()
 	}

@@ -124,6 +124,18 @@
     {
       "id": "no_remote_branch",
       "translation": "本地分支%s没有对应的远程分支，退出。"
+    },
+    {
+      "id": "no_remote_label",
+      "translation": "找不到指向远程库的远程标签（例如origin），退出。"
+    },
+    {
+      "id": "changes_not_commit",
+      "translation": "请先提交本地修改到远程，退出。"
+    },
+    {
+      "id": "changes_not_fetch",
+      "translation": "请先获取远程修改到本地，退出。"
     }
   ]
 }
