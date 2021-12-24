@@ -37,10 +37,10 @@ data:
     uploadMsg   string
     uploadPath string
 
-	repoUrl string
-	repoSrcBranch string
-	repoSrcBranchRemote string
-	repoDistBranch string
+    repoUrl string
+    repoSrcBranch string
+    repoSrcBranchRemote string
+    repoDistBranch string
 ```
 8. 禅道返回响应结果，包含以下字段信息；
 ```
