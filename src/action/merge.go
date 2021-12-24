@@ -64,7 +64,7 @@ func (a *MergeAction) MergeAllSteps(srcBranchDir, distBranchName string,
 		RepoDistBranch:      distBranchName,
 	}
 
-	zentaoBuild, errGetRepo := a.ZentaoService.GetRepoDefaultBuild(repoUrl, zentaoSite)
+	zentaoBuild, errGetRepo := a.ZentaoService.GetRepByUrl(repoUrl, zentaoSite)
 	if errGetRepo != nil {
 		logUtils.Errorf(i118Utils.Sprintf("get_repo_default_build_fail", errGetRepo.Error()))
 	}
@@ -92,7 +92,7 @@ func (a *MergeAction) MergeAllSteps(srcBranchDir, distBranchName string,
 	}
 
 	// exec build on CI platform
-	if execCIBuild && errCombine == nil && uploadErr == nil {
+	if execCIBuild && errGetRepo == nil && errCombine == nil && uploadErr == nil {
 		if zentaoBuild.CIServerType == constant.Jenkins {
 			jenkinsSite := model.JenkinsSite{
 				Url: zentaoBuild.CIServerUrl, Account: zentaoBuild.CIServerAccount, Token: zentaoBuild.CIServerToken}
@@ -110,7 +110,7 @@ func (a *MergeAction) MergeAllSteps(srcBranchDir, distBranchName string,
 	}
 
 	// create MR in gitlab
-	if createGitLabMr {
+	if createGitLabMr && errGetRepo == nil {
 		gitlabSite := model.GitLabSite{Url: zentaoBuild.GitLabUrl, Token: zentaoBuild.GitLabToken}
 		mr, errCreateMr := a.GitLabService.CreateMr(zentaoBuild.GitLabProjectId, srcBranchName, srcBranchNameRemote, distBranchName, gitlabSite)
 

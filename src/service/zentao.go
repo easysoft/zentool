@@ -87,10 +87,10 @@ func (s *ZentaoService) SubmitMergeInfo(merge model.ZentaoMerge, site model.Zent
 	return
 }
 
-func (s *ZentaoService) GetRepoDefaultBuild(repoUrl string, site model.ZentaoSite) (build model.ZentaoRepoResponse, err error) {
+func (s *ZentaoService) GetRepByUrl(repoUrl string, site model.ZentaoSite) (build model.ZentaoRepoResponse, err error) {
 	ok := s.Login(site)
 	if !ok {
-		err = errors.New("login fail")
+		err = errors.New(i118Utils.Sprintf("fail_to_login"))
 		return
 	}
 
@@ -113,7 +113,13 @@ func (s *ZentaoService) GetRepoDefaultBuild(repoUrl string, site model.ZentaoSit
 
 	json.Unmarshal([]byte(dataStr), &build)
 	if build.FileServerUrl == "" {
-		err = errors.New(i118Utils.Sprintf("get_repo_default_build_fail", dataStr))
+		msg := ""
+		if strings.Index(dataStr, "deny") > -1 {
+			msg = i118Utils.Sprintf("user_deny", i118Utils.Sprintf("permission_get_repo_by_url"))
+		} else {
+			msg = i118Utils.Sprintf("server_return", dataStr)
+		}
+		err = errors.New(msg)
 	}
 
 	return

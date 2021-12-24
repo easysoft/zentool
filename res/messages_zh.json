@@ -47,6 +47,14 @@
       "id": "fail_to_login",
       "translation": "登录失败。"
     },
+    {
+      "id": "user_deny",
+      "translation": "权限不足，请为用户添加'%s'权限。"
+    },
+    {
+      "id": "permission_get_repo_by_url",
+      "translation": "接口：通过URL获取版本库"
+    },
 
     {
       "id": "create_mr_error",

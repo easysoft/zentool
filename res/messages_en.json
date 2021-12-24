@@ -48,6 +48,14 @@
       "id": "fail_to_login",
       "translation": "Fail to login."
     },
+    {
+      "id": "user_deny",
+      "translation": "Permission deny, please add '%s' permission for user."
+    },
+    {
+      "id": "permission_get_repo_by_url",
+      "translation": "interface: get repo by url"
+    },
 
     {
       "id": "create_mr_error",
