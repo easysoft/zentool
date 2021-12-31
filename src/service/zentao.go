@@ -81,8 +81,7 @@ func (s *ZentaoService) SubmitMergeInfo(merge model.ZentaoMerge, site model.Zent
 		return
 	}
 
-	var zentaoMergeResponse model.ZentaoMergeResponse
-	json.Unmarshal([]byte(respStr), &zentaoMergeResponse)
+	json.Unmarshal([]byte(respStr), &resp)
 
 	return
 }

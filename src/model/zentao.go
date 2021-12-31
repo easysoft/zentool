@@ -35,6 +35,9 @@ type ZentaoResponse struct {
 }
 
 type ZentaoMergeResponse struct {
+	Result  string `json:"result"`
+	Message string `json:"message"`
+
 	GitLabMRId int `json:"gitLabMRId"`
 	CIBuildId  int `json:"ciBuildId"`
 }

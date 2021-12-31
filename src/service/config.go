@@ -33,7 +33,7 @@ func (s *ConfigService) GetConfig() (zentaoSite model.ZentaoSite, err error) {
 	exe := strings.ToLower(os.Args[0])
 	file := fileUtils.AbsoluteFile(exe)
 	if !commonUtils.IsRelease() {
-		file = "/Users/aaron/rd/project/zentao/go/z/bin/z/0.6/linux/z/z" // just for debug in IDE
+		file = "/Users/aaron/rd/project/zentao/go/z/bin/z/0.6/mac/z/z" // just for debug in IDE
 	}
 
 	bts, err := fileUtils.ReadConfFromBin(file)
