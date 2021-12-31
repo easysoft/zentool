@@ -124,9 +124,7 @@ func (a *MergeAction) MergeAllSteps(srcBranchDir, distBranchName string,
 	}
 
 	resp, err = a.ZentaoService.SubmitMergeInfo(mergerInfo, zentaoSite)
-	if resp.Result == "fail" {
-		logUtils.Log(resp.Message)
-	}
+	logUtils.Log(resp.Message)
 
 	return
 }
