@@ -51,24 +51,6 @@ class model
     public $lang;
 
     /**
-     * 全局对象$dbh，数据库连接句柄。
-     * The global $dbh object, the database connection handler.
-     *
-     * @var object
-     * @access public
-     */
-    public $dbh;
-
-    /**
-     * $dao对象，用于访问或者更新数据库。
-     * The $dao object, used to access or update database.
-     *
-     * @var object
-     * @access public
-     */
-    public $dao;
-
-    /**
      * $post对象，用于访问$_POST变量。
      * The $post object, used to access the $_POST var.
      *
@@ -87,15 +69,6 @@ class model
     public $get;
 
     /**
-     * $session对象，用于访问$_SESSION变量。
-     * The $session object, used to access the $_SESSION var.
-     *
-     * @var ojbect
-     * @access public
-     */
-    public $session;
-
-    /**
      * $server对象，用于访问$_SERVER变量。
      * The $server object, used to access the $_SERVER var.
      *
@@ -103,15 +76,6 @@ class model
      * @access public
      */
     public $server;
-
-    /**
-     * $cookie对象，用于访问$_COOKIE变量。
-     * The $cookie object, used to access the $_COOKIE var.
-     *
-     * @var ojbect
-     * @access public
-     */
-    public $cookie;
 
     /**
      * $global对象，用于访问$_GLOBAL变量。
@@ -125,7 +89,7 @@ class model
     /**
      * 构造方法。
      * 1. 将全局变量设为model类的成员变量，方便model的派生类调用；
-     * 2. 设置$config, $lang, $dbh, $dao。
+     * 2. 设置$config, $lang。
      *
      * The construct function.
      * 1. global the global vars, refer them by the class member such as $this->app.
@@ -137,18 +101,16 @@ class model
      */
     public function __construct($appName = '')
     {
-        global $app, $config, $lang, $dbh;
+        global $app, $config;
         $this->app     = $app;
         $this->config  = $config;
         $this->lang    = $lang;
-        $this->dbh     = $dbh;
         $this->appName = empty($appName) ? $this->app->getAppName() : $appName;
 
         $moduleName = $this->getModuleName();
         if($this->config->framework->multiLanguage) $this->app->loadLang($moduleName, $this->appName);
         if($moduleName != 'common') $this->app->loadModuleConfig($moduleName, $this->appName);
 
-        $this->loadDAO();
         $this->setSuperVars();
     }
 
@@ -189,8 +151,6 @@ class model
         $this->post    = $this->app->post;
         $this->get     = $this->app->get;
         $this->server  = $this->app->server;
-        $this->cookie  = $this->app->cookie;
-        $this->session = $this->app->session;
     }
 
     /**
@@ -272,31 +232,5 @@ class model
         $extensionClass  = str_replace('Model', '', $extensionClass);
         $this->$extensionClass = $extensionObject;
         return $extensionObject;
-    }
-
-    /**
-     * 加载DAO。
-     * Load DAO.
-     *
-     * @access public
-     * @return void
-     */
-    public function loadDAO()
-    {
-        $this->dao = $this->app->loadClass('dao');
-    }
-
-    /**
-     * 删除记录。
-     * Delete one record.
-     *
-     * @param  string    $table  the table name
-     * @param  string    $id     the id value of the record to be deleted
-     * @access public
-     * @return void
-     */
-    public function delete($table, $id = 0)
-    {
-        $this->dao->delete()->from($table)->where('id')->eq($id)->exec();
     }
 }

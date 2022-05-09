@@ -362,27 +362,18 @@ class router
         $this->setConfigRoot();
         $this->setModuleRoot();
         $this->setWwwRoot();
-        $this->setThemeRoot();
         $this->setDataRoot();
         $this->loadMainConfig();
 
-        $this->loadClass('front',  $static = true);
         $this->loadClass('filter', $static = true);
-        $this->loadClass('dao',    $static = true);
-        $this->loadClass('mobile', $static = true);
 
         $this->setSuperVars();
         $this->setDebug();
         $this->setErrorHandler();
         $this->setTimezone();
-        $this->startSession();
 
         if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
-        if($this->config->framework->autoConnectDB) $this->connectDB();
         if($this->config->framework->multiLanguage) $this->setClientLang();
-
-        $needDetectDevice   = zget($this->config->framework->detectDevice, $this->clientLang, false);
-        $this->clientDevice = $needDetectDevice ? $this->setClientDevice() : 'desktop';
 
         if($this->config->framework->multiLanguage) $this->loadLang('common');
         if($this->config->framework->multiTheme)    $this->setClientTheme();
@@ -405,7 +396,7 @@ class router
     }
 
     /**
-     * 解析ini文件。
+     * 解析配置文件。
      * Prase config file content.
      *
      * @access public
@@ -414,7 +405,7 @@ class router
     public function praseConfig()
     {
         $userInfo   = posix_getpwuid(posix_getuid());
-        $configFile = $userInfo['dir'] . '/.zconfig';
+        $configFile = $_SERVER['HOME'] . '/.zconfig';
 
         $this->config->userConfigFile = $configFile;
 
@@ -598,18 +589,6 @@ class router
         $this->wwwRoot = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS) . DS;
     }
 
-    /**
-     * 设置主题根目录。
-     * Set the theme root.
-     *
-     * @access public
-     * @return void
-     */
-    public function setThemeRoot()
-    {
-        $this->themeRoot = $this->wwwRoot . 'theme' . DS;
-    }
-
    /**
      * 设置data根目录。
      * Set the data root.
@@ -631,19 +610,9 @@ class router
      */
     public function setSuperVars()
     {
-        $this->post    = new super('post');
-        $this->get     = new super('get');
-        $this->server  = new super('server');
-        $this->cookie  = new super('cookie');
-        $this->session = new super('session');
-
-        unset($GLOBALS);
-        unset($_REQUEST);
-
-        $_FILES  = validater::filterFiles();
-        $_POST   = validater::filterSuper($_POST);
-        $_GET    = validater::filterSuper($_GET);
-        $_COOKIE = validater::filterSuper($_COOKIE);
+        $this->post   = new super('post');
+        $this->get    = new super('get');
+        $this->server = new super('server');
     }
 
     /**
@@ -2222,13 +2191,10 @@ class router
      */
     public function shutdown()
     {
-        /* 如果debug模式开启，保存sql语句(If debug on, save sql queries) */
-        if(!empty($this->config->debug)) $this->saveSQL();
-
         /*
          * 发现错误，保存到日志中。
          * If any error occers, save it.
-         * */
+         */
         if(!function_exists('error_get_last')) return;
         $error = error_get_last();
         if($error) $this->saveError($error['type'], $error['message'], $error['file'], $error['line']);
@@ -2349,29 +2315,6 @@ class router
             $htmlError .= "<body>" . nl2br($errorLog) . "</body></html>";
             die($htmlError);
         }
-    }
-
-    /**
-     * 保存sql语句。
-     * Save the sql.
-     *
-     * @access public
-     * @return void
-     */
-    public function saveSQL()
-    {
-        if(!$this->config->debug) return true;
-        if(!class_exists('dao')) return;
-
-        $sqlLog = $this->getLogRoot() . 'sql.' . date('Ymd') . '.log.php';
-        if(!is_file($sqlLog)) file_put_contents($sqlLog, "<?php\n die();\n?>\n");
-
-        $fh = @fopen($sqlLog, 'a');
-        if(!$fh) return false;
-        fwrite($fh, date('Ymd H:i:s') . ": " . $this->getURI() . "\n");
-        foreach(dao::$querys as $query) fwrite($fh, "  $query\n");
-        fwrite($fh, "\n");
-        fclose($fh);
     }
 }
 

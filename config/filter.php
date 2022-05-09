@@ -13,11 +13,8 @@ $filter->rules->word       = '/^\w+$/';
 $filter->rules->paramName  = '/^[a-zA-Z0-9_\.]+$/';
 $filter->rules->paramValue = '/^[a-zA-Z0-9=_\-]+$/';
 
-$filter->default = new stdclass(); 
+$filter->default = new stdclass();
 $filter->default->moduleName = 'code';
 $filter->default->methodName = 'code';
 $filter->default->paramName  = 'reg::paramName';
 $filter->default->paramValue = 'reg::paramValue';
-
-$filter->default->get['onlybody'] = 'equal::yes';
-$filter->default->get['HTTP_X_REQUESTED_WITH'] = 'equal::XMLHttpRequest';
