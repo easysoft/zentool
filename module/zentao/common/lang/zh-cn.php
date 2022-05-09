@@ -4,7 +4,7 @@
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
- * 
+ *
  *  May you do good and not evil.
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
@@ -17,6 +17,7 @@ $lang->more      = '了解更多 &raquo;';
 $lang->save      = '保存';
 $lang->loading   = '稍后...';
 $lang->goback    = '返回';
+$lang->appName   = '禅道';
 
 /* The menu items. */
 $lang->menu = new stdclass();

@@ -16,7 +16,7 @@ if(!class_exists('config')){class config{}}
 if(!function_exists('getWebRoot')){function getWebRoot(){}}
 
 /* 基本设置。Basic settings. */
-$config->version    = '3.1';                // ZenTaoPHP的版本。 The version of ZenTaoPHP. Don't change it.
+$config->version    = '1.0';                // ZenTaoPHP的版本。 The version of ZenTaoPHP. Don't change it.
 $config->charset    = 'UTF-8';              // ZenTaoPHP的编码。 The encoding of ZenTaoPHP.
 $config->cookieLife = time() + 2592000;     // Cookie的生存时间。The cookie life time.
 $config->timezone   = 'Asia/Shanghai';      // 时区设置。        The time zone setting, for more see http://www.php.net/manual/en/timezones.php.
@@ -44,7 +44,7 @@ $config->devicePrefix['mhtml'] = 'm.';
 /* 默认值设置。Default settings. */
 $config->default = new stdclass();
 $config->default->view   = 'html';        //默认视图。 Default view.
-$config->default->lang   = 'zh-cn';          //默认语言。 Default language.
+$config->default->lang   = 'en';          //默认语言。 Default language.
 $config->default->theme  = 'default';     //默认主题。 Default theme.
 $config->default->module = 'index';       //默认模块。 Default module.
 $config->default->method = 'index';       //默认方法。 Default method.

@@ -28,8 +28,8 @@ include "$filePath/framework/model.class.php";
 include "$filePath/framework/helper.class.php";
 
 /* 响应请求。Response the request. */
-$app    = router::createApp('demo', $filePath, 'router');     // 实例化router。  Instance the router class.
-$common = $app->loadCommon();                                         // 加载common模块。Load the common module.
-$app->parseRequest($argv);                                            // 解析请求。      Parse the request.
-$app->loadModule();                                                   // 加载模块。      Load module.
-echo helper::removeUTF8Bom(ob_get_clean());                           // 输出内容。      Print the output.
+$app    = router::createApp($filePath, 'router');   // 实例化router。  Instance the router class.
+$common = $app->loadCommon();                       // 加载common模块。Load the common module.
+$app->parseRequest($argv);                          // 解析请求。      Parse the request.
+$app->loadModule();                                 // 加载模块。      Load module.
+echo helper::removeUTF8Bom(ob_get_clean());         // 输出内容。      Print the output.

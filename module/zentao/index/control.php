@@ -35,7 +35,7 @@ class index extends control
         {
             if($param == '-h' or $param == '--help')
             {
-                echo sprintf($this->lang->index->help, '禅道');
+                echo sprintf($this->lang->index->help, $this->lang->appName);
                 return;
             }
         }

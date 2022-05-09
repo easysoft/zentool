@@ -11,6 +11,4 @@
  */
 $lang->index = new stdclass();
 $lang->index->index = '首页';
-$lang->index->blog  = '查看简单的博客实例';
-
-$lang->index->help = '当前应用为%s' . PHP_EOL;
+$lang->index->help  = '当前应用为%s' . PHP_EOL;
