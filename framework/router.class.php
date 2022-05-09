@@ -249,24 +249,6 @@ class router
     public $lang;
 
     /**
-     * 全局$dbh对象，数据库连接句柄。
-     * The global $dbh object, the database connection handler.
-     *
-     * @var object
-     * @access public
-     */
-    public $dbh;
-
-    /**
-     * 从数据库的句柄。
-     * The slave database handler.
-     *
-     * @var object
-     * @access public
-     */
-    public $slaveDBH;
-
-    /**
      * $post对象，用于访问$_POST变量。
      * The $post object, used to access the $_POST var.
      *
@@ -285,15 +267,6 @@ class router
     public $get;
 
     /**
-     * $session对象，用于访问$_SESSION变量。
-     * The $session object, used to access the $_SESSION var.
-     *
-     * @var ojbect
-     * @access public
-     */
-    public $session;
-
-    /**
      * $server对象，用于访问$_SERVER变量。
      * The $server object, used to access the $_SERVER var.
      *
@@ -301,15 +274,6 @@ class router
      * @access public
      */
     public $server;
-
-    /**
-     * $cookie对象，用于访问$_COOKIE变量。
-     * The $cookie object, used to access the $_COOKIE var.
-     *
-     * @var ojbect
-     * @access public
-     */
-    public $cookie;
 
     /**
      * 网站代号。
@@ -2120,64 +2084,6 @@ class router
 
         $this->lang = $lang;
         return $lang;
-    }
-
-    /**
-     * 连接数据库。
-     * Connect to database.
-     *
-     * @access public
-     * @return void
-     */
-    public function connectDB()
-    {
-        global $config, $dbh, $slaveDBH;
-        if(!isset($config->installed) or !$config->installed) return;
-
-        if(isset($config->db->host))      $this->dbh      = $dbh      = $this->connectByPDO($config->db);
-        if(isset($config->slaveDB->host)) $this->slaveDBH = $slaveDBH = $this->connectByPDO($config->slaveDB);
-    }
-
-    /**
-     * 使用PDO连接数据库。
-     * Connect database by PDO.
-     *
-     * @param  object    $params    the database params.
-     * @access public
-     * @return object|bool
-     */
-    public function connectByPDO($params)
-    {
-        if(!isset($params->driver)) self::triggerError('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__, $exit = true);
-        if(!isset($params->user)) return false;
-        if($params->driver == 'mysql')
-        {
-            $dsn = "mysql:host={$params->host}; port={$params->port}; dbname={$params->name}";
-        }
-        try
-        {
-            $dbh = new PDO($dsn, $params->user, $params->password, array(PDO::ATTR_PERSISTENT => $params->persistant));
-            $dbh->exec("SET NAMES {$params->encoding}");
-
-            /*
-             * 如果系统是Linux，开启仿真预处理和缓冲查询。
-             * If run on linux, set emulatePrepare and bufferQuery to true.
-             **/
-            if(!isset($params->emulatePrepare) and PHP_OS == 'Linux') $params->emulatePrepare = true;
-            if(!isset($params->bufferQuery) and PHP_OS == 'Linux')    $params->bufferQuery = true;
-
-            $dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            if(isset($params->strictMode) and $params->strictMode == false) $dbh->exec("SET @@sql_mode= ''");
-            if(isset($params->emulatePrepare)) $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, $params->emulatePrepare);
-            if(isset($params->bufferQuery))    $dbh->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $params->bufferQuery);
-
-            return $dbh;
-        }
-        catch (PDOException $exception)
-        {
-            self::triggerError($exception->getMessage(), __FILE__, __LINE__, $exit = true);
-        }
     }
 
     //-------------------- 错误处理方法(Error methods) ------------------//
