@@ -328,6 +328,7 @@ class router
         $this->setWwwRoot();
         $this->setDataRoot();
         $this->loadMainConfig();
+        $this->setClientLang();
 
         $this->loadClass('filter', $static = true);
 
@@ -336,11 +337,7 @@ class router
         $this->setErrorHandler();
         $this->setTimezone();
 
-        if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
-        if($this->config->framework->multiLanguage) $this->setClientLang();
-
         if($this->config->framework->multiLanguage) $this->loadLang('common');
-        if($this->config->framework->multiTheme)    $this->setClientTheme();
     }
 
     /**
@@ -605,6 +602,34 @@ class router
     }
 
     /**
+     * 根据用户浏览器的语言设置和服务器配置，选择显示的语言。
+     * 优先级：$lang参数 > session > cookie > 浏览器 > 配置文件。
+     *
+     * Set the language.
+     * Using the order of method $lang param, session, cookie, browser and the default lang.
+     *
+     * @param   string $lang  zh-cn|zh-tw|zh-hk|en
+     * @access  public
+     * @return  void
+     */
+    public function setClientLang($lang = '')
+    {
+        if(!empty($lang)) $this->clientLang = $lang;
+
+        if(!empty($this->clientLang))
+        {
+            $this->clientLang = strtolower($this->clientLang);
+            if(!isset($this->config->langs[$this->clientLang])) $this->clientLang = $this->config->default->lang;
+        }
+        else
+        {
+            $this->clientLang = $this->config->default->lang;
+        }
+
+        return true;
+    }
+
+    /**
      * 获取应用名称
      * Get app name
      *
@@ -751,18 +776,6 @@ class router
     }
 
     /**
-     * 获取$themeRoot变量，即主题的根目录。
-     * Get the $themeRoot var.
-     *
-     * @access public
-     * @return string
-     */
-    public function getThemeRoot()
-    {
-        return $this->themeRoot;
-    }
-
-    /**
      * 获取$dataRoot目录
      * Get the $dataRoot var
      *
@@ -789,151 +802,6 @@ class router
     }
 
     /**
-     * 开启 session
-     * Start the session.
-     *
-     * @access public
-     * @return void
-     */
-    public function startSession()
-    {
-        if(!defined('SESSION_STARTED'))
-        {
-            $sessionName = $this->config->sessionVar;
-            session_name($sessionName);
-            if(isset($_GET[$this->config->sessionVar])) session_id($_GET[$this->config->sessionVar]);
-            session_start();
-            define('SESSION_STARTED', true);
-        }
-    }
-
-    /**
-     * 根据用户浏览器的语言设置和服务器配置，选择显示的语言。
-     * 优先级：$lang参数 > session > cookie > 浏览器 > 配置文件。
-     *
-     * Set the language.
-     * Using the order of method $lang param, session, cookie, browser and the default lang.
-     *
-     * @param   string $lang  zh-cn|zh-tw|zh-hk|en
-     * @access  public
-     * @return  void
-     */
-    public function setClientLang($lang = '')
-    {
-        if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) $this->clientLang = $this->parseHttpAcceptLang();
-        if(isset($_COOKIE['lang']))                 $this->clientLang = $_COOKIE['lang'];
-        if(isset($_SESSION['lang']))                $this->clientLang = $_SESSION['lang'];
-        if(!empty($lang))                           $this->clientLang = $lang;
-
-        if(!empty($this->clientLang))
-        {
-            $this->clientLang = strtolower($this->clientLang);
-            if(!isset($this->config->langs[$this->clientLang])) $this->clientLang = $this->config->default->lang;
-        }
-        else
-        {
-            $this->clientLang = $this->config->default->lang;
-        }
-
-        setcookie('lang', $this->clientLang, $this->config->cookieLife, $this->config->webRoot);
-        if(!isset($_COOKIE['lang'])) $_COOKIE['lang'] = $this->clientLang;
-
-        return true;
-    }
-
-    /**
-     * 从HTTP_ACCEPT_LANGUAGE中提出去支持的语言。
-     * Parse the lang str from HTTP_ACCEPT_LANGUAGE header.
-     *
-     * @access public
-     * @return string
-     */
-    public function parseHttpAcceptLang()
-    {
-        if(empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) return '';
-
-        $raw  = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        $pos  = strpos($raw, ',');
-        $lang = $pos === false ? $raw : substr($raw, 0, $pos);
-
-        /* Fix clientLang for ie >= 10. https://www.drupal.org/node/365615. */
-        if(stripos($lang, 'hans')) $lang = 'zh-cn';
-        if(stripos($lang, 'hant')) $lang = 'zh-tw';
-        return $lang;
-    }
-
-    /**
-     * 设置客户端使用的主题，判断逻辑与客户端的语言相同。
-     * 主题的css和图片文件应该存放在www/theme/$themeName路径。
-     *
-     * Set the theme the client user using. The logic is same as the clientLang.
-     * The css and images files of an theme should saved at www/theme/$themeName
-     *
-     * @param   string $theme
-     * @access  public
-     * @return  void
-     */
-    public function setClientTheme($theme = '')
-    {
-        if(isset($this->config->client->theme)) $this->clientTheme = $this->config->client->theme;
-        if(isset($_COOKIE['theme']))            $this->clientTheme = $_COOKIE['theme'];
-        if(!empty($theme))                      $this->clientTheme = $theme;
-
-        if(!empty($this->clientTheme))
-        {
-            $this->clientTheme = strtolower($this->clientTheme);
-            if(!isset($this->lang->themes[$this->clientTheme])) $this->clientTheme = $this->config->default->theme;
-        }
-        else
-        {
-            $this->clientTheme = $this->config->default->theme;
-        }
-
-        setcookie('theme', $this->clientTheme, $this->config->cookieLife, $this->config->webRoot);
-        if(!isset($_COOKIE['theme'])) $_COOKIE['theme'] = $this->clientTheme;
-
-        return true;
-    }
-
-   /**
-     * 设置客户端的设备类型。
-     * Set client device.
-     *
-     * @access public
-     * @return void
-     */
-    public function setClientDevice()
-    {
-        $this->clientDevice = 'desktop';
-
-        if($this->cookie->device == 'mobile')  $this->clientDevice = 'mobile';
-        if($this->cookie->device == 'desktop') $this->clientDevice = 'desktop';
-
-        if(strpos('mobile,desktop', $this->cookie->device) === false)
-        {
-            $mobile = new mobile();
-            $this->clientDevice = ($mobile->isMobile() and !$mobile->isTablet()) ? 'mobile' : 'desktop';
-        }
-
-        setcookie('device', $this->clientDevice, $this->config->cookieLife, $this->config->webRoot);
-        if(!isset($_COOKIE['device'])) $_COOKIE['device'] = $this->clientDevice;
-
-        return $this->clientDevice;
-    }
-
-    /**
-     * 设置站点代号，可以针对不同的站点来加载不同的扩展。
-     * Set the code of current site, thus can load diffrent extension of diffrent site.
-     *
-     * @access public
-     * @return void
-     */
-    public function setSiteCode()
-    {
-        return $this->siteCode = helper::parseSiteCode($this->server->http_host);
-    }
-
-    /**
      * 获取$clientLang变量，即客户端的语言。
      * Get the $clientLang var.
      *
@@ -943,30 +811,6 @@ class router
     public function getClientLang()
     {
         return $this->clientLang;
-    }
-
-    /**
-     * 获取$clientTheme变量。
-     * Get the $clientTheme var.
-     *
-     * @access public
-     * @return string
-     */
-    public function getClientTheme()
-    {
-        return $this->config->webRoot . 'theme/' . $this->clientTheme . '/';
-    }
-
-    /**
-     * 获得客户端的终端设备。
-     * Get the client device.
-     *
-     * @access public
-     * @return void
-     */
-    public function getClientDevice()
-    {
-        return $this->clientDevice;
     }
 
     //-------------------- 请求相关的方法(Request related methods) --------------------//
@@ -979,145 +823,20 @@ class router
      * @param  array $argv
      * @return void
      */
-    public function parseRequest($argv = array())
+    public function parseRequest()
     {
+        global $argc, $argv;
         if(count($argv) <= 1) $argv[1] = '-h';
 
-        $module = (empty($argv[1]) or substr($argv[1], 0, 1) == '-') ? $this->config->default->module : $argv[1];
+        $specialArgs = array('help', 'versioin');
+
+        $module = (empty($argv[1]) or substr($argv[1], 0, 1) == '-' or in_array($argv[1], $specialArgs)) ? $this->config->default->module : $argv[1];
         $method = (empty($argv[2]) or substr($argv[2], 0, 1) == '-') ? $this->config->default->method : $argv[2];
         $this->setModuleName($module);
         $this->setMethodName($method);
         $this->setControlFile();
 
         $this->args = $argv;
-    }
-
-    /**
-     * PATH_INFO方式解析，获取$URI和$viewType。
-     * Parse PATH_INFO, get the $URI and $viewType.
-     *
-     * @access public
-     * @return void
-     */
-    public function parsePathInfo()
-    {
-        $pathInfo = $this->getPathInfo();
-        if(!empty($pathInfo))
-        {
-            $dotPos = strrpos($pathInfo, '.');
-            if($dotPos)
-            {
-                $this->URI      = substr($pathInfo, 0, $dotPos);
-                $this->viewType = substr($pathInfo, $dotPos + 1);
-                if(strpos($this->config->views, ',' . $this->viewType . ',') === false)
-                {
-                    $this->viewType = $this->config->default->view;
-                }
-            }
-            else
-            {
-                $this->URI      = $pathInfo;
-                $this->viewType = $this->config->default->view;
-            }
-        }
-        else
-        {
-            $this->viewType = $this->config->default->view;
-        }
-    }
-
-    /**
-     * 从$_SERVER或者$_ENV全局变量根据pathinfo变量名获取$PATH_INFO值。
-     * PATH_INFO的变量名几乎都是'PATH_INFO'，但也有可能是ORIG_PATH_INFO。
-     *
-     * Get $PATH_INFO from $_SERVER or $_ENV by the pathinfo var name.
-     * Mostly, the var name of PATH_INFO is PATH_INFO, but may be ORIG_PATH_INFO.
-     *
-     * @access  public
-     * @return  string the PATH_INFO
-     */
-    public function getPathInfo()
-    {
-        if(isset($_SERVER['PATH_INFO']))
-        {
-            $value = $_SERVER['PATH_INFO'];
-        }
-        elseif(isset($_SERVER['ORIG_PATH_INFO']))
-        {
-            $value = $_SERVER['ORIG_PATH_INFO'];
-        }
-        elseif(isset($this->URI))
-        {
-            $value = $this->URI;
-            $subpath = str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($_SERVER['SCRIPT_FILENAME']));
-            if($subpath != '/') $subpath = '/' . $subpath;
-            if($subpath != '' and $subpath != '/' and strpos($value, $subpath) === 0) $value = substr($value, strlen($subpath));
-        }
-        else
-        {
-            $value = @getenv('PATH_INFO');
-            if(empty($value)) $value = @getenv('ORIG_PATH_INFO');
-        }
-
-        if(strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
-        if(strpos($value, '?') === false) return trim($value, '/');
-
-        $value    = parse_url($value);
-        $pathInfo = trim(zget($value, 'path', ''), '/');
-        if(trim($pathInfo, '/') == trim($this->config->webRoot, '/')) $pathInfo = '';
-
-        return $pathInfo;
-    }
-
-    /**
-     * GET请求方式解析，获取$URI和$viewType。
-     * Parse GET, get $URI and $viewType.
-     *
-     * @access public
-     * @return void
-     */
-    public function parseGET()
-    {
-        if(isset($_GET[$this->config->viewVar]))
-        {
-            $this->viewType = $_GET[$this->config->viewVar];
-            if(strpos($this->config->views, ',' . $this->viewType . ',') === false) $this->viewType = $this->config->default->view;
-        }
-        else
-        {
-            $this->viewType = $this->config->default->view;
-        }
-        $this->URI = $_SERVER['REQUEST_URI'];
-    }
-
-    /**
-     * 获取$URL。
-     * Get the $URL.
-     *
-     * @param  bool $full  true, the URI contains the webRoot, else only hte URI.
-     * @access public
-     * @return string
-     */
-    public function getURI($full = false)
-    {
-        if($full and $this->config->requestType == 'PATH_INFO')
-        {
-            if($this->URI) return $this->config->webRoot . $this->URI . '.' . $this->viewType;
-            return $this->config->webRoot;
-        }
-        return $this->URI;
-    }
-
-    /**
-     * 获取$vewType变量。
-     * Get the $viewType var.
-     *
-     * @access public
-     * @return string
-     */
-    public function getViewType()
-    {
-        return $this->viewType;
     }
 
     //-------------------- 模块及扩展设置(Module and extension) --------------------//
@@ -1506,75 +1225,6 @@ class router
     //-------------------- 路由相关方法(Routing related methods) --------------------//
 
     /**
-     * 设置路由(PATH_INFO 方式)：
-     * 1.设置模块名；
-     * 2.设置方法名；
-     * 3.设置控制器文件。
-     *
-     * Set the route according to PATH_INFO.
-     * 1. set the module name.
-     * 2. set the method name.
-     * 3. set the control file.
-     *
-     * @access public
-     * @return void
-     */
-    public function setRouteByPathInfo()
-    {
-        if(!empty($this->URI))
-        {
-            /*
-             * 根据$requestFix分割符，分割网址。
-             * There's the request seperator, split the URI by it.
-             **/
-            if(strpos($this->URI, $this->config->requestFix) !== false)
-            {
-                $items = explode($this->config->requestFix, $this->URI);
-                $this->setModuleName($items[0]);
-                $this->setMethodName($items[1]);
-            }
-            /*
-             * 如果网址中没有分隔符，使用默认的方法。
-             * No reqeust seperator, use the default method name.
-             **/
-            else
-            {
-                $this->setModuleName($this->URI);
-                $this->setMethodName($this->config->default->method);
-            }
-        }
-        else
-        {
-            $this->setModuleName($this->config->default->module);   // 使用默认模块 use the default module.
-            $this->setMethodName($this->config->default->method);   // 使用默认方法 use the default method.
-        }
-        $this->setControlFile();
-    }
-
-    /**
-     * 设置路由(GET 方式)：
-     * 1.设置模块名；
-     * 2.设置方法名；
-     * 3.设置控制器文件。
-     *
-     * Set the route according to GET.
-     * 1. set the module name.
-     * 2. set the method name.
-     * 3. set the control file.
-     *
-     * @access public
-     * @return void
-     */
-    public function setRouteByGET()
-    {
-        $moduleName = isset($_GET[$this->config->moduleVar]) ? strtolower($_GET[$this->config->moduleVar]) : $this->config->default->module;
-        $methodName = isset($_GET[$this->config->methodVar]) ? strtolower($_GET[$this->config->methodVar]) : $this->config->default->method;
-        $this->setModuleName($moduleName);
-        $this->setControlFile();
-        $this->setMethodName($methodName);
-    }
-
-    /**
      * 加载一个模块：
      * 1. 引入控制器文件或扩展的方法文件；
      * 2. 创建control对象；
@@ -1651,153 +1301,43 @@ class router
             $defaultParams[$name] = $default;
         }
 
-        if('cli' === PHP_SAPI)
-        {
-            $params   = array();
-            $paramKey = '';
-            foreach($this->args as $key => $val)
-            {
-                if($key == 0) continue;
-                if(in_array($key, array(1, 2)) and substr($val, 0, 1) != '-') continue;
-                $params[] = $val;
-            }
+        $this->params = $this->formatParams();
 
-            $this->params = array('params' => $params);
-        }
-        else
-        {
-            /**
-             * 根据PATH_INFO或者GET方式设置请求的参数。
-             * Set params according PATH_INFO or GET.
-             */
-            if($this->config->requestType != 'GET')
-            {
-                $this->setParamsByPathInfo($defaultParams);
-            }
-            else
-            {
-                $this->setParamsByGET($defaultParams);
-            }
-
-            if($this->config->framework->filterParam == 2)
-            {
-                $_GET     = validater::filterParam($_GET, 'get');
-                $_COOKIE  = validater::filterParam($_COOKIE, 'cookie');
-            }
-        }
         /* 调用该方法   Call the method. */
         call_user_func_array(array($module, $methodName), $this->params);
         return $module;
     }
 
     /**
-     * 设置请求的参数(PATH_INFO 方式)。
-     * Set the params by PATH_INFO.
+     * 整理参数信息。
+     * Format params.
      *
-     * @param   array  $defaultParams the default settings of the params.
-     * @param   string $type
-     * @access  public
-     * @return  void
+     * @access public
+     * @return array
      */
-    public function setParamsByPathInfo($defaultParams = array(), $type = '')
+    public function formatParams()
     {
-        $params = array();
-        if($type != 'fetch')
+        global $config;
+
+        $params   = array();
+        $paramKey = '';
+        foreach($this->args as $key => $val)
         {
-            /* 分割URI。 Spit the URI. */
-            $items     = explode($this->config->requestFix, $this->URI);
-            $itemCount = count($items);
+            if($key == 0) continue;
+            if($key < 2 and substr($val, 0, 1) != '-') continue;
 
-            /**
-             * 前两项为模块名和方法名，参数从下标2开始。
-             * The first two item is moduleName and methodName. So the params should begin at 2.
-             **/
-            for($i = 2; $i < $itemCount; $i ++)
+            if(isset($config->arguments[$val]))
             {
-                $key = key($defaultParams);     // Get key from the $defaultParams.
-                if(empty($key)) continue;
-
-                $params[$key] = str_replace('.', '-', $items[$i]);
-                next($defaultParams);
+                $paramKey = $config->arguments[$val];
+                $params[$paramKey] = '';
+            }
+            elseif($paramKey)
+            {
+                $params[$paramKey] = $val;
             }
         }
 
-        $this->params = $this->mergeParams($defaultParams, $params);
-    }
-
-    /**
-     * 设置请求的参数(GET 方式)。
-     * Set the params by GET.
-     *
-     * @param   array  $defaultParams the default settings of the params.
-     * @param   string $type
-     * @access  public
-     * @return  void
-     */
-    public function setParamsByGET($defaultParams, $type = '')
-    {
-        $params = array();
-        if($type != 'fetch')
-        {
-            /* Unset moduleVar, methodVar, viewVar and session 变量， 剩下的作为参数。 */
-            /* Unset the moduleVar, methodVar, viewVar and session var, all the left are the params. */
-            unset($_GET[$this->config->moduleVar]);
-            unset($_GET[$this->config->methodVar]);
-            unset($_GET[$this->config->viewVar]);
-            unset($_GET[$this->config->sessionVar]);
-            $params = $_GET;
-        }
-
-        $this->params = $this->mergeParams($defaultParams, $params);
-    }
-
-    /**
-     * 合并请求的参数和默认参数，这样就可以省略已经有默认值的参数了。
-     * Merge the params passed in and the default params. Thus the params which have default values needn't pass value, just like a function.
-     *
-     * @param   array $defaultParams     the default params defined by the method.
-     * @param   array $passedParams      the params passed in through url.
-     * @access  public
-     * @return  array the merged params.
-     */
-    public function mergeParams($defaultParams, $passedParams)
-    {
-        global $filter;
-
-        /* Remove these two params. */
-        unset($passedParams['onlybody']);
-        unset($passedParams['HTTP_X_REQUESTED_WITH']);
-
-        /* Check params from URL. */
-        $nameRule = isset($filter->{$this->moduleName}->{$this->methodName}->paramName)  ? $filter->{$this->moduleName}->{$this->methodName}->paramName  : $filter->default->paramName;
-        foreach($passedParams as $param => $value)
-        {
-            if(!validater::checkByRule($param, $nameRule)) die('Bad Request!');
-            $valueRule = $filter->default->paramValue;
-            if(isset($filter->{$this->moduleName}->{$this->methodName}->paramValue[$param]))
-            {
-                $valueRule = $filter->{$this->moduleName}->{$this->methodName}->paramValue[$param];
-            }
-
-            if($value and !validater::checkByRule($value, $valueRule)) die('Bad Request!');
-        }
-
-        $passedParams = array_values($passedParams);
-        $i = 0;
-        foreach($defaultParams as $key => $defaultValue)
-        {
-            if(isset($passedParams[$i]))
-            {
-                $defaultParams[$key] = strip_tags(urldecode($passedParams[$i]));
-            }
-            else
-            {
-                if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
-            }
-            $i ++;
-        }
-
-        return $defaultParams;
+        return array('params' => $params);
     }
 
     /**
@@ -1896,8 +1436,11 @@ class router
 
         /* 加载主配置文件。 Load the main config file. */
         $mainConfigFile = $this->configRoot . 'config.php';
+        $appConfigFile  = $this->configRoot . $this->appName . '.php';
         if(!file_exists($mainConfigFile)) $this->triggerError("The main config file $mainConfigFile not found", __FILE__, __LINE__, $exit = true);
         include $mainConfigFile;
+
+        if(file_exists($appConfigFile)) include $appConfigFile;
     }
 
     /**
@@ -2423,9 +1966,6 @@ class super
     {
         if($this->scope == 'post')    a($_POST);
         if($this->scope == 'get')     a($_GET);
-        if($this->scope == 'server')  a($_SERVER);
-        if($this->scope == 'cookie')  a($_COOKIE);
-        if($this->scope == 'session') a($_SESSION);
         if($this->scope == 'env')     a($_ENV);
         if($this->scope == 'global')  a($GLOBALS);
     }

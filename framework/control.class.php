@@ -128,7 +128,7 @@ class control
          * 将全局变量设为baseControl类的成员变量，方便baseControl的派生类调用。
          * Global the globals, and refer them as a class member.
          */
-        global $app, $config, $lang, $common;
+        global $app, $config, $lang, $common, $params;
         $this->app      = $app;
         $this->config   = $config;
         $this->lang     = $lang;
