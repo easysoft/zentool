@@ -33,7 +33,7 @@ class index extends control
     {
         foreach($params as $key => $param)
         {
-            if($param == '-h' or $param == '--help')
+            if($key == 'help')
             {
                 echo sprintf($this->lang->index->help, $this->lang->appName);
                 return;
