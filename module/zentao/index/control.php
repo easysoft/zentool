@@ -12,6 +12,17 @@
 class index extends control
 {
     /**
+     * The construct function.
+     *
+     * @access public
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * The index page.
      *
      * @param  array $params
