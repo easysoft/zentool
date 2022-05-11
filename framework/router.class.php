@@ -1269,7 +1269,7 @@ class router
          * Create a instance of the control.
          **/
         $module = new $className();
-        if(!method_exists($module, $methodName)) $this->triggerError("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
+        if(!method_exists($module, $methodName)) $methodName = $this->config->default->method;
         $this->control = $module;
 
         /* include default value for module*/
