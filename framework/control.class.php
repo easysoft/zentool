@@ -276,4 +276,37 @@ class control
     {
         return helper::createLink($this->moduleName, $methodName, $vars, $viewType, $onlybody);
     }
+
+    /**
+     * 设置用户配置文件。
+     * Set user config file.
+     *
+     * @param  array  $configs
+     * @access public
+     * @return bool
+     */
+    public function setUserConfigs($configs = array())
+    {
+        if(!is_writable($this->config->userConfigFile)) return false;
+
+        $configContent = file_get_contents($this->config->userConfigFile);
+        foreach($configs as $name => $value)
+        {
+            if(isset($this->config->$name))
+            {
+                $configContent = str_replace("$name = {$this->config->$name}", "$name = $value", $configContent);
+            }
+            else
+            {
+                $configContent .= "$name = $value". PHP_EOL;
+            }
+        }
+
+        $configFile = @fopen($this->config->userConfigFile, "w");
+        fwrite($configFile, $configContent);
+        fclose($configFile);
+
+        $this->app->parseConfig();
+        return true;
+    }
 }

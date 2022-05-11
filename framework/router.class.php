@@ -311,7 +311,6 @@ class router
      */
     public function __construct($appRoot = '')
     {
-        $this->praseConfig();
         $appName = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
 
         $this->setAppName($appName);
@@ -328,6 +327,7 @@ class router
         $this->setWwwRoot();
         $this->setDataRoot();
         $this->loadMainConfig();
+        $this->parseConfig();
         $this->setClientLang();
 
         $this->loadClass('filter', $static = true);
@@ -363,9 +363,8 @@ class router
      * @access public
      * @return void
      */
-    public function praseConfig()
+    public function parseConfig()
     {
-        $userInfo   = posix_getpwuid(posix_getuid());
         $configFile = $_SERVER['HOME'] . '/.zconfig';
 
         $this->config->userConfigFile = $configFile;
@@ -396,6 +395,8 @@ class router
         else
         {
             fopen($configFile, 'w');
+            fwrite($configFile, '');
+            fclose($configFile);
         }
     }
 
