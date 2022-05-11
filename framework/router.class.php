@@ -829,9 +829,9 @@ class router
         global $argc, $argv;
         if(count($argv) <= 1) $argv[1] = '-h';
 
-        $specialArgs = array('help', 'versioin');
+        if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, "z {$this->config->version}". PHP_EOL));
 
-        $module = (empty($argv[1]) or substr($argv[1], 0, 1) == '-' or in_array($argv[1], $specialArgs)) ? $this->config->default->module : $argv[1];
+        $module = (empty($argv[1]) or substr($argv[1], 0, 1) == '-' or $argv[1] == 'help') ? $this->config->default->module : $argv[1];
         $method = (empty($argv[2]) or substr($argv[2], 0, 1) == '-') ? $this->config->default->method : $argv[2];
         $this->setModuleName($module);
         $this->setMethodName($method);
