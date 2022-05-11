@@ -25,14 +25,23 @@ class set extends control
         $realPath = false;
         while(!$realPath)
         {
-            $path = trim(fgets(STDIN));
-            if($path)
+            $path = rtrim(trim(fgets(STDIN)), '/');
+            if(!$path) continue;
+
+            if(file_exists("{$path}/config/my.php"))
             {
-                $realPath = true;
+                if($this->setUserConfigs(array('zt_webDir' => $path)))
+                {
+                    $realPath = true;
+                }
+                else
+                {
+                    return fwrite(STDERR, 'Unable to open config file!' . PHP_EOL);
+                }
             }
             else
             {
-                fwrite(STDOUT, sprintf($this->lang->set->dirNotExists, $path));
+                fwrite(STDERR, sprintf($this->lang->set->dirNotExists, $path));
             }
         }
     }
