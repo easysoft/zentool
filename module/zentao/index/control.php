@@ -31,13 +31,16 @@ class index extends control
      */
     public function index($params)
     {
+        if(empty($params)) return $this->printHelp();
+
         foreach($params as $key => $param)
         {
-            if($key == 'help')
-            {
-                echo sprintf($this->lang->index->help, $this->lang->appName);
-                return;
-            }
+            if($key == 'help') return $this->printHelp();
         }
+    }
+
+    public function printHelp()
+    {
+        echo sprintf($this->lang->index->help, $this->lang->appName);
     }
 }

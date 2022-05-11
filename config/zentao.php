@@ -1,3 +1,3 @@
 <?php
-$config->arguments['-h']   = 'help';
-$config->arguments['help'] = 'help';
+$config->arguments['-h']     = 'help';
+$config->arguments['--help'] = 'help';

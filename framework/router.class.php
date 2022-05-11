@@ -898,7 +898,9 @@ class router
     {
         $this->controlFile = $this->moduleRoot . $this->moduleName . DS . 'control.php';
         if(file_exists($this->controlFile)) return true;
-        $this->triggerError("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
+
+        $this->setModuleName($this->config->default->module);
+        $this->setControlFile();
     }
 
     /**
