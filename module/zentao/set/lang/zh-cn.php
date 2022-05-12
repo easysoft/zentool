@@ -12,6 +12,7 @@
 $lang->set = new stdclass();
 $lang->set->inputDir = <<<EOF
 设置禅道配置，请按ctrl+c退出。
+
 请输入禅道目录，例如：/opt/zentao ：
 
 EOF;

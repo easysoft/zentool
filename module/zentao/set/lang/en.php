@@ -12,6 +12,7 @@
 $lang->set = new stdclass();
 $lang->set->inputDir = <<<EOF
 Setting the zentao configuration, please press ctrl + c to exit.
+
 The zentao root directory, eg /opt/zentao:
 
 EOF;
