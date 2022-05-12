@@ -28,10 +28,10 @@ class set extends control
         {
             if($tryTime > 3) return fwrite(STDERR, $this->lang->set->tryTimeLimit);
 
-            $path = rtrim(trim(fgets(STDIN)), '/');
+            $path = rtrim(trim(fgets(STDIN)), DS);
             if(!$path) continue;
 
-            if(file_exists("{$path}/config/my.php"))
+            if(file_exists($path . DS . 'config' . DS . 'my.php'))
             {
                 if($this->setUserConfigs(array('zt_webDir' => $path)))
                 {

@@ -314,6 +314,7 @@ class router
         $appName = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
 
         $this->setAppName($appName);
+        $this->setOS();
         $this->setPathFix();
         $this->setBasePath();
         $this->setFrameRoot();
@@ -357,6 +358,21 @@ class router
     }
 
     /**
+     * 设置操作系统。
+     * Set OS.
+     *
+     * @access public
+     * @return void
+     */
+    function setOS()
+    {
+        $os = strtolower(PHP_OS);
+        if(strpos($os, 'win') !== false) $os = 'windows';
+
+        $this->config->os = $os;
+    }
+
+    /**
      * 解析配置文件。
      * Prase config file content.
      *
@@ -365,8 +381,29 @@ class router
      */
     public function parseConfig()
     {
-        $configFile = $_SERVER['HOME'] . '/.zconfig';
+        $userHome = '';
+        if($this->config->os == 'windows')
+        {
+            if(isset($_SERVER['HOMEDRIVE']) and isset($_SERVER['HOMEPATH']))
+            {
+                $userHome = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . DS;
+            }
+            else
+            {
+                if(isset($_SERVER['TMP'])  and !empty($_SERVER['TMP']))  $userHome = realpath($_SERVER['TMP']);
+                if(isset($_SERVER['TEMP']) and !empty($_SERVER['TEMP'])) $userHome = realpath($_SERVER['TEMP']);
+                if(empty($userHome)) $userHome = dirname(__FILE__);
 
+                if(substr($userHome, -1, 1) != DS) $userHome .= DS;
+                if(!is_writable($userHome)) $this->triggerError("Unable write tmp!");
+            }
+        }
+        else
+        {
+            $userHome = getenv('HOME') . DS;
+        }
+
+        $configFile = $userHome . '.zconfig';
         $this->config->userConfigFile = $configFile;
 
         if(file_exists($configFile))
