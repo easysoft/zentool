@@ -1304,7 +1304,7 @@ class router
             $defaultParams[$name] = $default;
         }
 
-        $this->params = $this->formatParams();
+        $this->params = $this->formatParams($moduleName, $methodName);
 
         /* 调用该方法   Call the method. */
         call_user_func_array(array($module, $methodName), $this->params);
@@ -1318,7 +1318,7 @@ class router
      * @access public
      * @return array
      */
-    public function formatParams()
+    public function formatParams($moduleName = '', $methodName = '')
     {
         global $config;
 
@@ -1333,6 +1333,10 @@ class router
             {
                 $paramKey = $config->arguments[$val];
                 $params[$paramKey] = '';
+            }
+            elseif($key == 3 and isset($this->config->$moduleName->paramKey[$methodName]))
+            {
+                $params[$this->config->$moduleName->paramKey[$methodName]] = $val;
             }
             elseif($paramKey)
             {

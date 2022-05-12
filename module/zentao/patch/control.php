@@ -9,19 +9,8 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-class index extends control
+class patch extends control
 {
-    /**
-     * The construct function.
-     *
-     * @access public
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * The index page.
      *
@@ -39,8 +28,23 @@ class index extends control
         }
     }
 
-    public function printHelp()
+    public function printHelp($type = 'patch')
     {
-        return fwrite(STDOUT, sprintf($this->lang->index->help, $this->lang->appName));
+        return fwrite(STDOUT, $this->lang->patch->help->$type);
+    }
+
+    /**
+     * The view page.
+     *
+     * @param  array $params
+     * @access public
+     * @return void
+     */
+    public function view($params)
+    {
+        if(empty($params) or isset($params['help'])) return $this->printHelp('view');
+
+        $patchID = $params['patchID'];
+        a($patchID);
     }
 }
