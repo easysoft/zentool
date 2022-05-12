@@ -23,8 +23,11 @@ class set extends control
         fwrite(STDOUT, $this->lang->set->inputDir);
 
         $realPath = false;
+        $tryTime  = 1;
         while(!$realPath)
         {
+            if($tryTime > 3) return fwrite(STDERR, $this->lang->set->tryTimeLimit);
+
             $path = rtrim(trim(fgets(STDIN)), '/');
             if(!$path) continue;
 
@@ -33,14 +36,16 @@ class set extends control
                 if($this->setUserConfigs(array('zt_webDir' => $path)))
                 {
                     $realPath = true;
+                    return fwrite(STDOUT, $this->lang->saveSuccess);
                 }
                 else
                 {
-                    return fwrite(STDERR, 'Unable to open config file!' . PHP_EOL);
+                    return fwrite(STDERR, $this->lang->set->noWriteAccess);
                 }
             }
             else
             {
+                $tryTime++;
                 fwrite(STDERR, sprintf($this->lang->set->dirNotExists, $path));
             }
         }
