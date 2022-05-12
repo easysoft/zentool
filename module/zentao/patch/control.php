@@ -48,13 +48,37 @@ class patch extends control
         for($i = 1; $i < 10; $i++)
         {
             $patch = array();
-            $patch['type']  = 'bug' . $i;
-            $patch['code']  = 'patch00' . $i;
-            $patch['title'] = mb_substr('这个包处理了任务相关的bug', 15 - $i) . $i;
-            $patch['date']  = '2022-01-0' . $i;
+            $patch['type']      = 'bug' . $i;
+            $patch['code']      = 'patch00' . $i;
+            $patch['title']     = mb_substr('这个包处理了任务相关的bug', 15 - $i) . $i;
+            $patch['date']      = '2022-01-0' . $i;
+            $patch['installed'] = $this->lang->no;
             $patchList[] = $patch;
         }
-        return $this->printList($patchList, array('type', 'code', 'title', 'date'), $this->lang->patch);
+
+        if(isset($params['showAll']))
+        {
+            $patchList[] = array(
+                'type'      => 'story',
+                'code'      => 'story',
+                'title'     => '这个是需求标题',
+                'date'      => '2022-05-01',
+                'installed' => $this->lang->yes
+            );
+        }
+        elseif(isset($params['local']))
+        {
+            $patchList = array();
+            $patchList[] = array(
+                'type'      => 'story',
+                'code'      => 'story',
+                'title'     => '这个是需求标题',
+                'date'      => '2022-05-01',
+                'installed' => $this->lang->yes
+            );
+        }
+
+        return $this->printList($patchList, array('type', 'code', 'title', 'date', 'installed'), $this->lang->patch);
     }
 
     /**

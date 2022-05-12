@@ -51,7 +51,8 @@ $lang->patch->viewPage = <<<EOF
 修改的内容 ：%s
 
 EOF;
-$lang->patch->title = '标题';
-$lang->patch->type  = '类型';
-$lang->patch->code  = '编号';
-$lang->patch->date  = '日期';
+$lang->patch->title     = '标题';
+$lang->patch->type      = '类型';
+$lang->patch->code      = '编号';
+$lang->patch->date      = '日期';
+$lang->patch->installed = '已安装';
