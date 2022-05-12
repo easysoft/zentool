@@ -28,7 +28,7 @@ class commit extends control
      * @access public
      * @return void
      */
-    public function index()
+    public function entry()
     {
         $command = 'git commit ';
         foreach($this->app->args as $key => $arg)

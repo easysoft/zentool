@@ -43,11 +43,9 @@ $config->devicePrefix['mhtml'] = 'm.';
 
 /* 默认值设置。Default settings. */
 $config->default = new stdclass();
-$config->default->view   = 'html';        //默认视图。 Default view.
 $config->default->lang   = 'en';          //默认语言。 Default language.
-$config->default->theme  = 'default';     //默认主题。 Default theme.
 $config->default->module = 'index';       //默认模块。 Default module.
-$config->default->method = 'index';       //默认方法。 Default method.
+$config->default->method = 'entry';       //默认方法。 Default method.
 
 /* 数据库设置。Database settings. */
 $config->db = new stdclass();

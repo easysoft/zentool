@@ -18,7 +18,7 @@ class set extends control
      * @access public
      * @return void
      */
-    public function index($params)
+    public function entry($params)
     {
         fwrite(STDOUT, $this->lang->set->inputDir);
 

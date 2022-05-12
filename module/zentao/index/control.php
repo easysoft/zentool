@@ -29,7 +29,7 @@ class index extends control
      * @access public
      * @return void
      */
-    public function index($params)
+    public function entry($params)
     {
         if(empty($params)) return $this->printHelp();
 
