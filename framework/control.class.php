@@ -309,4 +309,24 @@ class control
         $this->app->parseConfig();
         return true;
     }
+
+    /**
+     * Print cli table list.
+     *
+     * @param  array  $data
+     * @param  array  $fields
+     * @param  object $lang
+     * @param  int    $showBorder
+     * @access public
+     * @return void
+     */
+    public function printList($data = array(), $fields = array(), $lang = null, $showBorder = false)
+    {
+        $table = $this->app->loadClass('clitable');
+        $table->showBorder = $showBorder;
+
+        foreach($fields as $field) $table->addField($lang->$field,  $field);
+        $table->injectData($data);
+        return $table->display();
+    }
 }

@@ -51,3 +51,7 @@ Change Files : %s
  Change Logs : %s
 
 EOF;
+$lang->patch->title = 'Title';
+$lang->patch->type  = 'Type';
+$lang->patch->code  = 'Code';
+$lang->patch->date  = 'Date';
