@@ -34,6 +34,18 @@ class patch extends control
     }
 
     /**
+     * The list page.
+     *
+     * @param  array $params
+     * @access public
+     * @return void
+     */
+    public function list($params)
+    {
+        if(isset($params['help'])) return $this->printHelp('list');
+    }
+
+    /**
      * The view page.
      *
      * @param  array $params

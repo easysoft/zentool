@@ -826,9 +826,7 @@ class router
      */
     public function parseRequest()
     {
-        global $argc, $argv;
-        if(count($argv) <= 1) $argv[1] = '-h';
-
+        global $argv;
         if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, "z {$this->config->version}". PHP_EOL));
 
         $module = (empty($argv[1]) or substr($argv[1], 0, 1) == '-' or $argv[1] == 'help') ? $this->config->default->module : $argv[1];

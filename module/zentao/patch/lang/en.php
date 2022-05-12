@@ -23,6 +23,18 @@ Actions
   revert    -r   <patchid>  Revert an installed patch.
 
 EOF;
+$lang->patch->help->list = <<<EOF
+Usage
+  z patch list [options]
+
+Options
+  -a, all    List all the patches (include installed).
+  -l, local  List all installed patches.
+
+Example
+  z patch list -a
+
+EOF;
 $lang->patch->help->view = <<<EOF
 Usage
   z patch view <patchid>

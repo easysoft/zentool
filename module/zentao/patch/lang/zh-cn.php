@@ -23,6 +23,18 @@ $lang->patch->help->patch = <<<EOF
   revert    -r   <patchid>  还原已安装的补丁。
 
 EOF;
+$lang->patch->help->list = <<<EOF
+用法
+  z patch list [options]
+
+操作
+  -a, all   列出所有补丁（包括已安装的）。
+  -l, local 列出所有已安装的补丁。
+
+例如
+  z patch list -a
+
+EOF;
 $lang->patch->help->view = <<<EOF
 用法
   z patch view <patchid>
