@@ -10,6 +10,7 @@
  *  May you share freely, never taking more than you give.
  */
 $lang->patch = new stdclass();
+$lang->patch->help = new stdClass();
 $lang->patch->help->patch = <<<EOF
 Display the list, details and install the zentao patches.
 

@@ -311,11 +311,9 @@ class router
      */
     public function __construct($appRoot = '')
     {
-        $this->checkPHP();
         $appName = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
 
         $this->setAppName($appName);
-        $this->setOS();
         $this->setPathFix();
         $this->setBasePath();
         $this->setFrameRoot();
@@ -329,6 +327,7 @@ class router
         $this->setWwwRoot();
         $this->setDataRoot();
         $this->loadMainConfig();
+        $this->setOS();
         $this->parseConfig();
         $this->setRunDir();
         $this->setClientLang();
@@ -359,35 +358,6 @@ class router
         return new $className($appRoot);
     }
 
-
-    /**
-     * 检查php的可执行文件路径。
-     * Check php file.
-     *
-     * @access public
-     * @return void
-     */
-    public function checkPHP()
-    {
-        if(defined('PHP_EXEC_FILE')) $phpFile = PHP_EXEC_FILE;
-
-        if(!file_exists($phpFile))
-        {
-            /* linux和FreeBSD尝试检测。*/
-            if($this->os != 'windows')
-            {
-                $phpFile = trim(`which php-cgi 2>/dev/null`);
-                if(!$phpFile) $phpFile = trim(`which php 2>/dev/null`);
-                if(!file_exists($phpFile)) $this->triggerError("The PHP executable cannot be found. Please set the PHP_EXEC_FILE constant.");
-            }
-            else
-            {
-                $this->triggerError("The PHP executable cannot be found. Please set the PHP_EXEC_FILE constant.");
-            }
-        }
-        if(!extension_loaded("pcre")) $this->triggerError("Not install php-pcre extension!");
-    }
-
     /**
      * 设置操作系统。
      * Set OS.
@@ -400,6 +370,7 @@ class router
         $os = strtolower(PHP_OS);
         if(strpos($os, 'win') !== false) $os = 'windows';
 
+        $this->config = empty($this->config) ? new stdClass() : $this->config;
         $this->config->os = $os;
     }
 
@@ -1141,7 +1112,7 @@ class router
         if(empty($extFiles) and empty($hookFiles)) return $mainModelFile;
 
         /* 计算合并之后的modelFile路径。Compute the merged model file path. */
-        $extModelPrefix  = ($siteExtended and !empty($this->siteCode)) ? $this->siteCode{0} . DS . $this->siteCode : '';
+        $extModelPrefix  = '';
         $mergedModelDir  = $this->getTmpRoot() . 'model' . DS . ($extModelPrefix ? $extModelPrefix . DS : '');
         $mergedModelFile = $mergedModelDir . $moduleName . '.php';
         if(!is_dir($mergedModelDir)) mkdir($mergedModelDir, 0755, true);
