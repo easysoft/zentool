@@ -45,6 +45,12 @@ class patch extends control
         if(empty($params) or isset($params['help'])) return $this->printHelp('view');
 
         $patchID = $params['patchID'];
-        a($patchID);
+
+        $title = '这是一个标题';
+        $desc  = '这是描述信息';
+        $files = "a.php ,test/b.php";
+        $logs  = "改了几个已知的bug，调整了用户交互";
+
+        return fwrite(STDOUT, sprintf($this->lang->patch->viewPage, $patchID, $title, $desc, $files, $logs));
     }
 }

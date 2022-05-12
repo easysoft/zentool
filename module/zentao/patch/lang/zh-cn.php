@@ -31,3 +31,11 @@ $lang->patch->help->view = <<<EOF
   z patch view 1 查看ID为1的补丁包信息
 
 EOF;
+$lang->patch->viewPage = <<<EOF
+        ID ：%s
+      标题 ：%s
+      描述 ： %s
+修改的文件 ：%s
+修改的内容 ：%s
+
+EOF;

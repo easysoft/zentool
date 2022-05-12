@@ -31,3 +31,11 @@ Example
   z patch view 1  View the patch details which id is 1
 
 EOF;
+$lang->patch->viewPage = <<<EOF
+          ID : %s
+       Title : %s
+ Description : %s
+Change Files : %s
+ Change Logs : %s
+
+EOF;
