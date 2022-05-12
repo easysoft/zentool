@@ -330,6 +330,7 @@ class router
         $this->setDataRoot();
         $this->loadMainConfig();
         $this->parseConfig();
+        $this->setRunDir();
         $this->setClientLang();
 
         $this->loadClass('filter', $static = true);
@@ -386,6 +387,7 @@ class router
         }
         if(!extension_loaded("pcre")) $this->triggerError("Not install php-pcre extension!");
     }
+
     /**
      * 设置操作系统。
      * Set OS.
@@ -393,12 +395,24 @@ class router
      * @access public
      * @return void
      */
-    function setOS()
+    public function setOS()
     {
         $os = strtolower(PHP_OS);
         if(strpos($os, 'win') !== false) $os = 'windows';
 
         $this->config->os = $os;
+    }
+
+    /**
+     * 设置运行目录。
+     * Set runtime dir.
+     *
+     * @access public
+     * @return void
+     */
+    public function setRunDir()
+    {
+        $this->config->runDir = getcwd();
     }
 
     /**
