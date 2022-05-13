@@ -52,6 +52,14 @@ Example
   z patch install 1  Install the zentao patch which id is 1.
 
 EOF;
+$lang->patch->help->revert = <<<EOF
+Usage
+  z patch revert <patchid>  *Need permission to operate the zentao root directory.
+
+Example
+  z patch revert 1  Revert the installed zentao patch which id is 1.
+
+EOF;
 $lang->patch->viewPage = <<<EOF
           ID : %s
        Title : %s
@@ -60,8 +68,21 @@ Change Files : %s
  Change Logs : %s
 
 EOF;
-$lang->patch->title     = 'Title';
-$lang->patch->type      = 'Type';
-$lang->patch->code      = 'Code';
-$lang->patch->date      = 'Date';
-$lang->patch->installed = 'Installed';
+$lang->patch->title       = 'Title';
+$lang->patch->type        = 'Type';
+$lang->patch->code        = 'Code';
+$lang->patch->date        = 'Date';
+$lang->patch->installed   = 'Installed';
+$lang->patch->downloading = 'Downloading...' . PHP_EOL;
+$lang->patch->down        = 'Down' . PHP_EOL;
+$lang->patch->backuping   = 'Backuping...' . PHP_EOL;
+$lang->patch->installing  = 'Installing...' . PHP_EOL;
+$lang->patch->installed   = 'Install successfuly' . PHP_EOL;
+$lang->patch->restoring   = 'Restoring...' . PHP_EOL;
+$lang->patch->restored    = 'Revert successfuly' . PHP_EOL;
+
+$lang->patch->error = new stdClass();
+$lang->patch->error->runSet      = 'You should execute the set command first!' .  PHP_EOL;
+$lang->patch->error->notWritable = 'Directory %s does not have write access!' .  PHP_EOL;
+$lang->patch->error->installed   = 'You have already installed this patch package!' .  PHP_EOL;
+$lang->patch->error->notInstall  = 'You have not installed this patch package!' .  PHP_EOL;

@@ -103,6 +103,7 @@ class patch extends control
 
         return fwrite(STDOUT, sprintf($this->lang->patch->viewPage, $patchID, $title, $desc, $files, $logs));
     }
+
     /**
      * Install patch.
      *
@@ -114,36 +115,68 @@ class patch extends control
     {
         if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
 
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return fwrite(STDERR, 'You need run z set!');
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return fwrite(STDERR, $this->lang->patch->error->runSet);
 
-        $url     = 'https://cyy.oop.cc/data/upload/config.zip';
         $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
-        if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return fwrite(STDERR, 'No write access!');
+        if(file_exists($saveDir . 'install.lock')) return fwrite(STDERR, $this->lang->patch->error->installed);
+
+        if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $saveDir));
 
         $patchPath  = $saveDir . 'patch.zip';
         $backupPath = $saveDir . 'backup.zip';
 
-        fwrite(STDOUT, 'Downloading...');
-        // file_put_contents($savePath, fopen(file_get_contents($url), 'r'));
-        fwrite(STDOUT, 'Down');
+        if(!file_exists)
+        {
+            fwrite(STDOUT, $this->lang->patch->downloading);
+            $url = 'https://cyy.oop.cc/data/upload/config.zip';
+            // file_put_contents($savePath, fopen(file_get_contents($url), 'r'));
+            fwrite(STDOUT, $this->lang->patch->down);
+        }
 
         $this->app->loadClass('pclzip', true);
         $zip    = new pclzip($patchPath);
         $files  = $zip->listContent();
-        if($files === 0) return fwrite(STDERR, $zip->errorInfo());
+        if($files === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
 
-        fwrite(STDOUT, 'Backuping...');
+        fwrite(STDOUT, $this->lang->patch->backuping);
         $fileNames = array();
         foreach($files as $file) $fileNames[] = $this->config->zt_webDir . DS . $file['filename'];
 
         $zip->changeFile($backupPath);
-        if($zip->create($fileNames) === 0) return fwrite(STDERR,  $zip->errorInfo());
-        fwrite(STDOUT, 'Down');
+        if($zip->create($fileNames) === 0) return fwrite(STDERR,  $zip->errorInfo() . PHP_EOL);
+        fwrite(STDOUT, $this->lang->patch->down);
 
-        fwrite(STDOUT, 'Installing...');
+        fwrite(STDOUT, $this->lang->patch->installing);
         $zip->changeFile($patchPath);
-        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir) === 0) return fwrite(STDERR, $zip->errorInfo());
-        fwrite(STDOUT, 'Install successfuly!');
-        echo PHP_EOL;
+        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        @touch($saveDir . 'install.lock');
+        fwrite(STDOUT, $this->lang->patch->installed);
+    }
+
+    /**
+     * Revert patch.
+     *
+     * @param  array  $params
+     * @access public
+     * @return void
+     */
+    public function revert($params)
+    {
+        if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('revert');
+
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return fwrite(STDERR, $this->lang->patch->error->runSet);
+
+        $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
+        if(!file_exists($saveDir . 'install.lock')) return fwrite(STDERR, $this->lang->patch->error->notInstall);
+
+        $backupPath = $saveDir . 'backup.zip';
+
+        $this->app->loadClass('pclzip', true);
+        $zip = new pclzip($backupPath);
+
+        fwrite(STDOUT, $this->lang->patch->restoring);
+        if($zip->extract(PCLZIP_OPT_PATH, '/') === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        @unlink($saveDir . 'install.lock');
+        fwrite(STDOUT, $this->lang->patch->restored);
     }
 }
