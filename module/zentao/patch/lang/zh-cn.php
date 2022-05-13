@@ -44,11 +44,11 @@ $lang->patch->help->view = <<<EOF
 
 EOF;
 $lang->patch->viewPage = <<<EOF
-        ID ：%s
-      标题 ：%s
-      描述 ： %s
-修改的文件 ：%s
-修改的内容 ：%s
+        ID：%s
+      标题：%s
+      描述：%s
+修改的文件：%s
+修改的内容：%s
 
 EOF;
 $lang->patch->title     = '标题';

@@ -61,11 +61,11 @@ Example
 
 EOF;
 $lang->patch->viewPage = <<<EOF
-          ID : %s
-       Title : %s
- Description : %s
-Change Files : %s
- Change Logs : %s
+          ID: %s
+       Title: %s
+ Description: %s
+Change Files: %s
+ Change Logs: %s
 
 EOF;
 $lang->patch->title       = 'Title';
