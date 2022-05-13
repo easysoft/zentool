@@ -25,7 +25,7 @@ class patch extends control
         foreach($params as $key => $param)
         {
             if($key == 'help') return $this->printHelp();
-            if($key == 'view') return $this->view(array('patchID' => $param));
+            if(method_exists($this, $key)) return $this->$key(array('patchID' => $param));
         }
     }
 
@@ -102,5 +102,48 @@ class patch extends control
         $logs  = "改了几个已知的bug，调整了用户交互";
 
         return fwrite(STDOUT, sprintf($this->lang->patch->viewPage, $patchID, $title, $desc, $files, $logs));
+    }
+    /**
+     * Install patch.
+     *
+     * @param  array  $params
+     * @access public
+     * @return void
+     */
+    public function install($params)
+    {
+        if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
+
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return fwrite(STDERR, 'You need run z set!');
+
+        $url     = 'https://cyy.oop.cc/data/upload/config.zip';
+        $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
+        if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return fwrite(STDERR, 'No write access!');
+
+        $patchPath  = $saveDir . 'patch.zip';
+        $backupPath = $saveDir . 'backup.zip';
+
+        fwrite(STDOUT, 'Downloading...');
+        // file_put_contents($savePath, fopen(file_get_contents($url), 'r'));
+        fwrite(STDOUT, 'Down');
+
+        $this->app->loadClass('pclzip', true);
+        $zip    = new pclzip($patchPath);
+        $files  = $zip->listContent();
+        if($files === 0) return fwrite(STDERR, $zip->errorInfo());
+
+        fwrite(STDOUT, 'Backuping...');
+        $fileNames = array();
+        foreach($files as $file) $fileNames[] = $this->config->zt_webDir . DS . $file['filename'];
+
+        $zip->changeFile($backupPath);
+        if($zip->create($fileNames) === 0) return fwrite(STDERR,  $zip->errorInfo());
+        fwrite(STDOUT, 'Down');
+
+        fwrite(STDOUT, 'Installing...');
+        $zip->changeFile($patchPath);
+        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir) === 0) return fwrite(STDERR, $zip->errorInfo());
+        fwrite(STDOUT, 'Install successfuly!');
+        echo PHP_EOL;
     }
 }

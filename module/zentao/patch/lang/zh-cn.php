@@ -28,8 +28,8 @@ $lang->patch->help->list = <<<EOF
   z patch list [options]
 
 操作
-  -a, all   列出所有补丁（包括已安装的）。
-  -l, local 列出所有已安装的补丁。
+  -a, --all   列出所有补丁（包括已安装的）。
+  -l, --local 列出所有已安装的补丁。
 
 例如
   z patch list -a

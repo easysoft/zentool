@@ -29,8 +29,8 @@ Usage
   z patch list [options]
 
 Options
-  -a, all    List all the patches (include installed).
-  -l, local  List all installed patches.
+  -a, --all    List all the patches (include installed).
+  -l, --local  List all installed patches.
 
 Example
   z patch list -a
@@ -42,6 +42,14 @@ Usage
 
 Example
   z patch view 1  View the patch details which id is 1
+
+EOF;
+$lang->patch->help->install = <<<EOF
+Usage
+  z patch install <patchid>  *Need permission to operate the zentao root directory.
+
+Example
+  z patch install 1  Install the zentao patch which id is 1.
 
 EOF;
 $lang->patch->viewPage = <<<EOF

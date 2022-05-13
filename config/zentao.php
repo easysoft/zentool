@@ -7,3 +7,4 @@ $config->arguments['-l']     = 'list';
 $config->arguments['--list'] = 'list';
 $config->arguments['-v']     = 'view';
 $config->arguments['--view'] = 'view';
+$config->arguments['-i']     = 'install';
