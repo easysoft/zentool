@@ -1383,7 +1383,7 @@ class router
                 $paramKey = $config->arguments[$val];
                 $params[$paramKey] = '';
             }
-            elseif($key == 3 and isset($this->config->$moduleName->paramKey[$methodName]))
+            elseif($key == 3 and substr($val, 0, 1) != '-' and isset($this->config->$moduleName->paramKey[$methodName]))
             {
                 $params[$this->config->$moduleName->paramKey[$methodName]] = $val;
             }

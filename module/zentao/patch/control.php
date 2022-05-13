@@ -125,7 +125,7 @@ class patch extends control
         $patchPath  = $saveDir . 'patch.zip';
         $backupPath = $saveDir . 'backup.zip';
 
-        if(!file_exists)
+        if(!file_exists($patchPath))
         {
             fwrite(STDOUT, $this->lang->patch->downloading);
             $url = 'https://cyy.oop.cc/data/upload/config.zip';
