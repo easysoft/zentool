@@ -42,7 +42,8 @@ class patch extends control
      */
     public function list($params)
     {
-        if(isset($params['help'])) return $this->printHelp('list');
+        global $argc;
+        if(isset($params['help']) or ($argc > 3 && empty($params))) return $this->printHelp('list');
 
         $patchList = array();
         for($i = 1; $i < 10; $i++)
