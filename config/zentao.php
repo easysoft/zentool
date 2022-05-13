@@ -5,3 +5,5 @@ $config->arguments['-a']     = 'showAll';
 $config->arguments['--all']  = 'showAll';
 $config->arguments['-l']     = 'list';
 $config->arguments['--list'] = 'list';
+$config->arguments['-v']     = 'view';
+$config->arguments['--view'] = 'view';

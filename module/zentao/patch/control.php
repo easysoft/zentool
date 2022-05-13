@@ -25,6 +25,7 @@ class patch extends control
         foreach($params as $key => $param)
         {
             if($key == 'help') return $this->printHelp();
+            if($key == 'view') return $this->view(array('patchID' => $param));
         }
     }
 
@@ -91,7 +92,7 @@ class patch extends control
      */
     public function view($params)
     {
-        if(empty($params) or isset($params['help'])) return $this->printHelp('view');
+        if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('view');
 
         $patchID = $params['patchID'];
 
