@@ -46,7 +46,7 @@ Example
 EOF;
 $lang->patch->help->install = <<<EOF
 Usage
-  z patch install <patchid>  *Need permission to operate the zentao root directory.
+  z patch install <patchid>  * Need permission to operate the zentao root directory.
 
 Example
   z patch install 1  Install the zentao patch which id is 1.
@@ -54,7 +54,7 @@ Example
 EOF;
 $lang->patch->help->revert = <<<EOF
 Usage
-  z patch revert <patchid>  *Need permission to operate the zentao root directory.
+  z patch revert <patchid>  * Need permission to operate the zentao root directory.
 
 Example
   z patch revert 1  Revert the installed zentao patch which id is 1.
@@ -74,7 +74,7 @@ $lang->patch->code        = 'Code';
 $lang->patch->date        = 'Date';
 $lang->patch->installed   = 'Installed';
 $lang->patch->downloading = 'Downloading...' . PHP_EOL;
-$lang->patch->down        = 'Down' . PHP_EOL;
+$lang->patch->down        = 'Done' . PHP_EOL;
 $lang->patch->backuping   = 'Backuping...' . PHP_EOL;
 $lang->patch->installing  = 'Installing...' . PHP_EOL;
 $lang->patch->installed   = 'Install successfuly' . PHP_EOL;

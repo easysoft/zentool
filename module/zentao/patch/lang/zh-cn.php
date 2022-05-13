@@ -10,6 +10,7 @@
  *  May you share freely, never taking more than you give.
  */
 $lang->patch = new stdclass();
+$lang->patch->help = new stdClass();
 $lang->patch->help->patch = <<<EOF
 对适合当前禅道版本的补丁包进行查看列表、详细信息和安装操作。
 
@@ -43,6 +44,22 @@ $lang->patch->help->view = <<<EOF
   z patch view 1 查看ID为1的补丁包信息
 
 EOF;
+$lang->patch->help->install = <<<EOF
+用法
+  z patch install <patchid>  * 需要操作禅道目录的权限。
+
+例如
+  z patch install 1  安装ID为1的补丁包。
+
+EOF;
+$lang->patch->help->revert = <<<EOF
+用法
+  z patch revert <patchid>  * 需要操作禅道目录的权限。
+
+例如
+  z patch revert 1  还原补丁包1的修改。
+
+EOF;
 $lang->patch->viewPage = <<<EOF
         ID：%s
       标题：%s
@@ -51,8 +68,21 @@ $lang->patch->viewPage = <<<EOF
 修改的内容：%s
 
 EOF;
-$lang->patch->title     = '标题';
-$lang->patch->type      = '类型';
-$lang->patch->code      = '编号';
-$lang->patch->date      = '日期';
-$lang->patch->installed = '已安装';
+$lang->patch->title       = '标题';
+$lang->patch->type        = '类型';
+$lang->patch->code        = '编号';
+$lang->patch->date        = '日期';
+$lang->patch->installed   = '已安装';
+$lang->patch->downloading = '正在下载补丁包...' . PHP_EOL;
+$lang->patch->down        = '完成' . PHP_EOL;
+$lang->patch->backuping   = '正在备份代码...' . PHP_EOL;
+$lang->patch->installing  = '正在安装补丁...' . PHP_EOL;
+$lang->patch->installed   = '安装成功' . PHP_EOL;
+$lang->patch->restoring   = '正在还原...' . PHP_EOL;
+$lang->patch->restored    = '还原成功' . PHP_EOL;
+
+$lang->patch->error = new stdClass();
+$lang->patch->error->runSet      = '需要先执行z set命令后操作！' .  PHP_EOL;
+$lang->patch->error->notWritable = '目录 %s 没有写权限！' .  PHP_EOL;
+$lang->patch->error->installed   = '您已安装过该补丁包！' .  PHP_EOL;
+$lang->patch->error->notInstall  = '您还未安装该补丁包！' .  PHP_EOL;

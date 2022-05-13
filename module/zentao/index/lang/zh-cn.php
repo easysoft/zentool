@@ -26,10 +26,6 @@ $lang->index->help = <<<EOF
    patch：安装禅道补丁。
    set：  显示和更改当前应用程序的配置信息。
 
-选项
-   -h, --help    为z工具中的任何命令提供帮助。
-   -v, --version 显示Z工具版本信息。
-
 使用“z [feature] --help 或 -h”获取有关模块的更多信息。
 
 EOF;

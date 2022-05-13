@@ -25,10 +25,6 @@ Feature
   patch:  Install the zentao patch.
   set:    Display and change configuration settings for current application.
 
-Options
-  -h, --help     Provide help for any command in the z.
-  -v, --version  Display the z version.
-
 Use "z [feature] --help or -h" for more information about a module.
 
 EOF;
