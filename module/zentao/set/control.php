@@ -33,9 +33,6 @@ class set extends control
 
             $filePath   = $path . DS . 'config' . DS . 'my.php';
             $fileExists = file_exists($filePath) ? 1 : (file_exists($this->config->runDir . DS . $path) ? 2 : 0);
-            a($fileExists);
-            a($this->config->runDir . DS . $path);
-            die;
             if($fileExists)
             {
                 if($this->setUserConfigs(array('zt_webDir' => $fileExists == 2 ? realpath($this->config->runDir . DS . $path) : $path)))
