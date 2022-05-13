@@ -382,10 +382,10 @@ class cliTable {
         $response = '';
 
         // Now draw the table!
-        $response .= $this->getTableTop($columnLengths);
+        if($this->showBorder) $response .= $this->getTableTop($columnLengths);
         if ($this->getShowHeaders()) {
             $response .= $this->getFormattedRow($headerData, $columnLengths, true);
-            $response .= $this->getTableSeperator($columnLengths);
+            if($this->showBorder) $response .= $this->getTableSeperator($columnLengths);
         }
 
         foreach ($cellData as $row) {
