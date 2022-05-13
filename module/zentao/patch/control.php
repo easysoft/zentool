@@ -128,8 +128,8 @@ class patch extends control
         if(!file_exists($patchPath))
         {
             fwrite(STDOUT, $this->lang->patch->downloading);
-            $url = 'https://cyy.oop.cc/data/upload/config.zip';
-            // file_put_contents($savePath, fopen(file_get_contents($url), 'r'));
+            $url  = 'http://cyy.oop.cc/data/upload/config.zip';
+            if(!@copy($url, $patchPath)) return fwrite(STDERR, error_get_last() . PHP_EOL);
             fwrite(STDOUT, $this->lang->patch->down);
         }
 
