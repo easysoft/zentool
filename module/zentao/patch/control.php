@@ -119,6 +119,8 @@ class patch extends control
 
         $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
         if(file_exists($saveDir . 'install.lock')) return fwrite(STDERR, $this->lang->patch->error->installed);
+        if($params['patchID'] == 'none') return fwrite(STDERR, $this->lang->patch->error->invalid);
+        if($params['patchID'] == 'incompatible') return fwrite(STDERR, $this->lang->patch->error->incompatible);
 
         if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $saveDir));
 
