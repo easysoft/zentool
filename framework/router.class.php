@@ -1378,9 +1378,9 @@ class router
             if($key == 0) continue;
             if($key < 2 and substr($val, 0, 1) != '-') continue;
 
-            if(isset($config->arguments[$val]))
+            if(isset($config->arguments[$moduleName . $val]) or isset($config->arguments[$val]))
             {
-                $paramKey = $config->arguments[$val];
+                $paramKey = isset($config->arguments[$moduleName . $val]) ? $config->arguments[$moduleName . $val] : $config->arguments[$val];
                 $params[$paramKey] = '';
             }
             elseif($key == 3 and substr($val, 0, 1) != '-' and isset($this->config->$moduleName->paramKey[$methodName]))

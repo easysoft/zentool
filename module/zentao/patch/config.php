@@ -1,5 +1,6 @@
 <?php
 $config->arguments['-l']      = 'local';
+$config->arguments['patch-l'] = 'list';
 $config->arguments['--local'] = 'local';
 $config->arguments['local']   = 'local';
 $config->arguments['-r']      = 'revert';
