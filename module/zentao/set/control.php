@@ -31,11 +31,13 @@ class set extends control
             $path = rtrim(trim(fgets(STDIN)), DS);
             if(!$path) continue;
 
+            $runPath    = $this->config->runDir . DS . $path;
+            $path       = realpath($path);
             $filePath   = $path . DS . 'config' . DS . 'my.php';
-            $fileExists = file_exists($filePath) ? 1 : (file_exists($this->config->runDir . DS . $path) ? 2 : 0);
+            $fileExists = file_exists($filePath) ? 1 : (file_exists($runPath) ? 2 : 0);
             if($fileExists)
             {
-                if($this->setUserConfigs(array('zt_webDir' => $fileExists == 2 ? realpath($this->config->runDir . DS . $path) : $path)))
+                if($this->setUserConfigs(array($this->config->set->dirParam => $fileExists == 2 ? realpath($runPath) : $path)))
                 {
                     $realPath = true;
                     return fwrite(STDOUT, $this->lang->saveSuccess);
