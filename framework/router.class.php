@@ -877,6 +877,8 @@ class router
      */
     public function parseRequest()
     {
+        if($this->config->os == 'linux') system('stty erase ^H');
+
         global $argv;
         if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, $this->config->version . PHP_EOL));
 

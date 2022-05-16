@@ -28,7 +28,16 @@ class set extends control
         {
             if($tryTime > 3) return fwrite(STDERR, $this->lang->set->tryTimeLimit);
 
-            $path = rtrim(trim(fgets(STDIN)), DS);
+            $inputValue = '';
+            try
+            {
+                $inputValue = trim(readline('Input: '), '`');
+            }
+            catch(Exception $e)
+            {
+                $inputValue = fgets(STDIN);
+            }
+            $path = rtrim(trim($inputValue), DS);
             if(!$path) continue;
 
             $runPath    = $this->config->runDir . DS . $path;
