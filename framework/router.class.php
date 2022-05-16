@@ -417,7 +417,7 @@ class router
             $userHome = getenv('HOME') . DS;
         }
 
-        $configFile = $userHome . '.zconfig';
+        $configFile = $userHome . '.zconfig/' . $this->appName;
         $this->config->userConfigFile = $configFile;
 
         if(file_exists($configFile))
@@ -445,9 +445,9 @@ class router
         }
         else
         {
-            fopen($configFile, 'w');
-            fwrite($configFile, '');
-            fclose($configFile);
+            if(!file_exists($userHome . '.zconfig/')) @mkdir($userHome . '.zconfig');
+
+            touch($configFile);
         }
     }
 
