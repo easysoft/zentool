@@ -77,7 +77,7 @@ $lang->patch->downloading = '正在下载补丁包...' . PHP_EOL;
 $lang->patch->down        = '完成' . PHP_EOL;
 $lang->patch->backuping   = '正在备份代码...' . PHP_EOL;
 $lang->patch->installing  = '正在安装补丁...' . PHP_EOL;
-$lang->patch->installed   = '安装成功，使用 z patch list local 可以查看已安装补丁包列表。' . PHP_EOL;
+$lang->patch->installDone = '安装成功，使用 z patch list local 可以查看已安装补丁包列表。' . PHP_EOL;
 $lang->patch->restoring   = '正在还原...' . PHP_EOL;
 $lang->patch->restored    = '还原成功' . PHP_EOL;
 

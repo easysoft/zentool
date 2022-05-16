@@ -152,7 +152,7 @@ class patch extends control
         $zip->changeFile($patchPath);
         if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
         @touch($saveDir . 'install.lock');
-        fwrite(STDOUT, $this->lang->patch->installed);
+        fwrite(STDOUT, $this->lang->patch->installDone);
     }
 
     /**
