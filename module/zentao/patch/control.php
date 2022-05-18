@@ -261,7 +261,9 @@ class patch extends control
         {
             $path = $this->readInput();
 
-            if(empty($path) or !is_dir($path) or !file_exists($path))
+            if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS .$path);
+
+            if(empty($path) or !file_exists($path))
             {
                 fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
             }
