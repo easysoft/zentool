@@ -2,7 +2,7 @@
 /**
  * The model file of patch module of Z.
  *
- * @copyright   Copyright 2009-2022222222222222222222222222222222222222222222 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
+ * @copyright   Copyright 2009-2022 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
  * @author      Yanyi Cao <caoyanyi@easycorp.ltd>
  * @package     patch
@@ -21,5 +21,17 @@ class patchModel extends model
             if(!preg_match('/^(max|biz){0,1}\d+\.\d+(\.\w+\d+)*$/', $version)) return false;
         }
         return true;
+    }
+
+    /**
+     * Check patch name.
+     *
+     * @param  string $patchName
+     * @access public
+     * @return int
+     */
+    public function checkPatchName($patchName)
+    {
+        return preg_match('/^zentao.[\d\.\w]+.[bug,story].[\d]+.zip$/', $patchName);
     }
 }
