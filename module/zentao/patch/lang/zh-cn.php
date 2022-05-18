@@ -50,6 +50,7 @@ $lang->patch->help->install = <<<EOF
 
 例如
   z patch install 1  安装ID为1的补丁包。
+  z patch install /zentao/patches/zentao.15.0.1.beta.bug.1.zip
 
 EOF;
 $lang->patch->help->revert = <<<EOF

@@ -50,6 +50,7 @@ Usage
 
 Example
   z patch install 1  Install the zentao patch which id is 1.
+  z patch install /zentao/patches/zentao.15.0.1.beta.bug.1.zip
 
 EOF;
 $lang->patch->help->revert = <<<EOF
