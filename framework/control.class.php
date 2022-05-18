@@ -347,7 +347,7 @@ class control
         }
         catch(Exception $e)
         {
-            $inputValue = fgets(STDIN);
+            $inputValue = trim(fgets(STDIN));
         }
         return $inputValue;
     }

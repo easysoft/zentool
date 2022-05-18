@@ -233,4 +233,65 @@ class model
         $this->$extensionClass = $extensionObject;
         return $extensionObject;
     }
+
+    /**
+     * Http.
+     *
+     * @param  string       $url
+     * @param  string|array $data
+     * @param  array        $options   This is option and value pair, like CURLOPT_HEADER => true. Use curl_setopt function to set options.
+     * @param  array        $headers   Set request headers.
+     * @param  string       $dataType  Set request data type.
+     * @access public
+     * @return string
+     */
+    public function http($url, $data = null, $options = array(), $headers = array(), $dataType = 'json')
+    {
+        global $lang, $app;
+        if(!extension_loaded('curl'))
+        {
+             if($dataType == 'json') return print($lang->error->noCurlExt);
+             return json_encode(array('result' => 'fail', 'message' => $lang->error->noCurlExt));
+        }
+
+        if(!is_array($headers)) $headers = (array)$headers;
+        $headers[] = "API-RemoteIP: " . helper::getRemoteIp();
+        if($dataType == 'json')
+        {
+            $headers[] = 'Content-Type: application/json;charset=utf-8';
+            if(!empty($data)) $data = json_encode($data);
+        }
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'Sae T OAuth2 v0.1');
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl, CURLOPT_ENCODING, "");
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        curl_setopt($curl, CURLOPT_HEADER, FALSE);
+        curl_setopt($curl, CURLINFO_HEADER_OUT, TRUE);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_URL, $url);
+
+        if(!empty($data))
+        {
+            if(is_object($data)) $data = (array) $data;
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        }
+
+        if($options) curl_setopt_array($curl, $options);
+        $response = curl_exec($curl);
+        $errors   = curl_error($curl);
+
+        curl_close($curl);
+
+        if($errors) return json_encode(array('result' => 'fail', 'message' => $errors));
+
+        return json_decode($response);
+    }
 }
