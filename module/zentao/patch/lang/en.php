@@ -115,6 +115,7 @@ $lang->patch->error->installed    = 'You have already installed this patch packa
 $lang->patch->error->notInstall   = 'You have not installed this patch package!' .  PHP_EOL;
 $lang->patch->error->invalid      = 'The patch id is invalid!' .  PHP_EOL;
 $lang->patch->error->incompatible = 'This patch is incompatible with current ZenTao version!' .  PHP_EOL;
+$lang->patch->error->invalidName  = 'The path %s in not a zentao patch, please check.' .  PHP_EOL;
 
 $lang->patch->error->build = new stdClass();
 $lang->patch->error->build->version = 'The version %s is invalid, please check again:' . PHP_EOL;

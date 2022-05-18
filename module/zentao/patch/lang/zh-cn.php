@@ -115,6 +115,7 @@ $lang->patch->error->installed    = '您已安装过该补丁包！' .  PHP_EOL;
 $lang->patch->error->notInstall   = '您还未安装该补丁包！' .  PHP_EOL;
 $lang->patch->error->invalid      = '该补丁包不存在！' .  PHP_EOL;
 $lang->patch->error->incompatible = '该补丁包与当前禅道版本不兼容！' .  PHP_EOL;
+$lang->patch->error->invalidName  = '输入的地址 %s 不正确，请确认。' .  PHP_EOL;
 
 $lang->patch->error->build = new stdClass();
 $lang->patch->error->build->version = '该版本号 %s 无效，请重新输入：' . PHP_EOL;
