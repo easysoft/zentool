@@ -18,10 +18,12 @@ Usage
   z patch <command> [options]
 
 Actions
-  list      -l              List all avaliable patches for current zentao version.
+  list                      List all avaliable patches for current zentao version.
   view      -v   <patchid>  View a patch.
   install   -i   <patchid>  Install a patch.
   revert    -r   <patchid>  Revert an installed patch.
+  build     -b              Build a patch.
+  release  -rel             Release a patch.
 
 EOF;
 $lang->patch->help->list = <<<EOF
@@ -50,6 +52,7 @@ Usage
 
 Example
   z patch install 1  Install the zentao patch which id is 1.
+  z patch install /zentao/patches/zentao.15.0.1.beta.bug.1.zip
 
 EOF;
 $lang->patch->help->revert = <<<EOF
@@ -66,6 +69,14 @@ Usage
 
 Example
   z patch build
+
+EOF;
+$lang->patch->help->release = <<<EOF
+Usage
+  z patch release   release a zentao patch.
+
+Example
+  z patch release /patches/zentao.15.0.1.beta.bug.1.zip
 
 EOF;
 $lang->patch->viewPage = <<<EOF
@@ -88,7 +99,7 @@ $lang->patch->installing   = 'Installing...' . PHP_EOL;
 $lang->patch->installDone  = 'Install successfuly, using z patch list local to view all installed patches.' . PHP_EOL;
 $lang->patch->restoring    = 'Restoring...' . PHP_EOL;
 $lang->patch->restored     = 'Revert successfuly' . PHP_EOL;
-$lang->patch->building     = 'Building' . PHP_EOL;
+$lang->patch->building     = 'Building...' . PHP_EOL;
 $lang->patch->buildSuccess = 'Build successfuly' . PHP_EOL;
 
 $lang->patch->build = new stdClass();
