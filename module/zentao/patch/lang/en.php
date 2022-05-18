@@ -48,7 +48,7 @@ Example
 EOF;
 $lang->patch->help->install = <<<EOF
 Usage
-  z patch install <patchid>  * Need permission to operate the zentao root directory.
+  z patch install <id | path>  * Need permission to operate the zentao root directory.
 
 Example
   z patch install 1  Install the zentao patch which id is 1.

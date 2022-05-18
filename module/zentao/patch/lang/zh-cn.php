@@ -48,7 +48,7 @@ $lang->patch->help->view = <<<EOF
 EOF;
 $lang->patch->help->install = <<<EOF
 用法
-  z patch install <patchid>  * 需要操作禅道目录的权限。
+  z patch install <id | path>  * 需要操作禅道目录的权限。
 
 例如
   z patch install 1  安装ID为1的补丁包。
