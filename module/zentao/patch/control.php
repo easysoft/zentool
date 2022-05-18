@@ -191,19 +191,21 @@ class patch extends control
      */
     public function build($params)
     {
+        if(isset($params['help'])) return $this->printHelp('build');
+
         $buildInfo = new stdClass();
 
         fwrite(STDOUT, $this->lang->patch->build->versionTip);
         while(true)
         {
-            $version = $this->readInput();
-            if(empty($version))
+            $versions = $this->readInput();
+            if(empty($versions) or !$this->patch->checkVersion($versions))
             {
-                fwrite(STDERR, sprintf($this->lang->patch->error->build->version, $version));
+                fwrite(STDERR, sprintf($this->lang->patch->error->build->version, $versions));
             }
             else
             {
-                $buildInfo->version = $version;
+                $buildInfo->version = $versions;
                 break;
             }
         }
@@ -227,25 +229,30 @@ class patch extends control
         fwrite(STDOUT, $this->lang->patch->build->idTip);
         while(true)
         {
-            $ID = (int)$this->readInput();
+            $ID = $this->readInput();
 
-            if(empty($ID))
+            if(empty((int)$ID))
             {
                 fwrite(STDERR, sprintf($this->lang->patch->error->build->id, $ID));
             }
             else
             {
-                $patchName = sprintf($this->config->patch->nameTpl, $buildInfo->version, $buildInfo->type, $ID);
-                if($patchName == 'zentao.16.5.beta.story.1234.zip')
+                $buildInfo->patchName = array();
+
+                $versions = explode(',', $buildInfo->version);
+                foreach($versions as $version)
                 {
-                    fwrite(STDERR, sprintf($this->lang->patch->error->build->patch, $ID));
+                    $patchName = sprintf($this->config->patch->nameTpl, trim($version), $buildInfo->type, (int)$ID);
+                    if($patchName == 'zentao.16.5.beta.story.1234.zip')
+                    {
+                        fwrite(STDERR, sprintf($this->lang->patch->error->build->patch, $patchName));
+                        continue 2;
+                    }
+                    $buildInfo->patchName[] = $patchName;
                 }
-                else
-                {
-                    $buildInfo->id        = $ID;
-                    $buildInfo->patchName = $patchName;
-                    break;
-                }
+
+                $buildInfo->id = $ID;
+                break;
             }
         }
 
@@ -266,11 +273,14 @@ class patch extends control
         }
 
         fwrite(STDOUT, $this->lang->patch->building . PHP_EOL);
-        $savePath = $this->config->runDir . DS . $buildInfo->patchName;
         $this->app->loadClass('pclzip', true);
-        $zip    = new pclzip($savePath);
+        foreach($buildInfo->patchName as $patch)
+        {
+            $savePath = $this->config->runDir . DS . $patch;
 
-        if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+            $zip = new pclzip($savePath);
+            if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        }
 
         return fwrite(STDOUT, $this->lang->patch->buildSuccess . PHP_EOL);
     }

@@ -60,6 +60,14 @@ Example
   z patch revert 1  Revert the installed zentao patch which id is 1.
 
 EOF;
+$lang->patch->help->build = <<<EOF
+Usage
+  z patch build  Build a zentao patch.
+
+Example
+  z patch build
+
+EOF;
 $lang->patch->viewPage = <<<EOF
           ID: %s
        Title: %s
