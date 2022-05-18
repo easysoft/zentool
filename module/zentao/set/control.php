@@ -28,15 +28,7 @@ class set extends control
         {
             if($tryTime > 3) return fwrite(STDERR, $this->lang->set->tryTimeLimit);
 
-            $inputValue = '';
-            try
-            {
-                $inputValue = trim(readline('Input: '), '`');
-            }
-            catch(Exception $e)
-            {
-                $inputValue = fgets(STDIN);
-            }
+            $inputValue = $this->readInput();
             $path = rtrim(trim($inputValue), DS);
             if(!$path) continue;
 

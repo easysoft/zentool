@@ -145,7 +145,7 @@ class patch extends control
         foreach($files as $file) $fileNames[] = $this->config->zt_webDir . DS . $file['filename'];
 
         $zip->changeFile($backupPath);
-        if($zip->create($fileNames) === 0) return fwrite(STDERR,  $zip->errorInfo() . PHP_EOL);
+        if($zip->create($fileNames, PCLZIP_OPT_REMOVE_PATH, $this->config->zt_webDir) === 0) return fwrite(STDERR,  $zip->errorInfo() . PHP_EOL);
         fwrite(STDOUT, $this->lang->patch->down);
 
         fwrite(STDOUT, $this->lang->patch->installing);
@@ -180,5 +180,91 @@ class patch extends control
         if($zip->extract(PCLZIP_OPT_PATH, '/') === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
         @unlink($saveDir . 'install.lock');
         fwrite(STDOUT, $this->lang->patch->restored);
+    }
+
+    public function build($params)
+    {
+        $buildInfo = new stdClass();
+
+        fwrite(STDOUT, $this->lang->patch->build->versionTip);
+        while(true)
+        {
+            $version = $this->readInput();
+            if(empty($version))
+            {
+                fwrite(STDERR, sprintf($this->lang->patch->error->build->version, $version));
+            }
+            else
+            {
+                $buildInfo->version = $version;
+                break;
+            }
+        }
+
+        fwrite(STDOUT, $this->lang->patch->build->typeTip);
+        while(true)
+        {
+            $type = $this->readInput();
+
+            if(empty($type) or !in_array($type, array('bug', 'story')))
+            {
+                fwrite(STDERR, sprintf($this->lang->patch->error->build->type, $type));
+            }
+            else
+            {
+                $buildInfo->type = $type;
+                break;
+            }
+        }
+
+        fwrite(STDOUT, $this->lang->patch->build->idTip);
+        while(true)
+        {
+            $ID = (int)$this->readInput();
+
+            if(empty($ID))
+            {
+                fwrite(STDERR, sprintf($this->lang->patch->error->build->id, $ID));
+            }
+            else
+            {
+                $patchName = sprintf($this->config->patch->nameTpl, $version, $type, $ID);
+                if($patchName == 'zentao.16.5.beta.story.1234.zip')
+                {
+                    fwrite(STDERR, sprintf($this->lang->patch->error->build->patch, $ID));
+                }
+                else
+                {
+                    $buildInfo->id        = $ID;
+                    $buildInfo->patchName = $patchName;
+                    break;
+                }
+            }
+        }
+
+        fwrite(STDOUT, $this->lang->patch->build->pathTip);
+        while(true)
+        {
+            $path = $this->readInput();
+
+            if(empty($path) or !is_dir($path) or !file_exists($path))
+            {
+                fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
+            }
+            else
+            {
+                $buildInfo->path = $path;
+                break;
+            }
+        }
+
+        fwrite(STDOUT, $this->lang->patch->building . PHP_EOL);
+        $savePath = $this->config->runDir . DS . $buildInfo->patchName;
+        $this->app->loadClass('pclzip', true);
+        $zip    = new pclzip($savePath);
+
+        if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+
+        return fwrite(STDOUT, $this->lang->patch->buildSuccess . PHP_EOL);
     }
 }

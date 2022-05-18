@@ -329,4 +329,26 @@ class control
         $table->injectData($data);
         return $table->display();
     }
+
+    /**
+     * Read user input.
+     *
+     * @param  string $tips
+     * @access public
+     * @return string
+     */
+    public function readInput($tips = '')
+    {
+        if($tips) fwrite(STDOUT, $tips);
+        $inputValue = '';
+        try
+        {
+            $inputValue = trim(readline('Input: '), '`');
+        }
+        catch(Exception $e)
+        {
+            $inputValue = fgets(STDIN);
+        }
+        return $inputValue;
+    }
 }
