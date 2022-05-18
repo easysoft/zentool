@@ -18,7 +18,7 @@ class patchModel extends model
         $versionList = explode(',', $versions);
         foreach($versionList as $version)
         {
-            if(!preg_match('/^(max|biz){0,1}\d+\.\d+(\.\w+\d+)*$/', $version)) return false;
+            if(!preg_match('/^(max|biz|pro|lite|litevip){0,1}\d+\.\d+(\.\d+)?(\.(((rc|alpha|stable)+\d{1})|(beta\d?)))?$/', $version)) return false;
         }
         return true;
     }
