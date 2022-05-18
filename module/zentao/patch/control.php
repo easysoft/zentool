@@ -114,30 +114,52 @@ class patch extends control
     public function install($params)
     {
         if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
-
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return fwrite(STDERR, $this->lang->patch->error->runSet);
 
-        $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
+        /* Check whether the parameter is an ID or a path. */
+        if(strpos($params['patchID'], '.zip') !== false)
+        {
+            $patchPath = realpath($params['patchID']);
+            if(!$patchPath) $patchPath = realpath($this->config->runDir . DS . $params['patchID']);
+            if(!$patchPath) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidName, $params['patchID']));
+
+            /* Verification name format. */
+            $pathList    = explode(DS, $patchPath);
+            $packageKey  = count($pathList) - 1;
+            $packageName = $pathList[$packageKey];
+            if(!$this->patch->checkPatchName($packageName)) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidName, $params['patchID']));
+
+            $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $packageName . DS;
+        }
+        else
+        {
+            $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
+        }
+
+        /* Check whether installed. */
         if(file_exists($saveDir . 'install.lock')) return fwrite(STDERR, $this->lang->patch->error->installed);
         if($params['patchID'] == 'none') return fwrite(STDERR, $this->lang->patch->error->invalid);
         if($params['patchID'] == 'incompatible') return fwrite(STDERR, $this->lang->patch->error->incompatible);
 
         if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $saveDir));
 
-        $patchPath  = $saveDir . 'patch.zip';
         $backupPath = $saveDir . 'backup.zip';
-
-        if(!file_exists($patchPath))
+        if(!isset($patchPath))
         {
-            fwrite(STDOUT, $this->lang->patch->downloading);
-            $url  = 'http://cyy.oop.cc/data/upload/config.zip';
-            if(!@copy($url, $patchPath)) return fwrite(STDERR, error_get_last() . PHP_EOL);
-            fwrite(STDOUT, $this->lang->patch->down);
+            $patchPath = $saveDir . 'patch.zip';
+
+            if(!file_exists($patchPath))
+            {
+                fwrite(STDOUT, $this->lang->patch->downloading);
+                $url  = 'http://cyy.oop.cc/data/upload/config.zip';
+                if(!@copy($url, $patchPath)) return fwrite(STDERR, error_get_last() . PHP_EOL);
+                fwrite(STDOUT, $this->lang->patch->down);
+            }
         }
 
         $this->app->loadClass('pclzip', true);
-        $zip    = new pclzip($patchPath);
-        $files  = $zip->listContent();
+        $zip   = new pclzip($patchPath);
+        $files = $zip->listContent();
         if($files === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
 
         fwrite(STDOUT, $this->lang->patch->backuping);
