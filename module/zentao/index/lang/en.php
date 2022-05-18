@@ -22,7 +22,7 @@ Usage
   z [feature] [command] [options]
 
 Feature
-  patch:  Install the zentao patch.
+  patch:  Manage the zentao patch.
   set:    Display and change configuration settings for current application.
 
 Use "z [feature] --help or -h" for more information about a module.
