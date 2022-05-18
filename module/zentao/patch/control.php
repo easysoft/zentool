@@ -182,6 +182,13 @@ class patch extends control
         fwrite(STDOUT, $this->lang->patch->restored);
     }
 
+    /**
+     * Build patch file.
+     *
+     * @param  array  $params
+     * @access public
+     * @return void
+     */
     public function build($params)
     {
         $buildInfo = new stdClass();
@@ -228,7 +235,7 @@ class patch extends control
             }
             else
             {
-                $patchName = sprintf($this->config->patch->nameTpl, $version, $type, $ID);
+                $patchName = sprintf($this->config->patch->nameTpl, $buildInfo->version, $buildInfo->type, $ID);
                 if($patchName == 'zentao.16.5.beta.story.1234.zip')
                 {
                     fwrite(STDERR, sprintf($this->lang->patch->error->build->patch, $ID));
