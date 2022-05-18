@@ -217,47 +217,42 @@ class patch extends control
 
         $buildInfo = new stdClass();
 
+        /* Check versions. */
         fwrite(STDOUT, $this->lang->patch->build->versionTip);
         while(true)
         {
             $versions = $this->readInput();
-            if(empty($versions) or !$this->patch->checkVersion($versions))
-            {
-                fwrite(STDERR, sprintf($this->lang->patch->error->build->version, $versions));
-            }
-            else
+            if(!empty($versions) and $this->patch->checkVersion($versions))
             {
                 $buildInfo->version = $versions;
                 break;
             }
+
+            fwrite(STDERR, sprintf($this->lang->patch->error->build->version, $versions));
         }
 
+        /* Check type. */
         fwrite(STDOUT, $this->lang->patch->build->typeTip);
         while(true)
         {
             $type = $this->readInput();
 
-            if(empty($type) or !in_array($type, array('bug', 'story')))
-            {
-                fwrite(STDERR, sprintf($this->lang->patch->error->build->type, $type));
-            }
-            else
+            if(in_array($type, array('bug', 'story')))
             {
                 $buildInfo->type = $type;
                 break;
             }
+
+            fwrite(STDERR, sprintf($this->lang->patch->error->build->type, $type));
         }
 
+        /* Check id. */
         fwrite(STDOUT, $this->lang->patch->build->idTip);
         while(true)
         {
             $ID = $this->readInput();
 
-            if(empty((int)$ID))
-            {
-                fwrite(STDERR, sprintf($this->lang->patch->error->build->id, $ID));
-            }
-            else
+            if(!empty((int)$ID))
             {
                 $buildInfo->patchName = array();
 
@@ -265,10 +260,10 @@ class patch extends control
                 foreach($versions as $version)
                 {
                     $patchName = sprintf($this->config->patch->nameTpl, trim($version), $buildInfo->type, (int)$ID);
-                    if($patchName == 'zentao.16.5.beta.story.1234.zip')
+                    if($patchName == 'zentao.16.5.bug.1234.zip')
                     {
                         fwrite(STDERR, sprintf($this->lang->patch->error->build->patch, $patchName));
-                        continue 2;
+                        break;
                     }
                     $buildInfo->patchName[] = $patchName;
                 }
@@ -276,8 +271,11 @@ class patch extends control
                 $buildInfo->id = $ID;
                 break;
             }
+
+            fwrite(STDERR, sprintf($this->lang->patch->error->build->id, $ID));
         }
 
+        /* Check path. */
         fwrite(STDOUT, $this->lang->patch->build->pathTip);
         while(true)
         {
@@ -285,17 +283,16 @@ class patch extends control
 
             if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS .$path);
 
-            if(empty($path) or !file_exists($path))
-            {
-                fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
-            }
-            else
+            if(!empty($path) and file_exists($path))
             {
                 $buildInfo->path = $path;
                 break;
             }
+
+            fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
         }
 
+        /* Zip create. */
         fwrite(STDOUT, $this->lang->patch->building . PHP_EOL);
         $this->app->loadClass('pclzip', true);
         foreach($buildInfo->patchName as $patch)
