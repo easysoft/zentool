@@ -81,32 +81,38 @@ Example
 EOF;
 $lang->patch->viewPage = <<<EOF
           ID: %s
-       Title: %s
+        Name: %s
  Description: %s
 Change Files: %s
  Change Logs: %s
 
 EOF;
-$lang->patch->title        = 'Title';
-$lang->patch->type         = 'Type';
-$lang->patch->code         = 'Code';
-$lang->patch->date         = 'Date';
-$lang->patch->installed    = 'Installed';
-$lang->patch->downloading  = 'Downloading...' . PHP_EOL;
-$lang->patch->down         = 'Done' . PHP_EOL;
-$lang->patch->backuping    = 'Backuping...' . PHP_EOL;
-$lang->patch->installing   = 'Installing...' . PHP_EOL;
-$lang->patch->installDone  = 'Install successfuly, using z patch list local to view all installed patches.' . PHP_EOL;
-$lang->patch->restoring    = 'Restoring...' . PHP_EOL;
-$lang->patch->restored     = 'Revert successfuly' . PHP_EOL;
-$lang->patch->building     = 'Building...' . PHP_EOL;
-$lang->patch->buildSuccess = 'Build successfuly' . PHP_EOL;
+$lang->patch->name           = 'Name';
+$lang->patch->type           = 'Type';
+$lang->patch->code           = 'Code';
+$lang->patch->date           = 'Date';
+$lang->patch->installed      = 'Installed';
+$lang->patch->downloading    = 'Downloading...' . PHP_EOL;
+$lang->patch->down           = 'Done' . PHP_EOL;
+$lang->patch->backuping      = 'Backuping...' . PHP_EOL;
+$lang->patch->installing     = 'Installing...' . PHP_EOL;
+$lang->patch->installDone    = 'Install successfuly, using z patch list local to view all installed patches.' . PHP_EOL;
+$lang->patch->restoring      = 'Restoring...' . PHP_EOL;
+$lang->patch->restored       = 'Revert successfuly' . PHP_EOL;
+$lang->patch->building       = 'Building...' . PHP_EOL;
+$lang->patch->buildSuccess   = 'Build successfuly' . PHP_EOL;
+$lang->patch->releaseSuccess = 'Release successfuly' . PHP_EOL;
 
 $lang->patch->build = new stdClass();
 $lang->patch->build->versionTip = 'Please input the version of  zentao, eg 16.5, biz6.5, max3.0, use , for mult versions:' . PHP_EOL;
 $lang->patch->build->typeTip    = 'Please set the patch type, story or bug:' . PHP_EOL;
 $lang->patch->build->idTip      = 'Please set the id of the story or bug:' . PHP_EOL;
 $lang->patch->build->pathTip    = 'Please set the patch directory, eg /zentao/build:' . PHP_EOL;
+
+$lang->patch->release = new stdClass();
+$lang->patch->release->replaceTip   = 'Are you sure to replace the released patch? (y/n)' . PHP_EOL;
+$lang->patch->release->descTip      = 'The description:' . PHP_EOL;
+$lang->patch->release->changelogTip = 'The change log:' . PHP_EOL;
 
 $lang->patch->error = new stdClass();
 $lang->patch->error->runSet       = 'Please use z set to set the zentao directory!' .  PHP_EOL;
@@ -116,6 +122,8 @@ $lang->patch->error->notInstall   = 'You have not installed this patch package!'
 $lang->patch->error->invalid      = 'The patch id is invalid!' .  PHP_EOL;
 $lang->patch->error->incompatible = 'This patch is incompatible with current ZenTao version!' .  PHP_EOL;
 $lang->patch->error->invalidName  = 'The path %s in not a zentao patch, please check.' .  PHP_EOL;
+$lang->patch->error->invalidFile  = 'The file %s is not a zentao patch, please check.' .  PHP_EOL;
+$lang->patch->error->wrongParam   = 'Wrong (y/n)' .  PHP_EOL;
 
 $lang->patch->error->build = new stdClass();
 $lang->patch->error->build->version = 'The version %s is invalid, please check again:' . PHP_EOL;

@@ -351,4 +351,18 @@ class control
         }
         return $inputValue;
     }
+
+    /**
+     * Get real path.
+     *
+     * @param  string $path
+     * @access public
+     * @return string
+     */
+    public function getRealPath($path = '')
+    {
+        $realPath = realpath($path);
+        if(!$realPath) $realPath = realpath($this->config->runDir . DS . $path);
+        return $realPath;
+    }
 }

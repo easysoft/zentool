@@ -46,41 +46,9 @@ class patch extends control
         global $argc;
         if(isset($params['help']) or ($argc > 3 && empty($params))) return $this->printHelp('list');
 
-        $patchList = array();
-        for($i = 1; $i < 10; $i++)
-        {
-            $patch = array();
-            $patch['type']      = 'bug' . $i;
-            $patch['code']      = 'patch00' . $i;
-            $patch['title']     = mb_substr('这个包处理了任务相关的bug', 15 - $i) . $i;
-            $patch['date']      = '2022-01-0' . $i;
-            $patch['installed'] = $this->lang->no;
-            $patchList[] = $patch;
-        }
+        $patchList = $this->patch->getPatchList($params);
 
-        if(isset($params['showAll']))
-        {
-            $patchList[] = array(
-                'type'      => 'story',
-                'code'      => 'story',
-                'title'     => '这个是需求标题',
-                'date'      => '2022-05-01',
-                'installed' => $this->lang->yes
-            );
-        }
-        elseif(isset($params['local']))
-        {
-            $patchList = array();
-            $patchList[] = array(
-                'type'      => 'story',
-                'code'      => 'story',
-                'title'     => '这个是需求标题',
-                'date'      => '2022-05-01',
-                'installed' => $this->lang->yes
-            );
-        }
-
-        return $this->printList($patchList, array('type', 'code', 'title', 'date', 'installed'), $this->lang->patch);
+        return $this->printList($patchList, array('type', 'code', 'name', 'date', 'installed'), $this->lang->patch);
     }
 
     /**
@@ -96,12 +64,12 @@ class patch extends control
 
         $patchID = $params['patchID'];
 
-        $title = '这是一个标题';
+        $name  = '这是一个标题';
         $desc  = '这是描述信息';
         $files = "a.php, test/b.php";
         $logs  = "改了几个已知的bug，调整了用户交互";
 
-        return fwrite(STDOUT, sprintf($this->lang->patch->viewPage, $patchID, $title, $desc, $files, $logs));
+        return fwrite(STDOUT, sprintf($this->lang->patch->viewPage, $patchID, $name, $desc, $files, $logs));
     }
 
     /**
@@ -119,8 +87,7 @@ class patch extends control
         /* Check whether the parameter is an ID or a path. */
         if(strpos($params['patchID'], '.zip') !== false)
         {
-            $patchPath = realpath($params['patchID']);
-            if(!$patchPath) $patchPath = realpath($this->config->runDir . DS . $params['patchID']);
+            $patchPath = $this->getRealPath($params['patchPath']);
             if(!$patchPath) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidName, $params['patchID']));
 
             /* Verification name format. */
@@ -304,5 +271,60 @@ class patch extends control
         }
 
         return fwrite(STDOUT, $this->lang->patch->buildSuccess . PHP_EOL);
+    }
+
+    /**
+     * Release patch.
+     *
+     * @param  array $params
+     * @access public
+     * @return void
+     */
+    public function release($params)
+    {
+        if(empty($params) or !isset($params['patchPath']) or empty($params['patchPath']) or isset($params['help'])) return $this->printHelp('install');
+
+        /* Verify that the parameters are valid. */
+        $patchPath = $this->getRealPath($params['patchPath']);
+        if(!$patchPath) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidFile, $params['patchPath']));
+
+        /* Verification name format. */
+        $pathList    = explode(DS, $patchPath);
+        $packageKey  = count($pathList) - 1;
+        $packageName = $pathList[$packageKey];
+        if(!$this->patch->checkPatchName($packageName)) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidFile, $params['patchPath']));
+
+        /* Check whether the patch package exists. */
+        $isExist = $this->patch->checkExist($packageName);
+        if($isExist)
+        {
+            $wrongCount = 1;
+
+            fwrite(STDOUT, $this->lang->patch->release->replaceTip);
+            while(true)
+            {
+                $result = $this->readInput();
+
+                if($result == 'yes' or $result == 'y') break;
+                if($result == 'no' or $result == 'n' or $wrongCount > 2) return false;
+
+                ++$wrongCount;
+
+                fwrite(STDERR, $this->lang->patch->release->replaceTip);
+            }
+        }
+
+        /* Input release info. */
+        $releaseInfo = new stdclass();
+
+        fwrite(STDOUT, $this->lang->patch->release->descTip);
+        $releaseInfo->desc = $this->readInput();
+
+        fwrite(STDOUT, $this->lang->patch->release->changelogTip);
+        $releaseInfo->changelog = $this->readInput();
+
+        /* Release patch by api. */
+        $this->patch->release($patchPath, $releaseInfo);
+        fwrite(STDOUT, $this->lang->patch->releaseSuccess);
     }
 }
