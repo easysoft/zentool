@@ -298,13 +298,14 @@ class patch extends control
                 }
 
                 fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $path));
+                continue;
             }
 
             fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
         }
 
         /* Zip create. */
-        fwrite(STDOUT, $this->lang->patch->building . PHP_EOL);
+        fwrite(STDOUT, $this->lang->patch->building);
         $this->app->loadClass('pclzip', true);
 
         $zip      = new pclzip($savePath);
@@ -315,6 +316,6 @@ class patch extends control
             for($i = 1; $i < count($buildInfo->patchName); $i++) @copy($savePath, $this->config->runDir . DS . $buildInfo->patchName[$i]);
         }
 
-        return fwrite(STDOUT, $this->lang->patch->buildSuccess . PHP_EOL);
+        return fwrite(STDOUT, $this->lang->patch->buildSuccess);
     }
 }
