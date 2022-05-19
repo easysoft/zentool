@@ -219,6 +219,8 @@ class patch extends control
     {
         if(isset($params['help'])) return $this->printHelp('build');
 
+        if(!is_writable($this->config->runDir)) return fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $this->config->runDir));
+
         $buildInfo = new stdClass();
 
         /* Check versions. */
@@ -289,8 +291,13 @@ class patch extends control
 
             if(!empty($path) and file_exists($path))
             {
-                $buildInfo->path = $path;
-                break;
+                if(@opendir($path))
+                {
+                    $buildInfo->path = $path;
+                    break;
+                }
+
+                fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $path));
             }
 
             fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
