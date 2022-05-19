@@ -39,7 +39,7 @@ class patchModel extends model
      */
     public function checkPatchName($patchName)
     {
-        return preg_match('/^zentao.[\d\.\w]+.[bug,story].[\d]+.zip$/', $patchName);
+        return preg_match('/^zentao\.[\d\.a-z]+\.(bug|story)\.[\d]+\.zip$/', $patchName);
     }
 
     /**
