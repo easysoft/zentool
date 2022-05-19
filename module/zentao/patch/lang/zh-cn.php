@@ -18,7 +18,7 @@ $lang->patch->help->patch = <<<EOF
   z patch <command> [options]
 
 命令
-  list                      列出当前禅道版本的所有可用补丁包。
+  list      -l              列出当前禅道版本的所有可用补丁包。
   view      -v   <patchid>  查看补丁包。
   install   -i   <patchid>  安装补丁包。
   revert    -r   <patchid>  还原已安装的补丁。

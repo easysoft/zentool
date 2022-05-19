@@ -24,7 +24,11 @@ class patch extends control
 
         foreach($params as $key => $param)
         {
-            if(method_exists($this, $key)) return $this->$key(array('patchID' => $param));
+            if(method_exists($this, $key))
+            {
+                if(isset($this->config->patch->paramKey[$key])) $params = array('patchID' => $param);
+                return $this->$key($params);
+            }
             return $this->printHelp();
         }
     }

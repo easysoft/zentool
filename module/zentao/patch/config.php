@@ -1,6 +1,5 @@
 <?php
 $config->arguments['--local'] = 'local';
-$config->arguments['local']   = 'local';
 $config->arguments['-r']      = 'revert';
 $config->arguments['-b']      = 'build';
 $config->arguments['-rel']    = 'release';
