@@ -23,7 +23,7 @@ $lang->patch->help->patch = <<<EOF
   install   -i   <patchid>  安装补丁包。
   revert    -r   <patchid>  还原已安装的补丁。
   build     -b              构建补丁包。
-  release  -rel             发布补丁包。
+  release   -rel            发布补丁包。
 
 EOF;
 $lang->patch->help->list = <<<EOF

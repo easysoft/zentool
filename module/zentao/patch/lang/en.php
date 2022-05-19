@@ -23,7 +23,7 @@ Actions
   install   -i   <patchid>  Install a patch.
   revert    -r   <patchid>  Revert an installed patch.
   build     -b              Build a patch.
-  release  -rel             Release a patch.
+  release   -rel            Release a patch.
 
 EOF;
 $lang->patch->help->list = <<<EOF
