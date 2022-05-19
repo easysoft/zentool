@@ -24,7 +24,11 @@ class patch extends control
 
         foreach($params as $key => $param)
         {
-            if(method_exists($this, $key)) return $this->$key(array('patchID' => $param));
+            if(method_exists($this, $key))
+            {
+                if(isset($this->config->patch->paramKey[$key])) $params = array($this->config->patch->paramKey[$key] => $param);
+                return $this->$key($params);
+            }
             return $this->printHelp();
         }
     }
@@ -182,6 +186,8 @@ class patch extends control
     {
         if(isset($params['help'])) return $this->printHelp('build');
 
+        if(!is_writable($this->config->runDir)) return fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $this->config->runDir));
+
         $buildInfo = new stdClass();
 
         /* Check versions. */
@@ -252,25 +258,32 @@ class patch extends control
 
             if(!empty($path) and file_exists($path))
             {
-                $buildInfo->path = $path;
-                break;
+                if(@opendir($path))
+                {
+                    $buildInfo->path = $path;
+                    break;
+                }
+
+                fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $path));
+                continue;
             }
 
             fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
         }
 
         /* Zip create. */
-        fwrite(STDOUT, $this->lang->patch->building . PHP_EOL);
+        fwrite(STDOUT, $this->lang->patch->building);
         $this->app->loadClass('pclzip', true);
-        foreach($buildInfo->patchName as $patch)
-        {
-            $savePath = $this->config->runDir . DS . $patch;
 
-            $zip = new pclzip($savePath);
-            if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        $zip      = new pclzip($savePath);
+        $savePath = $this->config->runDir . DS . $buildInfo->patchName[0];
+        if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        if(count($buildInfo->patchName) > 1)
+        {
+            for($i = 1; $i < count($buildInfo->patchName); $i++) @copy($savePath, $this->config->runDir . DS . $buildInfo->patchName[$i]);
         }
 
-        return fwrite(STDOUT, $this->lang->patch->buildSuccess . PHP_EOL);
+        return fwrite(STDOUT, $this->lang->patch->buildSuccess);
     }
 
     /**

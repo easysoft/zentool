@@ -18,12 +18,12 @@ Usage
   z patch <command> [options]
 
 Actions
-  list                      List all avaliable patches for current zentao version.
+  list      -l              List all avaliable patches for current zentao version.
   view      -v   <patchid>  View a patch.
   install   -i   <patchid>  Install a patch.
   revert    -r   <patchid>  Revert an installed patch.
   build     -b              Build a patch.
-  release  -rel             Release a patch.
+  release   -rel            Release a patch.
 
 EOF;
 $lang->patch->help->list = <<<EOF

@@ -30,13 +30,13 @@ class set extends control
             $path = rtrim(trim($dir), DS);
             if(!$path) continue;
 
-            $runPath    = $this->config->runDir . DS . $path;
-            $path       = realpath($path);
-            $filePath   = $path . DS . 'config' . DS . 'my.php';
-            $fileExists = file_exists($filePath) ? 1 : (file_exists($runPath) ? 2 : 0);
-            if($fileExists)
+            $configPath = $path . DS . 'config' . DS . 'my.php';
+            $realPath   = realpath($configPath);
+            if(!$realPath) $realPath = realpath($this->config->runDir . DS . $configPath);
+
+            if($realPath)
             {
-                $userSet['zt_webDir'] = $fileExists == 2 ? realpath($runPath) : $path;
+                $userSet['zt_webDir'] = $realPath;
                 break;
             }
 
