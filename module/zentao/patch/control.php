@@ -273,11 +273,13 @@ class patch extends control
 
         /* Zip create. */
         fwrite(STDOUT, $this->lang->patch->building);
-        $this->app->loadClass('pclzip', true);
 
-        $zip      = new pclzip($savePath);
         $savePath = $this->config->runDir . DS . $buildInfo->patchName[0];
+
+        $this->app->loadClass('pclzip', true);
+        $zip = new pclzip($savePath);
         if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+
         if(count($buildInfo->patchName) > 1)
         {
             for($i = 1; $i < count($buildInfo->patchName); $i++) @copy($savePath, $this->config->runDir . DS . $buildInfo->patchName[$i]);
@@ -295,7 +297,7 @@ class patch extends control
      */
     public function release($params)
     {
-        if(empty($params) or !isset($params['patchPath']) or empty($params['patchPath']) or isset($params['help'])) return $this->printHelp('install');
+        if(empty($params) or !isset($params['patchPath']) or empty($params['patchPath']) or isset($params['help'])) return $this->printHelp('release');
 
         /* Verify that the parameters are valid. */
         $patchPath = $this->getRealPath($params['patchPath']);
