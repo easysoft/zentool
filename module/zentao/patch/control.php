@@ -306,12 +306,13 @@ class patch extends control
         /* Zip create. */
         fwrite(STDOUT, $this->lang->patch->building . PHP_EOL);
         $this->app->loadClass('pclzip', true);
-        foreach($buildInfo->patchName as $patch)
-        {
-            $savePath = $this->config->runDir . DS . $patch;
 
-            $zip = new pclzip($savePath);
-            if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        $zip      = new pclzip($savePath);
+        $savePath = $this->config->runDir . DS . $buildInfo->patchName[0];
+        if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        if(count($buildInfo->patchName) > 1)
+        {
+            for($i = 1; $i < count($buildInfo->patchName); $i++) @copy($savePath, $this->config->runDir . DS . $buildInfo->patchName[$i]);
         }
 
         return fwrite(STDOUT, $this->lang->patch->buildSuccess . PHP_EOL);
