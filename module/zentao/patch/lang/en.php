@@ -12,18 +12,18 @@
 $lang->patch = new stdclass();
 $lang->patch->help = new stdClass();
 $lang->patch->help->patch = <<<EOF
-Display the list, details and install the zentao patches.
+Show list, display details or perform installation for patches fit for current zentao version.
 
 Usage
   z patch <command> [options]
 
-Actions
-  list      -l              List all avaliable patches for current zentao version.
-  view      -v   <patchid>  View a patch.
-  install   -i   <patchid>  Install a patch.
-  revert    -r   <patchid>  Revert an installed patch.
-  build     -b              Build a patch.
-  release   -rel            Release a patch.
+Commands
+  list      -l                  List all avaliable patches for current zentao version.
+  view      -v   <patchid>      View a patch.
+  install   -i   <patchid>      Install a patch.
+  revert    -r   <patchid>      Revert an installed patch.
+  build     -b                  Build a patch.
+  release   -rel                Release a patch.
 
 EOF;
 $lang->patch->help->list = <<<EOF
@@ -51,7 +51,7 @@ Usage
   z patch install <id | path>  * Need permission to operate the zentao root directory.
 
 Example
-  z patch install 1  Install the zentao patch which id is 1.
+  z patch install 1
   z patch install /zentao/patches/zentao.15.0.1.beta.bug.1.zip
 
 EOF;
@@ -105,7 +105,7 @@ $lang->patch->releaseSuccess = 'Release successfuly' . PHP_EOL;
 $lang->patch->tryTimeLimit   = 'Please re execute and enter' . PHP_EOL;
 
 $lang->patch->build = new stdClass();
-$lang->patch->build->versionTip   = 'Please input the version of  zentao, eg 16.5, biz6.5, max3.0, use , for mult versions:' . PHP_EOL;
+$lang->patch->build->versionTip   = 'Please input the current installed Zentao version, e.g. 16.5, biz6.5, max3.0.  For multi-version installed, seperated them with "," :' . PHP_EOL;
 $lang->patch->build->typeTip      = 'Please set the patch type, story or bug:' . PHP_EOL;
 $lang->patch->build->idTip        = 'Please set the id of the story or bug:' . PHP_EOL;
 $lang->patch->build->buildPathTip = 'Please set the patch directory, eg /zentao/build:' . PHP_EOL;
