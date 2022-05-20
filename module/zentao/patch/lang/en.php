@@ -102,12 +102,13 @@ $lang->patch->restored       = 'Revert successfuly' . PHP_EOL;
 $lang->patch->building       = 'Building...' . PHP_EOL;
 $lang->patch->buildSuccess   = 'Build successfuly' . PHP_EOL;
 $lang->patch->releaseSuccess = 'Release successfuly' . PHP_EOL;
+$lang->patch->tryTimeLimit   = 'Please re execute and enter' . PHP_EOL;
 
 $lang->patch->build = new stdClass();
-$lang->patch->build->versionTip = 'Please input the version of  zentao, eg 16.5, biz6.5, max3.0, use , for mult versions:' . PHP_EOL;
-$lang->patch->build->typeTip    = 'Please set the patch type, story or bug:' . PHP_EOL;
-$lang->patch->build->idTip      = 'Please set the id of the story or bug:' . PHP_EOL;
-$lang->patch->build->pathTip    = 'Please set the patch directory, eg /zentao/build:' . PHP_EOL;
+$lang->patch->build->versionTip   = 'Please input the version of  zentao, eg 16.5, biz6.5, max3.0, use , for mult versions:' . PHP_EOL;
+$lang->patch->build->typeTip      = 'Please set the patch type, story or bug:' . PHP_EOL;
+$lang->patch->build->idTip        = 'Please set the id of the story or bug:' . PHP_EOL;
+$lang->patch->build->buildPathTip = 'Please set the patch directory, eg /zentao/build:' . PHP_EOL;
 
 $lang->patch->release = new stdClass();
 $lang->patch->release->replaceTip   = 'Are you sure to replace the released patch? (y/n)' . PHP_EOL;
@@ -125,8 +126,8 @@ $lang->patch->error->invalidName  = 'The path %s is not a zentao patch, please c
 $lang->patch->error->invalidFile  = 'The file %s is not a zentao patch, please check.' .  PHP_EOL;
 
 $lang->patch->error->build = new stdClass();
-$lang->patch->error->build->version = 'The version %s is invalid, please check again:' . PHP_EOL;
-$lang->patch->error->build->type    = 'The type %s is invalid, please check again:' . PHP_EOL;
-$lang->patch->error->build->id      = 'The ID %s is invalid, please check again:' . PHP_EOL;
-$lang->patch->error->build->patch   = 'The patchId %s is exist, please try another one:' . PHP_EOL;
-$lang->patch->error->build->path    = 'The directory %s is invalid, please check again:' . PHP_EOL;
+$lang->patch->error->build->version   = 'The version %s is invalid, please check again:' . PHP_EOL;
+$lang->patch->error->build->type      = 'The type %s is invalid, please check again:' . PHP_EOL;
+$lang->patch->error->build->id        = 'The ID %s is invalid, please check again:' . PHP_EOL;
+$lang->patch->error->build->patch     = 'The patchId %s is exist, please try another one:' . PHP_EOL;
+$lang->patch->error->build->buildPath = 'The directory %s is invalid, please check again:' . PHP_EOL;

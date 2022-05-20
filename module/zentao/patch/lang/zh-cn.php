@@ -103,10 +103,10 @@ $lang->patch->building     = '正在构建...' . PHP_EOL;
 $lang->patch->buildSuccess = '构建成功' . PHP_EOL;
 
 $lang->patch->build = new stdClass();
-$lang->patch->build->versionTip = '请输入禅道版本，例如 16.5, biz6.5, max3.0, 使用英文,分隔多个版本：' . PHP_EOL;
-$lang->patch->build->typeTip    = '请设置补丁包类型，story 或 bug：' . PHP_EOL;
-$lang->patch->build->idTip      = '请设置需求或bug的ID：' . PHP_EOL;
-$lang->patch->build->pathTip    = '请设置补丁包路径，例如 /zentao/build：' . PHP_EOL;
+$lang->patch->build->versionTip   = '请输入禅道版本，例如 16.5, biz6.5, max3.0, 使用英文,分隔多个版本：' . PHP_EOL;
+$lang->patch->build->typeTip      = '请设置补丁包类型，story 或 bug：' . PHP_EOL;
+$lang->patch->build->idTip        = '请设置需求或bug的ID：' . PHP_EOL;
+$lang->patch->build->buildPathTip = '请设置补丁包路径，例如 /zentao/build：' . PHP_EOL;
 
 $lang->patch->release = new stdClass();
 $lang->patch->release->replaceTip   = '您确定要覆盖已发布的同名补丁包吗？ (y/n)' . PHP_EOL;
@@ -124,8 +124,8 @@ $lang->patch->error->invalidName  = '输入的地址 %s 不正确，请确认。
 $lang->patch->error->invalidFile  = '输入的文件 %s 不是一个禅道补丁包，请确认。' .  PHP_EOL;
 
 $lang->patch->error->build = new stdClass();
-$lang->patch->error->build->version = '该版本号 %s 无效，请重新输入：' . PHP_EOL;
-$lang->patch->error->build->type    = '该类型 %s 无效，请重新输入：' . PHP_EOL;
-$lang->patch->error->build->id      = '该ID %s 不是有效的需求或bug ID，请重新输入：' . PHP_EOL;
-$lang->patch->error->build->patch   = '该补丁包 %s 已存在，请输入其他名称：' . PHP_EOL;
-$lang->patch->error->build->path    = '该目录 %s 无效，请重新输入：' . PHP_EOL;
+$lang->patch->error->build->version   = '该版本号 %s 无效，请重新输入：' . PHP_EOL;
+$lang->patch->error->build->type      = '该类型 %s 无效，请重新输入：' . PHP_EOL;
+$lang->patch->error->build->id        = '该ID %s 不是有效的需求或bug ID，请重新输入：' . PHP_EOL;
+$lang->patch->error->build->patch     = '该补丁包 %s 已存在，请输入其他名称：' . PHP_EOL;
+$lang->patch->error->build->buildPath = '该目录 %s 无效，请重新输入：' . PHP_EOL;

@@ -126,4 +126,61 @@ class patchModel extends model
         $this->http($this->config->webStoreUrl, $releaseInfo);
         return true;
     }
+
+    /**
+     * Check user input.
+     *
+     * @param  string $field
+     * @param  string $value
+     * @param  object $obj
+     * @access public
+     * @return bool
+     */
+    public function checkInput($field = '', $value = '', $obj = null)
+    {
+        if(empty($value)) return false;
+
+        if(method_exists($this, 'check' . $field)) return $this->{'check' . $field}($value, $obj);
+
+        if($field == 'type' and in_array($value, array('bug', 'story'))) return true;
+
+        return false;
+    }
+
+    /**
+     * Check ID.
+     *
+     * @param  int    $id
+     * @param  object $object
+     * @access public
+     * @return bool|array
+     */
+    public function checkID($id, $object)
+    {
+        if((int)$id)
+        {
+            $patchNames = array();
+            $versions = explode(',', $object->version);
+            foreach($versions as $version)
+            {
+                $patchName = sprintf($this->config->patch->nameTpl, trim($version), $object->type, (int)$id);
+                if($patchName == 'zentao.16.5.bug.1234.zip') return $patchName;
+
+                $patchNames[] = $patchName;
+            }
+
+            return $patchNames;
+        }
+
+        return false;
+    }
+
+    public function checkBuildPath($path)
+    {
+        if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS .$path);
+
+        if(!empty($path) and file_exists($path) and @opendir($path)) return true;
+
+        return false;
+    }
 }

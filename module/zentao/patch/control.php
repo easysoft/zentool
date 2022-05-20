@@ -122,7 +122,7 @@ class patch extends control
             if(!file_exists($patchPath))
             {
                 $this->output($this->lang->patch->downloading);
-                $url  = 'http://cyy.oop.cc/data/upload/config.zip';
+                $url = 'http://cyy.oop.cc/data/upload/config.zip';
                 if(!@copy($url, $patchPath)) $this->output(error_get_last() . PHP_EOL, 'err');
                 $this->output($this->lang->patch->down);
             }
@@ -188,84 +188,36 @@ class patch extends control
 
         if(!is_writable($this->config->runDir)) return $this->output(sprintf($this->lang->patch->error->notWritable, $this->config->runDir), 'err');
 
-        $buildInfo = new stdClass();
-
-        /* Check versions. */
-        $this->output($this->lang->patch->build->versionTip);
-        while(true)
+        $buildInfo   = new stdClass();
+        $tryTime     = 0;
+        $buildFields = explode(',', $this->config->patch->buildFields);
+        foreach($buildFields as $field)
         {
-            $versions = $this->readInput();
-            if(!empty($versions) and $this->patch->checkVersion($versions))
+            $this->output($this->lang->patch->build->{$field . 'Tip'});
+            while(true)
             {
-                $buildInfo->version = $versions;
-                break;
-            }
+                if($tryTime > 2) return $this->output($this->lang->patch->tryTimeLimit, 'err');
 
-            $this->output(sprintf($this->lang->patch->error->build->version, $versions), 'err');
-        }
-
-        /* Check type. */
-        $this->output($this->lang->patch->build->typeTip);
-        while(true)
-        {
-            $type = $this->readInput();
-
-            if(in_array($type, array('bug', 'story')))
-            {
-                $buildInfo->type = $type;
-                break;
-            }
-
-            $this->output(sprintf($this->lang->patch->error->build->type, $type), 'err');
-        }
-
-        /* Check id. */
-        $this->output($this->lang->patch->build->idTip);
-        while(true)
-        {
-            $ID = $this->readInput();
-
-            if(!empty((int)$ID))
-            {
-                $buildInfo->patchName = array();
-
-                $versions = explode(',', $buildInfo->version);
-                foreach($versions as $version)
+                $inputValue = $this->readInput();
+                $result     = $this->patch->checkInput($field, $inputValue, $buildInfo);
+                if($result)
                 {
-                    $patchName = sprintf($this->config->patch->nameTpl, trim($version), $buildInfo->type, (int)$ID);
-                    if($patchName == 'zentao.16.5.bug.1234.zip')
+                    $tryTime = 0;
+                    if($field == 'id' && is_string($result))
                     {
-                        $this->output(sprintf($this->lang->patch->error->build->patch, $patchName), 'err');
-                        continue 2;
+                        $this->output(sprintf($this->lang->patch->error->build->patch, $result), 'err');
+                        continue;
                     }
-                    $buildInfo->patchName[] = $patchName;
-                }
 
-                $buildInfo->id = $ID;
-                break;
-            }
+                    $buildInfo->$field = $inputValue;
 
-            $this->output(sprintf($this->lang->patch->error->build->id, $ID), 'err');
-        }
-
-        /* Check path. */
-        $this->output($this->lang->patch->build->pathTip);
-        while(true)
-        {
-            $path = $this->readInput();
-
-            if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS .$path);
-
-            if(!empty($path) and file_exists($path))
-            {
-                if(@opendir($path))
-                {
-                    $buildInfo->path = $path;
+                    if($field == 'id') $buildInfo->patchName = $result;
                     break;
                 }
-            }
 
-            $this->output(sprintf($this->lang->patch->error->build->path, $path), 'err');
+                $tryTime++;
+                $this->output(sprintf($this->lang->patch->error->build->$field, $inputValue), 'err');
+            }
         }
 
         /* Zip create. */
@@ -275,7 +227,7 @@ class patch extends control
 
         $this->app->loadClass('pclzip', true);
         $zip = new pclzip($savePath);
-        if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
         if(count($buildInfo->patchName) > 1)
         {
