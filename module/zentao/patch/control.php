@@ -87,6 +87,7 @@ class patch extends control
     {
         if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
+        if(!is_writable($this->config->zt_webDir)) return $this->output($this->lang->patch->error->notWritable, 'err');
 
         /* Check whether the parameter is an ID or a path. */
         if(strpos($params['patchID'], '.zip') !== false)
