@@ -40,15 +40,15 @@ Example
 EOF;
 $lang->patch->help->view = <<<EOF
 Usage
-  z patch view <patchid>
+  z patch view <patchid>     View the patch details which id is patchid
 
 Example
-  z patch view 1  View the patch details which id is 1
+  z patch view 1
 
 EOF;
 $lang->patch->help->install = <<<EOF
 Usage
-  z patch install <id | path>  * Need permission to operate the zentao root directory.
+  z patch install <id | path>     Need permission to operate the zentao root directory.
 
 Example
   z patch install 1
@@ -57,15 +57,15 @@ Example
 EOF;
 $lang->patch->help->revert = <<<EOF
 Usage
-  z patch revert <patchid>  * Need permission to operate the zentao root directory.
+  z patch revert <patchid>     Need permission to operate the zentao root directory.
 
 Example
-  z patch revert 1  Revert the installed zentao patch which id is 1.
+  z patch revert 1
 
 EOF;
 $lang->patch->help->build = <<<EOF
 Usage
-  z patch build  Build a zentao patch.
+  z patch build      Build a zentao patch.
 
 Example
   z patch build
@@ -73,7 +73,7 @@ Example
 EOF;
 $lang->patch->help->release = <<<EOF
 Usage
-  z patch release   release a zentao patch.
+  z patch release      release a zentao patch.
 
 Example
   z patch release /patches/zentao.15.0.1.beta.bug.1.zip
@@ -96,7 +96,7 @@ $lang->patch->downloading    = 'Downloading...' . PHP_EOL;
 $lang->patch->down           = 'Done' . PHP_EOL;
 $lang->patch->backuping      = 'Backuping...' . PHP_EOL;
 $lang->patch->installing     = 'Installing...' . PHP_EOL;
-$lang->patch->installDone    = 'Install successfuly, using z patch list local to view all installed patches.' . PHP_EOL;
+$lang->patch->installDone    = 'Install successfuly, using 'z patch list local' to view all installed patches.' . PHP_EOL;
 $lang->patch->restoring      = 'Restoring...' . PHP_EOL;
 $lang->patch->restored       = 'Revert successfuly' . PHP_EOL;
 $lang->patch->building       = 'Building...' . PHP_EOL;
@@ -116,7 +116,7 @@ $lang->patch->release->descTip      = 'The description:' . PHP_EOL;
 $lang->patch->release->changelogTip = 'The change log:' . PHP_EOL;
 
 $lang->patch->error = new stdClass();
-$lang->patch->error->runSet       = 'Please use z set to set the zentao directory!' .  PHP_EOL;
+$lang->patch->error->runSet       = 'Please use 'z set' to set the zentao directory!' .  PHP_EOL;
 $lang->patch->error->notWritable  = 'Directory %s does not have write access!' .  PHP_EOL;
 $lang->patch->error->installed    = 'You have already installed this patch package!' .  PHP_EOL;
 $lang->patch->error->notInstall   = 'You have not installed this patch package!' .  PHP_EOL;

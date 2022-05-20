@@ -40,15 +40,15 @@ $lang->patch->help->list = <<<EOF
 EOF;
 $lang->patch->help->view = <<<EOF
 用法
-  z patch view <patchid>
+  z patch view <patchid>     查看ID为1的补丁包信息
 
 例如
-  z patch view 1 查看ID为1的补丁包信息
+  z patch view 1
 
 EOF;
 $lang->patch->help->install = <<<EOF
 用法
-  z patch install <id | path>  * 需要操作禅道目录的权限。
+  z patch install <id | path>    需要操作禅道目录的权限。
 
 例如
   z patch install 1
@@ -57,15 +57,15 @@ $lang->patch->help->install = <<<EOF
 EOF;
 $lang->patch->help->revert = <<<EOF
 用法
-  z patch revert <patchid>  * 需要操作禅道目录的权限。
+  z patch revert <patchid>     需要操作禅道目录的权限。
 
 例如
-  z patch revert 1  还原补丁包1的修改。
+  z patch revert 1
 
 EOF;
 $lang->patch->help->build = <<<EOF
 用法
-  z patch build 构建补丁包。
+  z patch build      构建补丁包。
 
 例如
   z patch build
@@ -73,7 +73,7 @@ $lang->patch->help->build = <<<EOF
 EOF;
 $lang->patch->help->release = <<<EOF
 用法
-  z patch release  发布一个补丁包。
+  z patch release     发布一个补丁包。
 
 例如
   z patch release /patches/zentao.15.0.1.beta.bug.1.zip
@@ -114,7 +114,7 @@ $lang->patch->release->descTip      = '描述:' . PHP_EOL;
 $lang->patch->release->changelogTip = '变更记录:' . PHP_EOL;
 
 $lang->patch->error = new stdClass();
-$lang->patch->error->runSet       = '需要先执行z set命令后操作！' .  PHP_EOL;
+$lang->patch->error->runSet       = '需要先执行 z set 命令后操作！' .  PHP_EOL;
 $lang->patch->error->notWritable  = '目录 %s 没有写权限！' .  PHP_EOL;
 $lang->patch->error->installed    = '您已安装过该补丁包！' .  PHP_EOL;
 $lang->patch->error->notInstall   = '您还未安装该补丁包！' .  PHP_EOL;

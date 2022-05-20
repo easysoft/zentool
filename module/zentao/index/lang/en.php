@@ -11,7 +11,7 @@
  */
 $lang->index = new stdclass();
 $lang->index->help = <<<EOF
-Welcome to the Z tools for geek.The current application is %s(default).
+Welcome to the Z tools for geek. The current application is %s(default).
 You can use z app list and z app switch appName to get all applications and switch to one.
 
 App
