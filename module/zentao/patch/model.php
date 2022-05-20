@@ -118,10 +118,12 @@ class patchModel extends model
      * @param  string $patchPath
      * @param  object $releaseInfo
      * @access public
-     * @return void
+     * @return bool
      */
     public function release($patchPath, $releaseInfo)
     {
+        $releaseInfo->patch = '@' . $patchPath;
+        $this->http($this->config->webStoreUrl, $releaseInfo);
         return true;
     }
 }

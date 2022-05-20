@@ -10,3 +10,5 @@ $config->patch->paramKey['revert']  = 'patchID';
 $config->patch->paramKey['release'] = 'patchPath';
 
 $config->patch->nameTpl = 'zentao.%s.%s.%d.zip';
+
+$config->patch->webStoreUrl = 'http://demo.cn/';
