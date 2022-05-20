@@ -122,7 +122,6 @@ $lang->patch->error->invalid      = '该补丁包不存在！' .  PHP_EOL;
 $lang->patch->error->incompatible = '该补丁包与当前禅道版本不兼容！' .  PHP_EOL;
 $lang->patch->error->invalidName  = '输入的地址 %s 不正确，请确认。' .  PHP_EOL;
 $lang->patch->error->invalidFile  = '输入的文件 %s 不是一个禅道补丁包，请确认。' .  PHP_EOL;
-$lang->patch->error->wrongParam   = '输入错误，请重新输入。(y/n)' .  PHP_EOL;
 
 $lang->patch->error->build = new stdClass();
 $lang->patch->error->build->version = '该版本号 %s 无效，请重新输入：' . PHP_EOL;

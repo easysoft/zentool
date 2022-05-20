@@ -91,7 +91,7 @@ class patch extends control
         /* Check whether the parameter is an ID or a path. */
         if(strpos($params['patchID'], '.zip') !== false)
         {
-            $patchPath = $this->getRealPath($params['patchPath']);
+            $patchPath = $this->getRealPath($params['patchID']);
             if(!$patchPath) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidName, $params['patchID']));
 
             /* Verification name format. */
