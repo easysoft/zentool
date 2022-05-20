@@ -236,7 +236,7 @@ class patch extends control
                     if($patchName == 'zentao.16.5.bug.1234.zip')
                     {
                         fwrite(STDERR, sprintf($this->lang->patch->error->build->patch, $patchName));
-                        break;
+                        continue 2;
                     }
                     $buildInfo->patchName[] = $patchName;
                 }
