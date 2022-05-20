@@ -39,6 +39,7 @@ class set extends control
             if($realPath)
             {
                 $userSet['zt_webDir'] = $realPath;
+                if(!$this->setUserConfigs($userSet)) return fwrite(STDOUT, $this->lang->set->noWriteAccess);
                 break;
             }
 
