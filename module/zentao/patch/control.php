@@ -263,9 +263,6 @@ class patch extends control
                     $buildInfo->path = $path;
                     break;
                 }
-
-                fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $path));
-                continue;
             }
 
             fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
