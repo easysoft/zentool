@@ -283,10 +283,26 @@ class patch extends control
         $releaseInfo = new stdclass();
 
         $this->output($this->lang->patch->release->descTip);
-        $releaseInfo->desc = $this->readInput();
+        while(true)
+        {
+            $result = $this->readInput();
+            if($result)
+            {
+                $releaseInfo->desc = $result;
+                break;
+            }
+        }
 
         $this->output($this->lang->patch->release->changelogTip);
-        $releaseInfo->changelog = $this->readInput();
+        while(true)
+        {
+            $result = $this->readInput();
+            if($result)
+            {
+                $releaseInfo->changelog = $result;
+                break;
+            }
+        }
 
         /* Release patch by api. */
         $this->patch->release($patchPath, $releaseInfo);
