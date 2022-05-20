@@ -41,6 +41,6 @@ class index extends control
 
     public function printHelp()
     {
-        return fwrite(STDOUT, sprintf($this->lang->index->help, $this->app->appName));
+        return $this->output(sprintf($this->lang->index->help, $this->app->appName));
     }
 }

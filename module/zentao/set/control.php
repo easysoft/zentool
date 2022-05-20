@@ -23,11 +23,11 @@ class set extends control
         $userSet = array();
 
         /* Check path. */
-        fwrite(STDOUT, $this->lang->set->dirTip);
+        $this->output($this->lang->set->dirTip);
         $tryTimes = 0;
         while(true)
         {
-            if($tryTime > 2) return fwrite(STDERR, $this->lang->set->tryTimeLimit);
+            if($tryTime > 2) return $this->output($this->lang->set->tryTimeLimit, 'err');
             $dir  = $this->readInput();
             $path = rtrim(trim($dir), DS);
             if(!$path) continue;
@@ -43,9 +43,9 @@ class set extends control
             }
 
             $tryTime++;
-            fwrite(STDERR, sprintf($this->lang->set->dirNotExists, $path));
+            $this->output(sprintf($this->lang->set->dirNotExists, $path), 'err');
         }
 
-        fwrite(STDOUT, $this->lang->set->saveSuccess);
+        $this->output($this->lang->set->saveSuccess);
     }
 }

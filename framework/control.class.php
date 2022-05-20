@@ -339,7 +339,7 @@ class control
      */
     public function readInput($tips = '')
     {
-        if($tips) fwrite(STDOUT, $tips);
+        if($tips) $this->output($tips);
         $inputValue = '';
         try
         {
@@ -364,5 +364,21 @@ class control
         $realPath = realpath($path);
         if(!$realPath) $realPath = realpath($this->config->runDir . DS . $path);
         return $realPath;
+    }
+
+    /**
+     * Output message.
+     *
+     * @param  string $message
+     * @param  string $type
+     * @access public
+     * @return void
+     */
+    public function output($message = '', $type = 'out')
+    {
+        if(empty($message)) return;
+        if($type == 'out') return fwrite(STDOUT, $message);
+
+        return fwrite(STDERR, $message);
     }
 }

@@ -35,7 +35,7 @@ class patch extends control
 
     public function printHelp($type = 'patch')
     {
-        return fwrite(STDOUT, $this->lang->patch->help->$type);
+        return $this->output($this->lang->patch->help->$type);
     }
 
     /**
@@ -73,7 +73,7 @@ class patch extends control
         $files = "a.php, test/b.php";
         $logs  = "改了几个已知的bug，调整了用户交互";
 
-        return fwrite(STDOUT, sprintf($this->lang->patch->viewPage, $patchID, $name, $desc, $files, $logs));
+        return $this->output(sprintf($this->lang->patch->viewPage, $patchID, $name, $desc, $files, $logs));
     }
 
     /**
@@ -86,19 +86,19 @@ class patch extends control
     public function install($params)
     {
         if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return fwrite(STDERR, $this->lang->patch->error->runSet);
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         /* Check whether the parameter is an ID or a path. */
         if(strpos($params['patchID'], '.zip') !== false)
         {
             $patchPath = $this->getRealPath($params['patchPath']);
-            if(!$patchPath) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidName, $params['patchID']));
+            if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
 
             /* Verification name format. */
             $pathList    = explode(DS, $patchPath);
             $packageKey  = count($pathList) - 1;
             $packageName = $pathList[$packageKey];
-            if(!$this->patch->checkPatchName($packageName)) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidName, $params['patchID']));
+            if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
 
             $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $packageName . DS;
         }
@@ -108,11 +108,11 @@ class patch extends control
         }
 
         /* Check whether installed. */
-        if(file_exists($saveDir . 'install.lock')) return fwrite(STDERR, $this->lang->patch->error->installed);
-        if($params['patchID'] == 'none') return fwrite(STDERR, $this->lang->patch->error->invalid);
-        if($params['patchID'] == 'incompatible') return fwrite(STDERR, $this->lang->patch->error->incompatible);
+        if(file_exists($saveDir . 'install.lock')) return $this->output($this->lang->patch->error->installed, 'err');
+        if($params['patchID'] == 'none')           return $this->output($this->lang->patch->error->invalid, 'err');
+        if($params['patchID'] == 'incompatible')   return $this->output($this->lang->patch->error->incompatible, 'err');
 
-        if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $saveDir));
+        if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return $this->output(sprintf($this->lang->patch->error->notWritable, $saveDir), 'err');
 
         $backupPath = $saveDir . 'backup.zip';
         if(!isset($patchPath))
@@ -121,31 +121,31 @@ class patch extends control
 
             if(!file_exists($patchPath))
             {
-                fwrite(STDOUT, $this->lang->patch->downloading);
+                $this->output($this->lang->patch->downloading);
                 $url  = 'http://cyy.oop.cc/data/upload/config.zip';
-                if(!@copy($url, $patchPath)) return fwrite(STDERR, error_get_last() . PHP_EOL);
-                fwrite(STDOUT, $this->lang->patch->down);
+                if(!@copy($url, $patchPath)) $this->output(error_get_last() . PHP_EOL, 'err');
+                $this->output($this->lang->patch->down);
             }
         }
 
         $this->app->loadClass('pclzip', true);
         $zip   = new pclzip($patchPath);
         $files = $zip->listContent();
-        if($files === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-        fwrite(STDOUT, $this->lang->patch->backuping);
+        $this->output($this->lang->patch->backuping);
         $fileNames = array();
         foreach($files as $file) $fileNames[] = $this->config->zt_webDir . DS . $file['filename'];
 
         $zip->changeFile($backupPath);
-        if($zip->create($fileNames, PCLZIP_OPT_REMOVE_PATH, $this->config->zt_webDir) === 0) return fwrite(STDERR,  $zip->errorInfo() . PHP_EOL);
-        fwrite(STDOUT, $this->lang->patch->down);
+        if($zip->create($fileNames, PCLZIP_OPT_REMOVE_PATH, $this->config->zt_webDir) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        $this->output($this->lang->patch->down);
 
-        fwrite(STDOUT, $this->lang->patch->installing);
+        $this->output($this->lang->patch->installing);
         $zip->changeFile($patchPath);
-        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
         @touch($saveDir . 'install.lock');
-        fwrite(STDOUT, $this->lang->patch->installDone);
+        $this->output($this->lang->patch->installDone);
     }
 
     /**
@@ -159,20 +159,20 @@ class patch extends control
     {
         if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('revert');
 
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return fwrite(STDERR, $this->lang->patch->error->runSet);
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
-        if(!file_exists($saveDir . 'install.lock')) return fwrite(STDERR, $this->lang->patch->error->notInstall);
+        if(!file_exists($saveDir . 'install.lock')) return $this->output($this->lang->patch->error->notInstall, 'err');
 
         $backupPath = $saveDir . 'backup.zip';
 
         $this->app->loadClass('pclzip', true);
         $zip = new pclzip($backupPath);
 
-        fwrite(STDOUT, $this->lang->patch->restoring);
-        if($zip->extract(PCLZIP_OPT_PATH, '/') === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        $this->output($this->lang->patch->restoring);
+        if($zip->extract(PCLZIP_OPT_PATH, '/') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
         @unlink($saveDir . 'install.lock');
-        fwrite(STDOUT, $this->lang->patch->restored);
+        $this->output($this->lang->patch->restored);
     }
 
     /**
@@ -186,12 +186,12 @@ class patch extends control
     {
         if(isset($params['help'])) return $this->printHelp('build');
 
-        if(!is_writable($this->config->runDir)) return fwrite(STDERR, sprintf($this->lang->patch->error->notWritable, $this->config->runDir));
+        if(!is_writable($this->config->runDir)) return $this->output(sprintf($this->lang->patch->error->notWritable, $this->config->runDir), 'err');
 
         $buildInfo = new stdClass();
 
         /* Check versions. */
-        fwrite(STDOUT, $this->lang->patch->build->versionTip);
+        $this->output($this->lang->patch->build->versionTip);
         while(true)
         {
             $versions = $this->readInput();
@@ -201,11 +201,11 @@ class patch extends control
                 break;
             }
 
-            fwrite(STDERR, sprintf($this->lang->patch->error->build->version, $versions));
+            $this->output(sprintf($this->lang->patch->error->build->version, $versions), 'err');
         }
 
         /* Check type. */
-        fwrite(STDOUT, $this->lang->patch->build->typeTip);
+        $this->output($this->lang->patch->build->typeTip);
         while(true)
         {
             $type = $this->readInput();
@@ -216,11 +216,11 @@ class patch extends control
                 break;
             }
 
-            fwrite(STDERR, sprintf($this->lang->patch->error->build->type, $type));
+            $this->output(sprintf($this->lang->patch->error->build->type, $type), 'err');
         }
 
         /* Check id. */
-        fwrite(STDOUT, $this->lang->patch->build->idTip);
+        $this->output($this->lang->patch->build->idTip);
         while(true)
         {
             $ID = $this->readInput();
@@ -235,7 +235,7 @@ class patch extends control
                     $patchName = sprintf($this->config->patch->nameTpl, trim($version), $buildInfo->type, (int)$ID);
                     if($patchName == 'zentao.16.5.bug.1234.zip')
                     {
-                        fwrite(STDERR, sprintf($this->lang->patch->error->build->patch, $patchName));
+                        $this->output(sprintf($this->lang->patch->error->build->patch, $patchName), 'err');
                         continue 2;
                     }
                     $buildInfo->patchName[] = $patchName;
@@ -245,11 +245,11 @@ class patch extends control
                 break;
             }
 
-            fwrite(STDERR, sprintf($this->lang->patch->error->build->id, $ID));
+            $this->output(sprintf($this->lang->patch->error->build->id, $ID), 'err');
         }
 
         /* Check path. */
-        fwrite(STDOUT, $this->lang->patch->build->pathTip);
+        $this->output($this->lang->patch->build->pathTip);
         while(true)
         {
             $path = $this->readInput();
@@ -265,24 +265,24 @@ class patch extends control
                 }
             }
 
-            fwrite(STDERR, sprintf($this->lang->patch->error->build->path, $path));
+            $this->output(sprintf($this->lang->patch->error->build->path, $path), 'err');
         }
 
         /* Zip create. */
-        fwrite(STDOUT, $this->lang->patch->building);
+        $this->output($this->lang->patch->building);
 
         $savePath = $this->config->runDir . DS . $buildInfo->patchName[0];
 
         $this->app->loadClass('pclzip', true);
         $zip = new pclzip($savePath);
-        if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return fwrite(STDERR, $zip->errorInfo() . PHP_EOL);
+        if($zip->create($buildInfo->path, PCLZIP_OPT_REMOVE_PATH, $buildInfo->path) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
         if(count($buildInfo->patchName) > 1)
         {
             for($i = 1; $i < count($buildInfo->patchName); $i++) @copy($savePath, $this->config->runDir . DS . $buildInfo->patchName[$i]);
         }
 
-        return fwrite(STDOUT, $this->lang->patch->buildSuccess);
+        return $this->output($this->lang->patch->buildSuccess);
     }
 
     /**
@@ -298,13 +298,13 @@ class patch extends control
 
         /* Verify that the parameters are valid. */
         $patchPath = $this->getRealPath($params['patchPath']);
-        if(!$patchPath) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidFile, $params['patchPath']));
+        if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
 
         /* Verification name format. */
         $pathList    = explode(DS, $patchPath);
         $packageKey  = count($pathList) - 1;
         $packageName = $pathList[$packageKey];
-        if(!$this->patch->checkPatchName($packageName)) return fwrite(STDERR, sprintf($this->lang->patch->error->invalidFile, $params['patchPath']));
+        if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
 
         /* Check whether the patch package exists. */
         $isExist = $this->patch->checkExist($packageName);
@@ -312,7 +312,7 @@ class patch extends control
         {
             $wrongCount = 1;
 
-            fwrite(STDOUT, $this->lang->patch->release->replaceTip);
+            $this->output($this->lang->patch->release->replaceTip);
             while(true)
             {
                 $result = $this->readInput();
@@ -322,21 +322,21 @@ class patch extends control
 
                 ++$wrongCount;
 
-                fwrite(STDERR, $this->lang->patch->release->replaceTip);
+                $this->output($this->lang->patch->release->replaceTip, 'err');
             }
         }
 
         /* Input release info. */
         $releaseInfo = new stdclass();
 
-        fwrite(STDOUT, $this->lang->patch->release->descTip);
+        $this->output($this->lang->patch->release->descTip);
         $releaseInfo->desc = $this->readInput();
 
-        fwrite(STDOUT, $this->lang->patch->release->changelogTip);
+        $this->output($this->lang->patch->release->changelogTip);
         $releaseInfo->changelog = $this->readInput();
 
         /* Release patch by api. */
         $this->patch->release($patchPath, $releaseInfo);
-        fwrite(STDOUT, $this->lang->patch->releaseSuccess);
+        $this->output($this->lang->patch->releaseSuccess);
     }
 }
