@@ -225,16 +225,31 @@ class patch extends control
         $this->output($this->lang->patch->building);
 
 
+        $yamlFile  = $this->config->runDir . DS . 'zh-cn.yaml';
+        $author    = $buildInfo->author;
+        $desc      = $buildInfo->desc;
+        $changelog = $buildInfo->changelog;
+        $date      = date('Y-m-d');
+        $year      = date('Y');
+
         $this->app->loadClass('pclzip', true);
 
-        foreach($buildInfo->patchName as $patch)
+        foreach($buildInfo->patchName as $version => $patch)
         {
             $savePath = $this->config->runDir . DS . $patch;
 
             $zip = new pclzip($savePath);
             if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
+            $name = substr($patch, 0, -4);
+            $yaml = fopen($yamlFile, 'w');
+            fwrite($yaml, sprintf($this->lang->patch->buildDocTpl, $name, $name, $year, $author, $desc, $desc, $version, $changelog, $date, $version));
+            fclose($yaml);
+
+            if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+
             unset($zip);
+            @unlink($yamlFile);
         }
 
         return $this->output($this->lang->patch->buildSuccess);

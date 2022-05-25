@@ -103,12 +103,40 @@ $lang->patch->building       = 'Building...' . PHP_EOL;
 $lang->patch->buildSuccess   = 'Build successfuly' . PHP_EOL;
 $lang->patch->releaseSuccess = 'Release successfuly' . PHP_EOL;
 $lang->patch->tryTimeLimit   = 'Please re execute and enter' . PHP_EOL;
+$lang->patch->buildDocTpl    = <<<EOF
+---
+name: %s
+code: %s
+type: patch
+copyright: >
+  青岛易软天创网络科技有限公司
+  %s
+site: http://www.zentao.net
+author: '%s'
+abstract: %s
+desc: %s
+install:
+releases:
+  %s:
+    charge: free
+    license: LGPL
+    changelog: %s
+    date: %s
+    zentao:
+      compatible: %s
+      incompatible:
+    depends: null
+    conflicts: null
+EOF;
 
 $lang->patch->build = new stdClass();
 $lang->patch->build->versionTip   = 'Please input the current installed Zentao version, e.g. 16.5, biz6.5, max3.0.  For multi-version installed, seperated them with "," :' . PHP_EOL;
 $lang->patch->build->typeTip      = 'Please set the patch type, story or bug:' . PHP_EOL;
 $lang->patch->build->idTip        = 'Please set the id of the story or bug:' . PHP_EOL;
 $lang->patch->build->buildPathTip = 'Please set the patch directory, eg /zentao/build:' . PHP_EOL;
+$lang->patch->build->descTip      = 'Please set the description:' . PHP_EOL;
+$lang->patch->build->changelogTip = 'Please set the change log:' . PHP_EOL;
+$lang->patch->build->authorTip    = 'Please set the author:' . PHP_EOL;
 
 $lang->patch->release = new stdClass();
 $lang->patch->release->replaceTip   = 'Are you sure to replace the released patch? (y/n)' . PHP_EOL;

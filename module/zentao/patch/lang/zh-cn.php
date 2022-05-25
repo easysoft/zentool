@@ -87,20 +87,47 @@ $lang->patch->viewPage = <<<EOF
 修改的内容：%s
 
 EOF;
-$lang->patch->name         = '标题';
-$lang->patch->type         = '类型';
-$lang->patch->code         = '编号';
-$lang->patch->date         = '日期';
-$lang->patch->installed    = '已安装';
-$lang->patch->downloading  = '正在下载补丁包...' . PHP_EOL;
-$lang->patch->down         = '完成' . PHP_EOL;
-$lang->patch->backuping    = '正在备份代码...' . PHP_EOL;
-$lang->patch->installing   = '正在安装补丁...' . PHP_EOL;
-$lang->patch->installDone  = '安装成功，使用 z patch list local 可以查看已安装补丁包列表。' . PHP_EOL;
-$lang->patch->restoring    = '正在还原...' . PHP_EOL;
-$lang->patch->restored     = '还原成功' . PHP_EOL;
-$lang->patch->building     = '正在构建...' . PHP_EOL;
-$lang->patch->buildSuccess = '构建成功' . PHP_EOL;
+$lang->patch->name           = '标题';
+$lang->patch->type           = '类型';
+$lang->patch->code           = '编号';
+$lang->patch->date           = '日期';
+$lang->patch->installed      = '已安装';
+$lang->patch->downloading    = '正在下载补丁包...' . PHP_EOL;
+$lang->patch->down           = '完成' . PHP_EOL;
+$lang->patch->backuping      = '正在备份代码...' . PHP_EOL;
+$lang->patch->installing     = '正在安装补丁...' . PHP_EOL;
+$lang->patch->installDone    = '安装成功，使用 z patch list local 可以查看已安装补丁包列表。' . PHP_EOL;
+$lang->patch->restoring      = '正在还原...' . PHP_EOL;
+$lang->patch->restored       = '还原成功' . PHP_EOL;
+$lang->patch->building       = '正在构建...' . PHP_EOL;
+$lang->patch->buildSuccess   = '构建成功' . PHP_EOL;
+$lang->patch->releaseSuccess = '发布成功' . PHP_EOL;
+$lang->patch->tryTimeLimit   = '请重新运行工具后重试！' . PHP_EOL;
+$lang->patch->buildDocTpl    = <<<EOF
+---
+name: %s
+code: %s
+type: patch
+copyright: >
+  青岛易软天创网络科技有限公司
+  %s
+site: http://www.zentao.net
+author: '%s'
+abstract: %s
+desc: %s
+install:
+releases:
+  %s:
+    charge: free
+    license: LGPL
+    changelog: %s
+    date: %s
+    zentao:
+      compatible: %s
+      incompatible:
+    depends: null
+    conflicts: null
+EOF;
 
 $lang->patch->build = new stdClass();
 $lang->patch->build->versionTip   = '请输入禅道版本，例如 16.5, biz6.5, max3.0, 使用英文,分隔多个版本：' . PHP_EOL;

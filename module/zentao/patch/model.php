@@ -144,7 +144,7 @@ class patchModel extends model
 
         if($field == 'type' and in_array($value, array('bug', 'story'))) return true;
 
-        return false;
+        return true;
     }
 
     /**
@@ -166,7 +166,7 @@ class patchModel extends model
                 $patchName = sprintf($this->config->patch->nameTpl, trim($version), $object->type, (int)$id);
                 if($patchName == 'zentao.16.5.bug.1234.zip') return $patchName;
 
-                $patchNames[] = $patchName;
+                $patchNames[$version] = $patchName;
             }
 
             return $patchNames;
