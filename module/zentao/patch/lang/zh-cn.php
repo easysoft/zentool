@@ -52,15 +52,16 @@ $lang->patch->help->install = <<<EOF
 
 例如
   z patch install 1
-  z patch install /zentao/patches/zentao.15.0.1.beta.bug.1.zip
+  z patch install /patches/zentao.15.0.1.beta.bug.1.zip
 
 EOF;
 $lang->patch->help->revert = <<<EOF
 用法
-  z patch revert <patchid>     需要操作禅道目录的权限。
+  z patch revert <id | path>     需要操作禅道目录的权限。
 
 例如
   z patch revert 1
+  z patch revert /patches/zentao.15.0.1.beta.bug.1.zip
 
 EOF;
 $lang->patch->help->build = <<<EOF
