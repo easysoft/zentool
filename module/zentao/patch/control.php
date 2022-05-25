@@ -224,15 +224,17 @@ class patch extends control
         /* Zip create. */
         $this->output($this->lang->patch->building);
 
-        $savePath = $this->config->runDir . DS . $buildInfo->patchName[0];
 
         $this->app->loadClass('pclzip', true);
-        $zip = new pclzip($savePath);
-        if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-        if(count($buildInfo->patchName) > 1)
+        foreach($buildInfo->patchName as $patch)
         {
-            for($i = 1; $i < count($buildInfo->patchName); $i++) @copy($savePath, $this->config->runDir . DS . $buildInfo->patchName[$i]);
+            $savePath = $this->config->runDir . DS . $patch;
+
+            $zip = new pclzip($savePath);
+            if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+
+            unset($zip);
         }
 
         return $this->output($this->lang->patch->buildSuccess);
