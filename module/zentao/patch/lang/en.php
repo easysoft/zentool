@@ -120,7 +120,7 @@ install:
 releases:
   %s:
     charge: free
-    license: LGPL
+    license: %s
     changelog: %s
     date: %s
     zentao:
@@ -138,6 +138,7 @@ $lang->patch->build->buildPathTip = 'Please set the patch directory, eg /zentao/
 $lang->patch->build->descTip      = 'Please set the description:' . PHP_EOL;
 $lang->patch->build->changelogTip = 'Please set the change log:' . PHP_EOL;
 $lang->patch->build->authorTip    = 'Please set the author:' . PHP_EOL;
+$lang->patch->build->licenseTip   = 'Please set the license:' . PHP_EOL;
 
 $lang->patch->release = new stdClass();
 $lang->patch->release->replaceTip   = 'Are you sure to replace the released patch? (y/n)' . PHP_EOL;

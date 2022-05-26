@@ -120,7 +120,7 @@ install:
 releases:
   %s:
     charge: free
-    license: LGPL
+    license: %s
     changelog: %s
     date: %s
     zentao:
@@ -135,6 +135,10 @@ $lang->patch->build->versionTip   = '请输入禅道版本，例如 16.5, biz6.5
 $lang->patch->build->typeTip      = '请设置补丁包类型，story 或 bug：' . PHP_EOL;
 $lang->patch->build->idTip        = '请设置需求或bug的ID：' . PHP_EOL;
 $lang->patch->build->buildPathTip = '请设置补丁包路径，例如 /zentao/build：' . PHP_EOL;
+$lang->patch->build->descTip      = '请设置描述信息：' . PHP_EOL;
+$lang->patch->build->changelogTip = '请设置修改记录：' . PHP_EOL;
+$lang->patch->build->authorTip    = '请设置提交者：' . PHP_EOL;
+$lang->patch->build->licenseTip   = '请设置授权协议：' . PHP_EOL;
 
 $lang->patch->release = new stdClass();
 $lang->patch->release->replaceTip   = '您确定要覆盖已发布的同名补丁包吗？ (y/n)' . PHP_EOL;

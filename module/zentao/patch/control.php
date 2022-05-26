@@ -255,6 +255,7 @@ class patch extends control
         $author    = $buildInfo->author;
         $desc      = $buildInfo->desc;
         $changelog = $buildInfo->changelog;
+        $license   = $buildInfo->license;
         $date      = date('Y-m-d');
         $year      = date('Y');
 
@@ -269,7 +270,7 @@ class patch extends control
 
             $name = substr($patch, 0, -4);
             $yaml = fopen($yamlFile, 'w');
-            fwrite($yaml, sprintf($this->lang->patch->buildDocTpl, $name, $name, $year, $author, $desc, $desc, $version, $changelog, $date, $version));
+            fwrite($yaml, sprintf($this->lang->patch->buildDocTpl, $name, $name, $year, $author, $desc, $desc, $version, $license, $changelog, $date, $version));
             fclose($yaml);
 
             if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
