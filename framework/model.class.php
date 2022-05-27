@@ -276,6 +276,7 @@ class model
         curl_setopt($curl, CURLINFO_HEADER_OUT, TRUE);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
 
         if(!empty($data))
         {
@@ -286,6 +287,7 @@ class model
 
         if($options) curl_setopt_array($curl, $options);
         $response = curl_exec($curl);
+        var_dump($response);
         $errors   = curl_error($curl);
 
         curl_close($curl);

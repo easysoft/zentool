@@ -487,7 +487,13 @@ class router
      */
     public function setBasePath()
     {
-        $this->basePath = realpath(dirname(dirname(__FILE__))) . DS;
+        $tmp = realpath(dirname(dirname(__FILE__)));
+        if ($tmp) {
+            $this->basePath = $tmp . DS;
+        } else {
+            $this->basePath = dirname(dirname(__FILE__)) . DS;
+        }
+        //$this->basePath = realpath(dirname(dirname(__FILE__))) . DS;
     }
 
     /**
