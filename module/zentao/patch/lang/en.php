@@ -144,6 +144,10 @@ $lang->patch->release = new stdClass();
 $lang->patch->release->replaceTip   = 'Are you sure to replace the released patch? (y/n)' . PHP_EOL;
 $lang->patch->release->descTip      = 'The description:' . PHP_EOL;
 $lang->patch->release->changelogTip = 'The change log:' . PHP_EOL;
+$lang->patch->release->needCzUser   = 'You need to configure the Zentao website account:' . PHP_EOL;
+$lang->patch->release->accountTip   = 'Please set the account:' . PHP_EOL;
+$lang->patch->release->passwordTip  = 'Please set the password:' . PHP_EOL;
+$lang->patch->release->userInvalid  = 'Login failed. Please check your account and password:' . PHP_EOL;
 
 $lang->patch->error = new stdClass();
 $lang->patch->error->runSet       = 'Please use "z set" to set the zentao directory!' .  PHP_EOL;

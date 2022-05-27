@@ -144,6 +144,10 @@ $lang->patch->release = new stdClass();
 $lang->patch->release->replaceTip   = '您确定要覆盖已发布的同名补丁包吗？ (y/n)' . PHP_EOL;
 $lang->patch->release->descTip      = '描述:' . PHP_EOL;
 $lang->patch->release->changelogTip = '变更记录:' . PHP_EOL;
+$lang->patch->release->needCzUser   = '您需要先设置一些禅道官网的账号密码：' . PHP_EOL;
+$lang->patch->release->accountTip   = '请输入账号：' . PHP_EOL;
+$lang->patch->release->passwordTip  = '请输入密码：' . PHP_EOL;
+$lang->patch->release->userInvalid  = '登录失败！请验证账号或密码是否正确：' . PHP_EOL;
 
 $lang->patch->error = new stdClass();
 $lang->patch->error->runSet       = '需要先执行 z set 命令后操作！' .  PHP_EOL;

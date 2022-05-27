@@ -68,10 +68,15 @@ class patch extends control
 
         $patchID = $params['patchID'];
 
-        $name  = '这是一个标题';
-        $desc  = '这是描述信息';
-        $files = "a.php, test/b.php";
-        $logs  = "改了几个已知的bug，调整了用户交互";
+        $patch = $this->patch->getPatchView($patchID);
+        if(!isset($patch->result) or $patch->result == 'fail') return $this->output(isset($patch->message) ? $patch->message : 'error', 'err');
+
+        if(!isset($patch->data->id)) return $this->output('Not found', 'err');
+
+        $name  = $patch->data->name;
+        $desc  = $patch->data->desc;
+        $files = '';
+        $logs  = '';
 
         return $this->output(sprintf($this->lang->patch->viewPage, $patchID, $name, $desc, $files, $logs));
     }
@@ -301,6 +306,39 @@ class patch extends control
         $packageKey  = count($pathList) - 1;
         $packageName = $pathList[$packageKey];
         if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
+
+        /* Check zentao account. */
+        if(!isset($this->config->cz_account) or !isset($this->config->cz_password))
+        {
+            $this->output($this->lang->patch->release->needCzUser);
+            while(true)
+            {
+                $this->output($this->lang->patch->release->accountTip);
+                $account = $this->readInput();
+                if(!$account) continue;
+
+                $this->output($this->lang->patch->release->passwordTip);
+                $password = $this->readInput();
+                if(!$password) continue;
+
+                $password    = md5($password);
+                $loginResult = $this->patch->checkUser($account, $password);
+
+                if(!isset($loginResult->result) or $loginResult->result == 'fail')
+                {
+                    $this->output(isset($loginResult->message) ? $loginResult->message . PHP_EOL : $this->lang->patch->release->userInvalid, 'err');
+                }
+                else
+                {
+                    $user = array(
+                        'cz_account'  => $account,
+                        'cz_password' => $password
+                    );
+                    $this->setUserConfigs($user);
+                    break;
+                }
+            }
+        }
 
         /* Check whether the patch package exists. */
         $isExist = $this->patch->checkExist($packageName);
