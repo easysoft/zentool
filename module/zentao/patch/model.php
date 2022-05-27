@@ -60,6 +60,11 @@ class patchModel extends model
         return false;
     }
 
+    public function getUserConfig()
+    {
+        $file = '';
+    }
+
     /**
      * Get patch List.
      *
@@ -69,44 +74,60 @@ class patchModel extends model
      */
     public function getPatchList($params = array())
     {
+        $url    = $this->config->patch->webStoreUrl . 'extension-apiBrowseRelease-16.5.json';
+        $patchs = $this->http($url);
+        if(!isset($patchs->result) or $patch->result == 'fail') return isset($patch->message) ? $patch->message : 'error';
+
         $patchList = array();
-        for($i = 1; $i < 10; $i++)
+        $patchIDs  = array();
+        foreach($patchs->list as $one)
         {
             $patch = array();
-            $patch['type']      = 'bug';
-            $patch['code']      = 'patch00' . $i;
-            $patch['name']      = 'zentao.16.5.beta.story.' . $i . '.zip';
-            $patch['desc']      = '描述：' . $patch['name'];
-            $patch['changelog'] = 'changelog: ' . $patch['name'];
-            $patch['date']      = '2022-01-0' . $i;
-            $patch['installed'] = 'no';
+            $patch['code']      = $one->code;
+            $patch['type']      = strpos($one->code, 'story') ? 'story' : 'bug';
+            $patch['name']      = $one->name;
+            $patch['date']      = substr($one->updatedTime, 0, 10);
+            $patch['installed'] = 'No';
             $patchList[] = $patch;
+
+            $patchIDs[] = $one->id;
         }
 
-        if(isset($params['showAll']))
+        if(isset($params['showAll']) or isset($params['local']))
         {
-            $patchList[] = array(
-                'type'      => 'story',
-                'code'      => 'story',
-                'name'      => '这个是需求标题',
-                'desc'      => '描述：文档设计接口',
-                'changelog' => 'changelog：变更需求',
-                'date'      => '2022-05-01',
-                'installed' => 'yes'
-            );
+            $patchPath = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch';
+
+            $zfile = $this->app->loadClass('zfile');
+            $list = $zfile->readDir($patchPath);
+            foreach($list as $path)
+            {
+                if(strpos($path, 'install.lock'))
+                {
+                    $dirName = mb_substr(dirname($path), strlen($patchPath) + 1);
+                    $key     = array_search($dirName, $patchIDs);
+                    if($key !== false)
+                    {
+                        $patchList[$key]['installed'] = 'Yes';
+                        continue;
+                    }
+
+                    $patch = array();
+                    $patch['code']      = $dirName;
+                    $patch['type']      = 'bug';
+                    $patch['name']      = $dirName;
+                    $patch['date']      = date('Y-m-d', filemtime($path));
+                    $patch['installed'] = 'Yes';
+                    $patchList[] = $patch;
+                }
+            }
         }
-        elseif(isset($params['local']))
+
+        if(isset($params['local']))
         {
-            $patchList   = array();
-            $patchList[] = array(
-                'type'      => 'story',
-                'code'      => 'story',
-                'name'      => '这个是需求标题',
-                'desc'      => '描述：文档设计接口',
-                'changelog' => 'changelog：变更需求',
-                'date'      => '2022-05-01',
-                'installed' => 'yes'
-            );
+            foreach($patchList as $key => $patch)
+            {
+                if($patch['installed'] == 'No') unset($patchList[$key]);
+            }
         }
 
         return $patchList;
@@ -153,21 +174,16 @@ class patchModel extends model
      * @param  int    $id
      * @param  object $object
      * @access public
-     * @return bool|array
+     * @return bool|string
      */
     public function checkID($id, $object)
     {
         if((int)$id)
         {
-            $patchNames = array();
-            $versions = explode(',', $object->version);
-            foreach($versions as $version)
-            {
-                $patchName = sprintf($this->config->patch->nameTpl, trim($version), $object->type, (int)$id);
-                if($patchName == 'zentao.16.5.bug.1234.zip') return $patchName;
+            $patchName = sprintf($this->config->patch->nameTpl, $object->type, (int)$id);
+            if($patchName == 'zentao.16.5.bug.1234.zip') return 'exists';
 
-                $patchNames[$version] = $patchName;
-            }
+            $patchNames = $patchName;
 
             return $patchNames;
         }

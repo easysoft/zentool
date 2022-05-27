@@ -230,7 +230,7 @@ class patch extends control
                 if($result)
                 {
                     $tryTime = 0;
-                    if($field == 'id' && is_string($result))
+                    if($field == 'id' && $result == 'exists')
                     {
                         $this->output(sprintf($this->lang->patch->error->build->patch, $result), 'err');
                         continue;
@@ -252,6 +252,9 @@ class patch extends control
 
 
         $yamlFile  = $this->config->runDir . DS . 'zh-cn.yaml';
+        $version   = str_replace(' ', '', $buildInfo->version);
+        $name      = substr($buildInfo->patchName, 0, -4);
+        $code      = str_replace('.', '_', $name);
         $author    = $buildInfo->author;
         $desc      = $buildInfo->desc;
         $changelog = $buildInfo->changelog;
@@ -261,23 +264,19 @@ class patch extends control
 
         $this->app->loadClass('pclzip', true);
 
-        foreach($buildInfo->patchName as $version => $patch)
-        {
-            $savePath = $this->config->runDir . DS . $patch;
+        $savePath = $this->config->runDir . DS . $buildInfo->patchName;
 
-            $zip = new pclzip($savePath);
-            if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        $zip = new pclzip($savePath);
+        if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-            $name = substr($patch, 0, -4);
-            $yaml = fopen($yamlFile, 'w');
-            fwrite($yaml, sprintf($this->lang->patch->buildDocTpl, $name, $name, $year, $author, $desc, $desc, $version, $license, $changelog, $date, $version));
-            fclose($yaml);
+        $yaml = fopen($yamlFile, 'w');
+        fwrite($yaml, sprintf($this->lang->patch->buildDocTpl, $name, $code, $year, $author, $desc, $desc, str_replace(',', '_', $version), $license, $changelog, $date, $version));
+        fclose($yaml);
 
-            if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-            unset($zip);
-            @unlink($yamlFile);
-        }
+        unset($zip);
+        @unlink($yamlFile);
 
         return $this->output($this->lang->patch->buildSuccess);
     }

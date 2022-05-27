@@ -32,7 +32,7 @@ Usage
 
 Options
   -a, --all    List all the patches (include installed).
-  -l, --local  List all installed patches.
+  --local      List all installed patches.
 
 Example
   z patch list -a
