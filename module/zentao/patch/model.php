@@ -60,9 +60,44 @@ class patchModel extends model
         return false;
     }
 
-    public function getUserConfig()
+    /**
+     * Get zentao version.
+     *
+     * @access public
+     * @return string
+     */
+    public function getZtVersion()
     {
-        $file = '';
+        $this->config->zt_webDir = '/var/code/www/zentaopms';
+        $configPath  = $this->config->zt_webDir . DS . 'config' . DS;
+        $editionFile = $configPath . 'ext' . DS . 'edition.php';
+        $versionFile = $configPath . 'config.php';
+        $version = '';
+        if(file_exists($editionFile))
+        {
+            $config = file_get_contents($editionFile);
+            preg_match('/\$config->edition = "(.*)"/', $config, $edition);
+
+            $version     = $edition[1];
+            $versionFile = $configPath . 'ext' . DS . "zentao{$version}.php";
+        }
+        /* For the version is older. */
+        else if(file_exists($configPath . 'ext' . DS . 'zentaomax.php'))
+        {
+            $versionFile = $configPath . 'ext' . DS . 'zentaomax.php';
+            $version     = 'max';
+        }
+        else if(file_exists($configPath . 'ext' . DS . 'zentaobiz.php'))
+        {
+            $versionFile = $configPath . 'ext' . DS . 'zentaobiz.php';
+            $version     = 'biz';
+        }
+
+        $versionConfig = file_get_contents($versionFile);
+        preg_match('/\$config->(version|bizVersion|maxVersion) \s*= ["|\'](.*)["|\']/', $versionConfig, $versionNo);
+
+        if(substr($versionNo[2], 0, 3) == $version) return $versionNo[2];
+        return $version . $versionNo[2];
     }
 
     /**
@@ -74,8 +109,9 @@ class patchModel extends model
      */
     public function getPatchList($params = array())
     {
-        $url    = $this->config->patch->webStoreUrl . 'extension-apiBrowseRelease-16.5.json';
-        $patchs = $this->http($url);
+        $version = $this->getUserConfig();
+        $url     = $this->config->patch->webStoreUrl . 'extension-apiBrowseRelease-' . $version . '.json';
+        $patchs  = $this->http($url);
         if(!isset($patchs->result) or $patch->result == 'fail') return isset($patch->message) ? $patch->message : 'error';
 
         $patchList = array();
