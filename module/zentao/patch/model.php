@@ -39,7 +39,7 @@ class patchModel extends model
      */
     public function checkPatchName($patchName)
     {
-        return preg_match('/^zentao\.[\d\.a-z]+\.(bug|story)\.[\d]+\.zip$/', $patchName);
+        return preg_match('/^zentao\.(bug|story)\.[\d]+\.zip$/', $patchName);
     }
 
     /**
@@ -109,10 +109,10 @@ class patchModel extends model
      */
     public function getPatchList($params = array())
     {
-        $version = $this->getUserConfig();
+        $version = $this->getZtVersion();
         $url     = $this->config->patch->webStoreUrl . 'extension-apiBrowseRelease-' . $version . '.json';
         $patchs  = $this->http($url);
-        if(!isset($patchs->result) or $patch->result == 'fail') return isset($patch->message) ? $patch->message : 'error';
+        if(!isset($patchs->result) or $patchs->result == 'fail') return isset($patchs->message) ? $patchs->message : 'error';
 
         $patchList = array();
         $patchIDs  = array();
@@ -227,6 +227,13 @@ class patchModel extends model
         return false;
     }
 
+    /**
+     * Check build path.
+     *
+     * @param  string $path
+     * @access public
+     * @return void
+     */
     public function checkBuildPath($path)
     {
         if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS .$path);
@@ -234,5 +241,21 @@ class patchModel extends model
         if(!empty($path) and file_exists($path) and @opendir($path)) return true;
 
         return false;
+    }
+    public function getPatchView($patchID = 0, $type = 'id')
+    {
+        $version = $this->getZtVersion();
+        $url     = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
+        return $this->http($url);
+    }
+
+    public function checkUser($account, $password)
+    {
+        $url  = $this->config->patch->webStoreUrl . 'user-loginByZ.json';
+        $user = array(
+            'account'  => $account,
+            'password' => $password
+        );
+        return $this->http($url, $user);
     }
 }
