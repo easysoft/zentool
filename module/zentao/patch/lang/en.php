@@ -84,7 +84,7 @@ $lang->patch->viewPage = <<<EOF
           ID: %s
         Name: %s
  Description: %s
-Change Files: %s
+ Create Date: %s
  Change Logs: %s
 
 EOF;
@@ -158,6 +158,7 @@ $lang->patch->error->invalid      = 'The patch id is invalid!' .  PHP_EOL;
 $lang->patch->error->incompatible = 'This patch is incompatible with current ZenTao version!' .  PHP_EOL;
 $lang->patch->error->invalidName  = 'The path %s is not a zentao patch, please check.' .  PHP_EOL;
 $lang->patch->error->invalidFile  = 'The file %s is not a zentao patch, please check.' .  PHP_EOL;
+$lang->patch->error->notFound     = 'The patch not found, please check.' .  PHP_EOL;
 
 $lang->patch->error->build = new stdClass();
 $lang->patch->error->build->version   = 'The version %s is invalid, please check again:' . PHP_EOL;

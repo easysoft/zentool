@@ -69,16 +69,16 @@ class patch extends control
         $patchID = $params['patchID'];
 
         $patch = $this->patch->getPatchView($patchID);
-        if(!isset($patch->result) or $patch->result == 'fail') return $this->output(isset($patch->message) ? $patch->message : 'error', 'err');
+        if(!isset($patch->result) or $patch->result == 'fail') return $this->output(isset($patch->message) ? $patch->message . PHP_EOL : 'error', 'err');
 
-        if(!isset($patch->data->id)) return $this->output('Not found', 'err');
+        if(!isset($patch->data->id)) return $this->output($this->lang->patch->error->notFound, 'err');
 
-        $name  = $patch->data->name;
-        $desc  = $patch->data->desc;
-        $files = '';
-        $logs  = '';
+        $name  = $patch->data->extensionName;
+        $desc  = $patch->data->extensionDesc;
+        $logs  = $patch->data->changelog;
+        $date  = substr($patch->data->addedTime, 0, 10);
 
-        return $this->output(sprintf($this->lang->patch->viewPage, $patchID, $name, $desc, $files, $logs));
+        return $this->output(sprintf($this->lang->patch->viewPage, $patchID, $name, $desc, $date, $logs));
     }
 
     /**
@@ -115,20 +115,21 @@ class patch extends control
 
         /* Check whether installed. */
         if(file_exists($saveDir . 'install.lock')) return $this->output($this->lang->patch->error->installed, 'err');
-        if($params['patchID'] == 'none')           return $this->output($this->lang->patch->error->invalid, 'err');
-        if($params['patchID'] == 'incompatible')   return $this->output($this->lang->patch->error->incompatible, 'err');
 
         if(!file_exists($saveDir) && !mkdir($saveDir, 0777, true)) return $this->output(sprintf($this->lang->patch->error->notWritable, $saveDir), 'err');
 
         $backupPath = $saveDir . 'backup.zip';
         if(!isset($patchPath))
         {
+            $patch = $this->patch->getPatchView($params['patchID']);
+            if(!isset($patch->data->id)) return $this->output($this->lang->patch->error->invalid, 'err');
+
             $patchPath = $saveDir . 'patch.zip';
 
             if(!file_exists($patchPath))
             {
                 $this->output($this->lang->patch->downloading);
-                $url = 'http://cyy.oop.cc/data/upload/config.zip';
+
                 if(!@copy($url, $patchPath)) $this->output(error_get_last() . PHP_EOL, 'err');
                 $this->output($this->lang->patch->down);
             }

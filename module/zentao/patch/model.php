@@ -51,12 +51,9 @@ class patchModel extends model
      */
     public function checkExist($patchName)
     {
-        $patchList = $this->getPatchList();
+        $patch = $this->getPatchView(substr($patchName, 0, -4), 'code');
+        if(isset($patch->data->id)) return true;
 
-        foreach($patchList as $patch)
-        {
-            if($patch['name'] == $patchName) return true;
-        }
         return false;
     }
 
@@ -217,11 +214,11 @@ class patchModel extends model
         if((int)$id)
         {
             $patchName = sprintf($this->config->patch->nameTpl, $object->type, (int)$id);
-            if($patchName == 'zentao.16.5.bug.1234.zip') return 'exists';
 
-            $patchNames = $patchName;
+            $patch = $this->getPatchView(substr($patchName, 0, -4), 'code');
+            if(isset($patch->data->id)) return 'exists';
 
-            return $patchNames;
+            return $patchName;
         }
 
         return false;
@@ -242,6 +239,15 @@ class patchModel extends model
 
         return false;
     }
+
+    /**
+     * Get patch view.
+     *
+     * @param  int|string $patchID
+     * @param  string     $type
+     * @access public
+     * @return object
+     */
     public function getPatchView($patchID = 0, $type = 'id')
     {
         $version = $this->getZtVersion();
