@@ -180,14 +180,14 @@ class patchModel extends model
     public function release($patchPath, $packageName = '')
     {
         $releaseInfo = array();
-        $releaseInfo['name']    = $packageName;
-        $releaseInfo['size']    = filesize($patchPath);
-        $releaseInfo['uuid']    = '';
-        $releaseInfo['account'] = 'wwccss';
-        $releaseInfo['file']    = new \CURLFile($patchPath);
+        $releaseInfo['name']     = $packageName;
+        $releaseInfo['size']     = filesize($patchPath);
+        $releaseInfo['uuid']     = '';
+        $releaseInfo['account']  = $this->config->cz_account;
+        $releaseInfo['password'] = $this->config->ca_password;
+        $releaseInfo['file']     = new \CURLFile($patchPath);
         $response = $this->http($this->config->patch->webStoreUrl . 'release-apiCreateRelease.json', $releaseInfo, array(), array(), 'data-form');
-        var_dump($response);die;
-        return true;
+        return $response;
     }
 
     /**
