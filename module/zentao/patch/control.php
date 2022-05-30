@@ -361,33 +361,8 @@ class patch extends control
             }
         }
 
-        /* Input release info. */
-        $releaseInfo = new stdclass();
-
-        $this->output($this->lang->patch->release->descTip);
-        while(true)
-        {
-            $result = $this->readInput();
-            if($result)
-            {
-                $releaseInfo->desc = $result;
-                break;
-            }
-        }
-
-        $this->output($this->lang->patch->release->changelogTip);
-        while(true)
-        {
-            $result = $this->readInput();
-            if($result)
-            {
-                $releaseInfo->changelog = $result;
-                break;
-            }
-        }
-
         /* Release patch by api. */
-        $this->patch->release($patchPath, $releaseInfo);
+        $this->patch->release($patchPath, $packageName);
         $this->output($this->lang->patch->releaseSuccess);
     }
 }
