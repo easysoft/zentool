@@ -244,7 +244,8 @@ class patch extends control
 
                     $buildInfo->$field = $inputValue;
 
-                    if($field == 'id') $buildInfo->patchName = $result;
+                    if($field == 'id')        $buildInfo->patchName = $result;
+                    if($field == 'buildPath') $buildInfo->buildPath = $result;
                     break;
                 }
 
