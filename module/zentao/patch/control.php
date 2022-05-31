@@ -309,8 +309,16 @@ class patch extends control
         $packageName = $pathList[$packageKey];
         if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
 
+        $needLogin = false;
+        if(!isset($this->config->cz_account) or !isset($this->config->cz_password)) $needLogin = true;
+        if(!$needLogin)
+        {
+            $loginResult = $this->patch->checkUser($account, $password);
+            if(!isset($loginResult->result) or $loginResult->result == 'fail') $needLogin = true;
+        }
+
         /* Check zentao account. */
-        if(!isset($this->config->cz_account) or !isset($this->config->cz_password))
+        if($needLogin)
         {
             $this->output($this->lang->patch->release->needCzUser);
             while(true)
