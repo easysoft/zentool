@@ -325,7 +325,7 @@ class control
         $table = $this->app->loadClass('clitable');
         $table->showBorder = $showBorder;
 
-        foreach($fields as $field) $table->addField($lang->$field,  $field);
+        foreach($fields as $field) $table->addField(zget($lang, $field),  $field);
         $table->injectData($data);
         return $table->display();
     }

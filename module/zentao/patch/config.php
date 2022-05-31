@@ -11,5 +11,5 @@ $config->patch->paramKey['release'] = 'patchPath';
 
 $config->patch->nameTpl = 'zentao.%s.%d.zip';
 
-$config->patch->webStoreUrl = 'http://zentao.cn/';
+$config->patch->webStoreUrl = 'http://chanzhi.cyy.oop.cc/';
 $config->patch->buildFields = 'version,type,id,author,desc,changelog,license,buildPath';

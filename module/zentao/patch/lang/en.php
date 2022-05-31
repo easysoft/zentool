@@ -91,6 +91,7 @@ EOF;
 $lang->patch->name           = 'Name';
 $lang->patch->type           = 'Type';
 $lang->patch->code           = 'Code';
+$lang->patch->id             = 'ID';
 $lang->patch->date           = 'Date';
 $lang->patch->installed      = 'Installed';
 $lang->patch->downloading    = 'Downloading...' . PHP_EOL;

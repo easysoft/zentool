@@ -91,6 +91,7 @@ EOF;
 $lang->patch->name           = '标题';
 $lang->patch->type           = '类型';
 $lang->patch->code           = '编号';
+$lang->patch->id             = 'ID';
 $lang->patch->date           = '日期';
 $lang->patch->installed      = '已安装';
 $lang->patch->downloading    = '正在下载补丁包...' . PHP_EOL;

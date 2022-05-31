@@ -52,7 +52,7 @@ class patch extends control
 
         $patchList = $this->patch->getPatchList($params);
 
-        return $this->printList($patchList, array('type', 'code', 'name', 'date', 'installed'), $this->lang->patch);
+        return $this->printList($patchList, array('id', 'type', 'code', 'name', 'date', 'installed'), $this->lang->patch);
     }
 
     /**
@@ -129,6 +129,7 @@ class patch extends control
             if(!file_exists($patchPath))
             {
                 $this->output($this->lang->patch->downloading);
+                $url = 'http://chanzhi.cyy.oop.cc/extension-apidownloadRelease-966';
 
                 if(!@copy($url, $patchPath)) $this->output(error_get_last() . PHP_EOL, 'err');
                 $this->output($this->lang->patch->down);
@@ -313,7 +314,7 @@ class patch extends control
         if(!isset($this->config->cz_account) or !isset($this->config->cz_password)) $needLogin = true;
         if(!$needLogin)
         {
-            $loginResult = $this->patch->checkUser($account, $password);
+            $loginResult = $this->patch->checkUser($this->config->cz_account, $this->config->cz_password);
             if(!isset($loginResult->result) or $loginResult->result == 'fail') $needLogin = true;
         }
 

@@ -82,13 +82,14 @@ class patchModel extends model
         $version = $this->getZtVersion();
         $url     = $this->config->patch->webStoreUrl . 'extension-apiBrowseRelease-' . $version . '.json';
         $patchs  = $this->http($url);
-        if(!isset($patchs->result) or $patchs->result == 'fail') return isset($patchs->message) ? $patchs->message : 'error';
+        if(!isset($patchs->result) or $patchs->result == 'fail') return array();
 
         $patchList = array();
         $patchIDs  = array();
         foreach($patchs->list as $one)
         {
             $patch = array();
+            $patch['id']        = $one->id;
             $patch['code']      = $one->code;
             $patch['type']      = strpos($one->code, 'story') ? 'story' : 'bug';
             $patch['name']      = $one->name;
@@ -118,6 +119,7 @@ class patchModel extends model
                     }
 
                     $patch = array();
+                    $patch['id']        = '';
                     $patch['code']      = $dirName;
                     $patch['type']      = 'bug';
                     $patch['name']      = $dirName;
