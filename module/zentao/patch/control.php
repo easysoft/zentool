@@ -49,6 +49,7 @@ class patch extends control
     {
         global $argc;
         if(isset($params['help']) or ($argc > 3 && empty($params))) return $this->printHelp('list');
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         $patchList = $this->patch->getPatchList($params);
 
@@ -65,6 +66,7 @@ class patch extends control
     public function view($params)
     {
         if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('view');
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         $patchID = $params['patchID'];
 

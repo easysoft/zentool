@@ -278,6 +278,165 @@ class control
     }
 
     /**
+     * 获取一个方法的输出内容，这样我们可以在一个方法里获取其他模块方法的内容。
+     * 如果模块名为空，则调用该模块、该方法；如果设置了模块名，调用指定模块指定方法。
+     *
+     * Get the output of one module's one method as a string, thus in one module's method, can fetch other module's content.
+     * If the module name is empty, then use the current module and method. If set, use the user defined module and method.
+     *
+     * @param  string $moduleName module name.
+     * @param  string $methodName method name.
+     * @param  array  $params     params.
+     * @access  public
+     * @return  string  the parsed html.
+     */
+    public function fetch($moduleName = '', $methodName = '', $params = array(), $appName = '')
+    {
+        /**
+         * 如果模块名为空，则调用该模块、该方法。
+         * If the module name is empty, then use the current module and method.
+         */
+        if($moduleName == '') $moduleName = $this->moduleName;
+        if($methodName == '') $methodName = $this->methodName;
+        if($appName == '') $appName = $this->appName;
+        if($moduleName == $this->moduleName and $methodName == $this->methodName)
+        {
+            $this->parse($moduleName, $methodName);
+            return $this->output;
+        }
+
+        $currentModuleName = $this->moduleName;
+        $currentMethodName = $this->methodName;
+        $currentAppName    = $this->appName;
+        $currentParams     = $this->app->getParams();
+
+        /**
+         * 设置调用指定模块的指定方法。
+         * chang the dir to the previous.
+         */
+        $this->app->setModuleName($moduleName);
+        $this->app->setMethodName($methodName);
+        $this->app->setControlFile();
+
+        if(!is_array($params)) parse_str($params, $params);
+        $this->app->params = $params;
+
+        $currentPWD = getcwd();
+
+        /**
+         * 设置引用的文件和路径。
+         * Set the paths and files to included.
+         */
+        $modulePath        = $this->app->getModulePath($appName, $moduleName);
+        $moduleControlFile = $modulePath . 'control.php';
+        $actionExtPath     = $this->app->getModuleExtPath($appName, $moduleName, 'control');
+        $file2Included     = $moduleControlFile;
+        $classNameToFetch  = $moduleName;
+
+        if(!empty($actionExtPath))
+        {
+            /**
+             * 设置公共扩展。
+             * set common extension.
+             */
+            $file2Included = $moduleControlFile;
+
+            if(!empty($actionExtPath['common']))
+            {
+                $commonActionExtFile = $actionExtPath['common'] . strtolower($methodName) . '.php';
+                if(file_exists($commonActionExtFile)) $file2Included = $commonActionExtFile;
+            }
+
+            if(!empty($actionExtPath['xuan']))
+            {
+                $commonActionExtFile = $actionExtPath['xuan'] . strtolower($methodName) . '.php';
+                if(file_exists($commonActionExtFile)) $file2Included = $commonActionExtFile;
+            }
+
+            if(!empty($actionExtPath['vision']))
+            {
+                $commonActionExtFile = $actionExtPath['vision'] . strtolower($methodName) . '.php';
+                if(file_exists($commonActionExtFile)) $file2Included = $commonActionExtFile;
+            }
+
+            $commonActionExtFile = $actionExtPath['custom'] . strtolower($methodName) . '.php';
+            if(file_exists($commonActionExtFile)) $file2Included = $commonActionExtFile;
+
+            if(!empty($actionExtPath['saas']))
+            {
+                $commonActionExtFile = $actionExtPath['saas'] . strtolower($methodName) . '.php';
+                if(file_exists($commonActionExtFile)) $file2Included = $commonActionExtFile;
+            }
+
+            if(!empty($actionExtPath['site']))
+            {
+                /**
+                 * 设置站点扩展。
+                 * every site has it's extension.
+                 */
+                $siteActionExtFile = $actionExtPath['site'] . strtolower($methodName) . '.php';
+                $file2Included     = file_exists($siteActionExtFile) ? $siteActionExtFile : $file2Included;
+            }
+
+            /* If class name is my{$moduleName} then set classNameToFetch for include this file. */
+            if(strpos($file2Included, DS . 'ext' . DS) !== false and stripos(file_get_contents($file2Included), "class my{$moduleName} extends $moduleName") !== false) $classNameToFetch = "my{$moduleName}";
+        }
+
+        /**
+         * 加载控制器文件。
+         * Load the control file.
+         */
+        if(!is_file($file2Included)) $this->app->triggerError("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
+        if(!class_exists($classNameToFetch))
+        {
+            chdir(dirname($file2Included));
+            helper::import($file2Included);
+        }
+
+        /**
+         * 设置调用的类名。
+         * Set the name of the class to be called.
+         */
+        $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
+        if(!class_exists($className)) $this->app->triggerError(" The class $className not found", __FILE__, __LINE__, $exit = true);
+
+        /**
+         * 解析参数，创建模块control对象。
+         * Parse the params, create the $module control object.
+         */
+        $module           = new $className($moduleName, $methodName, $appName);
+        $module->viewType = $this->viewType;
+
+        /**
+         * 调用对应方法，使用ob方法获取输出内容。
+         * Call the method and use ob function to get the output.
+         */
+        ob_start();
+        call_user_func_array(array($module, $methodName), array_values($params));
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        unset($module);
+
+        /**
+         * 切换回之前的模块和方法。
+         * Chang the module、method to the previous.
+         */
+        $this->app->setModuleName($currentModuleName);
+        $this->app->setMethodName($currentMethodName);
+        $this->app->params = $currentParams;
+
+        chdir($currentPWD);
+
+        /**
+         * 返回内容。
+         * Return the content.
+         */
+        return $output;
+    }
+
+
+    /**
      * 设置用户配置文件。
      * Set user config file.
      *
