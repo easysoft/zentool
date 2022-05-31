@@ -100,33 +100,31 @@ class patchModel extends model
             $patchIDs[] = $one->id;
         }
 
-        if(isset($params['showAll']) or isset($params['local']))
+        $patchPath = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch';
+
+        $zfile = $this->app->loadClass('zfile');
+        $list = $zfile->readDir($patchPath);
+        foreach($list as $path)
         {
-            $patchPath = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch';
-
-            $zfile = $this->app->loadClass('zfile');
-            $list = $zfile->readDir($patchPath);
-            foreach($list as $path)
+            if(strpos($path, 'install.lock'))
             {
-                if(strpos($path, 'install.lock'))
+                $dirName = mb_substr(dirname($path), strlen($patchPath) + 1);
+                $key     = array_search($dirName, $patchIDs);
+                if($key !== false)
                 {
-                    $dirName = mb_substr(dirname($path), strlen($patchPath) + 1);
-                    $key     = array_search($dirName, $patchIDs);
-                    if($key !== false)
-                    {
-                        $patchList[$key]['installed'] = 'Yes';
-                        continue;
-                    }
-
-                    $patch = array();
-                    $patch['id']        = '';
-                    $patch['code']      = $dirName;
-                    $patch['type']      = 'bug';
-                    $patch['name']      = $dirName;
-                    $patch['date']      = date('Y-m-d', filemtime($path));
-                    $patch['installed'] = 'Yes';
-                    $patchList[] = $patch;
+                    $patchList[$key]['installed'] = 'Yes';
+                    continue;
                 }
+
+                /* If $key equal false, the patch is installed locally. */
+                $patch = array();
+                $patch['id']        = '';
+                $patch['code']      = $dirName;
+                $patch['type']      = 'bug';
+                $patch['name']      = $dirName;
+                $patch['date']      = date('Y-m-d', filemtime($path));
+                $patch['installed'] = 'Yes';
+                $patchList[] = $patch;
             }
         }
 
@@ -135,6 +133,13 @@ class patchModel extends model
             foreach($patchList as $key => $patch)
             {
                 if($patch['installed'] == 'No') unset($patchList[$key]);
+            }
+        }
+        elseif(!isset($params['showAll']))
+        {
+            foreach($patchList as $key => $patch)
+            {
+                if($patch['installed'] == 'Yes') unset($patchList[$key]);
             }
         }
 
