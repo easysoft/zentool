@@ -199,7 +199,7 @@ class patch extends control
         $files = $zip->listContent();
         if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-        foreach($files as $file) @unlink($this->config->zt_webDir . DS . $files);
+        foreach($files as $file) @unlink($this->config->zt_webDir . DS . $file['filename']);
 
         /* Restore files. */
         $backupPath = $saveDir . 'backup.zip';
