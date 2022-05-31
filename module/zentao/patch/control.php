@@ -129,9 +129,9 @@ class patch extends control
             if(!file_exists($patchPath))
             {
                 $this->output($this->lang->patch->downloading);
-                $url = 'http://chanzhi.cyy.oop.cc/extension-apidownloadRelease-966';
+                $url = $this->config->patch->webStoreUrl . '/extension-apidownloadRelease-' . $patch->data->id;
 
-                if(!@copy($url, $patchPath)) $this->output(error_get_last() . PHP_EOL, 'err');
+                if(!@copy($url, $patchPath)) return $this->output($this->lang->patch->error->notFound, 'err');
                 $this->output($this->lang->patch->down);
             }
         }
