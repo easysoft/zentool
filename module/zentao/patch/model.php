@@ -51,7 +51,8 @@ class patchModel extends model
      */
     public function checkExist($patchName)
     {
-        $patch = $this->getPatchView(substr($patchName, 0, -4), 'code');
+        $code  = str_replace('.', '_', substr($patchName, 0, -4));
+        $patch = $this->getPatchView($code, 'code');
         if(isset($patch->data->id)) return true;
 
         return false;
