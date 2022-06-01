@@ -383,7 +383,7 @@ class router
      */
     public function setRunDir()
     {
-        $this->config->runDir = getcwd();
+        $this->config->runDir = $this->config->os == 'windows' ? iconv("UTF-8", "GB2312", getcwd()) : getcwd();
     }
 
     /**
@@ -533,7 +533,6 @@ class router
     {
         if(empty($appRoot))  $this->appRoot = $this->basePath . 'app' . DS . $appName . DS;
         if(!empty($appRoot)) $this->appRoot = realpath($appRoot) . DS;
-        if(!is_dir($this->appRoot)) $this->triggerError("The app you call not found in {$this->appRoot}", __FILE__, __LINE__, $exit = true);
     }
 
     /**

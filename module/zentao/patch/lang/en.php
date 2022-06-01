@@ -52,7 +52,7 @@ Usage
 
 Example
   z patch install 1
-  z patch install /patches/zentao.15.0.1.beta.bug.1.zip
+  z patch install /patches/zentao.bug.1.zip
 
 EOF;
 $lang->patch->help->revert = <<<EOF
@@ -61,7 +61,7 @@ Usage
 
 Example
   z patch revert 1
-  z patch revert /patches/zentao.15.0.1.beta.bug.1.zip
+  z patch revert /patches/zentao.bug.1.zip
 
 EOF;
 $lang->patch->help->build = <<<EOF
@@ -77,7 +77,7 @@ Usage
   z patch release      release a zentao patch.
 
 Example
-  z patch release /patches/zentao.15.0.1.beta.bug.1.zip
+  z patch release /patches/zentao.bug.1.zip
 
 EOF;
 $lang->patch->viewPage = <<<EOF
@@ -104,7 +104,7 @@ $lang->patch->restored       = 'Revert successfuly' . PHP_EOL;
 $lang->patch->building       = 'Building...' . PHP_EOL;
 $lang->patch->buildSuccess   = 'Build successfuly' . PHP_EOL;
 $lang->patch->releaseSuccess = 'Release successfuly' . PHP_EOL;
-$lang->patch->tryTimeLimit   = 'Please re execute and enter' . PHP_EOL;
+$lang->patch->tryTimeLimit   = 'Please re-execute and enter' . PHP_EOL;
 $lang->patch->buildDocTpl    = <<<EOF
 ---
 name: %s

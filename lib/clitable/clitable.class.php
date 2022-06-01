@@ -94,6 +94,15 @@ class cliTable {
     protected $showBorder = true;
 
     /**
+     * OS.
+     *
+     * @var    string
+     * @access protected
+     *
+     **/
+    protected $os = '';
+
+    /**
      * Border Characters
      *
      * @var    array
@@ -127,6 +136,7 @@ class cliTable {
      * @param  bool   $useColors
      */
     public function __construct($itemName = 'Row', $useColors = true) {
+        $this->setOS();
         $this->setItemName($itemName);
         $this->setUseColors($useColors);
         $this->defineColors();
@@ -154,6 +164,20 @@ class cliTable {
         $this->useColors = (bool) $bool;
     }
 
+    /**
+     * 设置操作系统。
+     * Set OS.
+     *
+     * @access public
+     * @return void
+     */
+    public function setOS()
+    {
+        $os = strtolower(PHP_OS);
+        if(strpos($os, 'win') !== false) $os = 'windows';
+
+        $this->os = $os;
+    }
 
     /**
      * getUseColors
@@ -411,6 +435,7 @@ class cliTable {
         $response = $this->getChar('left');
 
         foreach ($rowData as $key => $field) {
+
             if ($header) {
                 $color = $this->getHeaderColor();
             } else {
@@ -419,6 +444,7 @@ class cliTable {
 
             $fieldLength  = mb_strwidth($field) + 1;
             $field        = ' '.($this->getUseColors() ? $this->getColorFromName($color) : '').$field;
+            if($this->os == 'windows') $field = iconv("UTF-8", "GB2312", $field);
             $response    .= $field;
 
             for ($x = $fieldLength; $x < ($columnLengths[$key] + ($this->showBorder ? 2 : 4)); $x++) {
