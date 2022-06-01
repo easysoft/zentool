@@ -187,6 +187,7 @@ class patch extends control
         }
 
         if(!file_exists($saveDir . 'install.lock')) return $this->output($this->lang->patch->error->notInstall, 'err');
+        if(!is_writable($saveDir)) return $this->output(sprintf($this->lang->patch->error0>notWritable, $saveDir), 'err');
 
         $this->app->loadClass('pclzip', true);
         if(file_exists($saveDir . 'patch.zip'))
