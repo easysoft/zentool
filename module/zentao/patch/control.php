@@ -174,14 +174,10 @@ class patch extends control
         /* Check whether the parameter is an ID or a path. */
         if(strpos($params['patchID'], '.zip') !== false)
         {
-            $patchPath = $this->getRealPath($params['patchID']);
-            if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
-
             /* Verification name format. */
-            $pathList    = explode(DS, $patchPath);
+            $pathList    = explode(DS, $params['patchID']);
             $packageKey  = count($pathList) - 1;
             $packageName = $pathList[$packageKey];
-            if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
 
             $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $packageName . DS;
         }
@@ -193,14 +189,16 @@ class patch extends control
         if(!file_exists($saveDir . 'install.lock')) return $this->output($this->lang->patch->error->notInstall, 'err');
 
         $this->app->loadClass('pclzip', true);
-        $zip = new pclzip($saveDir . 'patch.zip');
+        if(file_exists($saveDir . 'patch.zip'))
+        {
+            $zip = new pclzip($saveDir . 'patch.zip');
 
-        /* Remove files. */
-        $files = $zip->listContent();
-        if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+            /* Remove files. */
+            $files = $zip->listContent();
+            if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-        foreach($files as $file) @unlink($this->config->zt_webDir . DS . $file['filename']);
-
+            foreach($files as $file) @unlink($this->config->zt_webDir . DS . $file['filename']);
+        }
         /* Restore files. */
         $backupPath = $saveDir . 'backup.zip';
         $zip = new pclzip($backupPath);
