@@ -502,7 +502,7 @@ class control
         $inputValue = '';
         try
         {
-            $inputValue = trim(readline('Input: '), '`');
+            $inputValue = trim(readline(''), '`');
         }
         catch(Exception $e)
         {
