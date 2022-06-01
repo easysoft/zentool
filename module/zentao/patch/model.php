@@ -180,9 +180,9 @@ class patchModel extends model
     {
         if(empty($value)) return false;
 
-        if(method_exists($this, 'check' . $field)) return $this->{'check' . $field}($value, $obj);
+        if($field == 'type' and !in_array($value, array('bug', 'story'))) return false;
 
-        if($field == 'type' and in_array($value, array('bug', 'story'))) return true;
+        if(method_exists($this, 'check' . $field)) return $this->{'check' . $field}($value, $obj);
 
         return true;
     }
