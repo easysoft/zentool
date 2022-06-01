@@ -52,7 +52,7 @@ $lang->patch->help->install = <<<EOF
 
 例如
   z patch install 1
-  z patch install /patches/zentao.15.0.1.beta.bug.1.zip
+  z patch install /patches/zentao.bug.1.zip
 
 EOF;
 $lang->patch->help->revert = <<<EOF
@@ -61,7 +61,7 @@ $lang->patch->help->revert = <<<EOF
 
 例如
   z patch revert 1
-  z patch revert /patches/zentao.15.0.1.beta.bug.1.zip
+  z patch revert /patches/zentao.bug.1.zip
 
 EOF;
 $lang->patch->help->build = <<<EOF
@@ -77,7 +77,7 @@ $lang->patch->help->release = <<<EOF
   z patch release     发布一个补丁包。
 
 例如
-  z patch release /patches/zentao.15.0.1.beta.bug.1.zip
+  z patch release /patches/zentao.bug.1.zip
 
 EOF;
 $lang->patch->viewPage = <<<EOF

@@ -123,7 +123,7 @@ class patch extends control
         $backupPath = $saveDir . 'backup.zip';
         if(!isset($patchPath))
         {
-            $patch = $this->patch->getPatchView($params['patchID']);
+            $patch = $this->patch->getPatchView((int)$params['patchID']);
             if(!isset($patch->data->id)) return $this->output($this->lang->patch->error->invalid, 'err');
 
             $patchPath = $saveDir . 'patch.zip';
