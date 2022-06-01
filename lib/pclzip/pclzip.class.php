@@ -2564,7 +2564,8 @@
     $p_header['offset'] = 0;
     $p_header['filename'] = $p_filename;
 // TBC : Removed    $p_header['stored_filename'] = $v_stored_filename;
-    $p_header['stored_filename'] = $p_filedescr['stored_filename'];
+    //$p_header['stored_filename'] = $p_filedescr['stored_filename'];
+    $p_header['stored_filename'] = mb_convert_encoding($p_filedescr['stored_filename'], 'GB2312', 'UTF-8');
     $p_header['extra'] = '';
     $p_header['status'] = 'ok';
     $p_header['index'] = -1;
@@ -3670,6 +3671,7 @@
     // ----- Add the path
     if ($p_path != '') {
       $p_entry['filename'] = $p_path."/".$p_entry['filename'];
+      $p_entry['filename'] = mb_convert_encoding($p_entry['filename'], 'UTF-8', 'gb2312');
     }
 
     // ----- Check a base_dir_restriction
