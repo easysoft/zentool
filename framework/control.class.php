@@ -536,6 +536,9 @@ class control
     public function output($message = '', $type = 'out')
     {
         if(empty($message)) return;
+
+        if($this->config->os == 'windows') $message = iconv("UTF-8", "GB2312", $message);
+
         if($type == 'out') return fwrite(STDOUT, $message);
 
         return fwrite(STDERR, $message);
