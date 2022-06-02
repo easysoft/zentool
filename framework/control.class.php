@@ -457,7 +457,7 @@ class control
             }
             else
             {
-                $configContent .= "$name = $value". PHP_EOL;
+                $configContent .= "$name = $value" . PHP_EOL;
             }
         }
 

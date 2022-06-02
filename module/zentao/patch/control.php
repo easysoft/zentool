@@ -148,7 +148,6 @@ class patch extends control
 
         $this->output($this->lang->patch->backuping);
         $fileNames = array();
-        $fileName = 'micro';
         foreach($files as $file)
         {
             $name = $file['filename'];

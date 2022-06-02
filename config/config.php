@@ -22,6 +22,8 @@ $config->timezone   = 'Asia/Shanghai';      // 时区设置。        The time z
 $config->webRoot    = '';                   // URL根目录。       The root path of the url.
 $config->debug      = 2;
 
+$config->apps['zentao'] = 'zentao';
+
 /* 支持的主题和语言。Supported thems and languages. */
 $config->themes['default'] = 'default';
 $config->langs['zh-cn']    = '简体';

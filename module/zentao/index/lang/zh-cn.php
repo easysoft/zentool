@@ -17,7 +17,6 @@ $lang->index->help = <<<EOF
 
 应用程序
   z app list：          列出可用的应用。
-  z app switch appName：将当前应用切换到该应用。
 
 用法
    z [功能] [命令] [选项]

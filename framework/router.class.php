@@ -311,13 +311,14 @@ class router
      */
     public function __construct($appRoot = '')
     {
-        $appName = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
-
-        $this->setAppName($appName);
         $this->setPathFix();
         $this->setBasePath();
         $this->setFrameRoot();
         $this->setCoreLibRoot();
+
+        $this->parseConfig('main');
+        $appName = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
+        $this->setAppName($appName);
         $this->setAppRoot($appName, $appRoot);
         $this->setTmpRoot();
         $this->setCacheRoot();
@@ -393,8 +394,12 @@ class router
      * @access public
      * @return void
      */
-    public function parseConfig()
+    public function parseConfig($name = '')
     {
+        if($name == 'main')
+        {
+            $this->setOS();
+        }
         $userHome = '';
         if($this->config->os == 'windows')
         {
@@ -417,7 +422,8 @@ class router
             $userHome = getenv('HOME') . DS;
         }
 
-        $configFile = $userHome . '.zconfig/' . $this->appName;
+        if(empty($name)) $name = $this->appName;
+        $configFile = $userHome . '.zconfig/' . $name;
         $this->config->userConfigFile = $configFile;
 
         if(file_exists($configFile))
@@ -886,6 +892,16 @@ class router
 
         global $argv;
         if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, $this->config->version . PHP_EOL));
+        if($argv[1] == 'app')
+        {
+            if($argv[2] == 'switch' && isset($argv[3]))
+            {
+                if(!isset($this->config->apps[$argv[3]])) die(fwrite(STDOUT, 'App not exists' . PHP_EOL));
+                if($this->setMainConfig(array('z_app' => $argv[3]))) die(fwrite(STDOUT, 'Successfully' . PHP_EOL));
+            }
+            die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
+        }
+
 
         $module = (empty($argv[1]) or substr($argv[1], 0, 1) == '-' or $argv[1] == 'help') ? $this->config->default->module : $argv[1];
         $method = (empty($argv[2]) or substr($argv[2], 0, 1) == '-') ? $this->config->default->method : $argv[2];
@@ -894,6 +910,38 @@ class router
         $this->setControlFile();
 
         $this->args = $argv;
+    }
+
+    /**
+     * Set main config.
+     *
+     * @param  array  $configs
+     * @access public
+     * @return bool
+     */
+    public function setMainConfig($configs = array())
+    {
+        $this->parseConfig('main');
+        $mainConfigFile = dirname($this->config->userConfigFile) . DS . 'main';
+        if(!is_writable($mainConfigFile)) return false;
+
+        $configContent = file_get_contents($mainConfigFile);
+        foreach($configs as $name => $value)
+        {
+            if(isset($this->config->$name))
+            {
+                $configContent = str_replace("$name = {$this->config->$name}", "$name = $value", $configContent);
+            }
+            else
+            {
+                $configContent .= "$name = $value" . PHP_EOL;
+            }
+        }
+
+        $configFile = @fopen($mainConfigFile, "w");
+        fwrite($configFile, $configContent);
+        fclose($configFile);
+        return true;
     }
 
     //-------------------- 模块及扩展设置(Module and extension) --------------------//
