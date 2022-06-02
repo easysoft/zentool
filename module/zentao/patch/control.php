@@ -114,6 +114,7 @@ class patch extends control
         }
         else
         {
+            $this->checkCZUser();
             $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $params['patchID'] . DS;
         }
 
@@ -132,7 +133,9 @@ class patch extends control
             $patchPath = $saveDir . 'patch.zip';
 
             $this->output($this->lang->patch->downloading);
-            $url = $this->config->patch->webStoreUrl . '/extension-apidownloadRelease-' . $patch->data->id;
+
+            $token = base64_encode($this->config->cz_account . ':' . $this->config->cz_password);
+            $url = $this->config->patch->webStoreUrl . '/extension-apidownloadRelease-' . $patch->data->id . '-' . $token;
 
             if(!@copy($url, $patchPath)) return $this->output($this->lang->patch->error->notFound, 'err');
             $this->output($this->lang->patch->down);
@@ -337,6 +340,35 @@ class patch extends control
         $packageName = $pathList[$packageKey];
         if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
 
+        $this->checkCZUser();
+        /* Check whether the patch package exists. */
+        $isExist = $this->patch->checkExist($packageName);
+        if($isExist)
+        {
+            $wrongCount = 1;
+
+            $this->output($this->lang->patch->release->replaceTip);
+            while(true)
+            {
+                $result = $this->readInput();
+
+                if($result == 'yes' or $result == 'y') break;
+                if($result == 'no' or $result == 'n' or $wrongCount > 2) return false;
+
+                ++$wrongCount;
+
+                $this->output($this->lang->patch->release->replaceTip, 'err');
+            }
+        }
+
+        /* Release patch by api. */
+        $response = $this->patch->release($patchPath, $packageName);
+        $this->output($response->message . PHP_EOL, 'err');
+    }
+
+    public function checkCZUser()
+    {
+
         $needLogin = false;
         if(!isset($this->config->cz_account) or !isset($this->config->cz_password)) $needLogin = true;
         if(!$needLogin)
@@ -377,29 +409,5 @@ class patch extends control
                 }
             }
         }
-
-        /* Check whether the patch package exists. */
-        $isExist = $this->patch->checkExist($packageName);
-        if($isExist)
-        {
-            $wrongCount = 1;
-
-            $this->output($this->lang->patch->release->replaceTip);
-            while(true)
-            {
-                $result = $this->readInput();
-
-                if($result == 'yes' or $result == 'y') break;
-                if($result == 'no' or $result == 'n' or $wrongCount > 2) return false;
-
-                ++$wrongCount;
-
-                $this->output($this->lang->patch->release->replaceTip, 'err');
-            }
-        }
-
-        /* Release patch by api. */
-        $response = $this->patch->release($patchPath, $packageName);
-        $this->output($response->message . PHP_EOL, 'err');
     }
 }
