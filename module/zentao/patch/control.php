@@ -140,6 +140,10 @@ class patch extends control
             if(!@copy($url, $patchPath)) return $this->output($this->lang->patch->error->notFound, 'err');
             $this->output($this->lang->patch->down);
         }
+        else
+        {
+            @copy($patchPath, $saveDir . 'patch.zip');
+        }
 
         $this->app->loadClass('pclzip', true);
         $zip   = new pclzip($patchPath);
@@ -222,7 +226,7 @@ class patch extends control
                     if(mb_substr($name, 0, $nameLen) == $fileName . DS) $name = mb_substr($name, $nameLen);
                 }
 
-                if($name) $fileNames[] = $this->config->zt_webDir . DS . $name;
+                if($name) @unlink( $this->config->zt_webDir . DS . $name);
             }
         }
         /* Restore files. */
