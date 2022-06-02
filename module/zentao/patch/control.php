@@ -96,6 +96,7 @@ class patch extends control
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
         if(!is_writable($this->config->zt_webDir)) return $this->output(sprintf($this->lang->patch->error->notWritable, $this->config->zt_webDir), 'err');
 
+        $fileName = '';
         /* Check whether the parameter is an ID or a path. */
         if(strpos($params['patchID'], '.zip') !== false)
         {
@@ -106,6 +107,7 @@ class patch extends control
             $pathList    = explode(DS, $patchPath);
             $packageKey  = count($pathList) - 1;
             $packageName = $pathList[$packageKey];
+            $fileName    = $packageName;
             if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
 
             $saveDir = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch' . DS . $packageName . DS;
@@ -126,16 +128,14 @@ class patch extends control
             $patch = $this->patch->getPatchView((int)$params['patchID']);
             if(!isset($patch->data->id)) return $this->output($this->lang->patch->error->invalid, 'err');
 
+            $fileName  = $patch->data->fileName;
             $patchPath = $saveDir . 'patch.zip';
 
-            if(!file_exists($patchPath))
-            {
-                $this->output($this->lang->patch->downloading);
-                $url = $this->config->patch->webStoreUrl . '/extension-apidownloadRelease-' . $patch->data->id;
+            $this->output($this->lang->patch->downloading);
+            $url = $this->config->patch->webStoreUrl . '/extension-apidownloadRelease-' . $patch->data->id;
 
-                if(!@copy($url, $patchPath)) return $this->output($this->lang->patch->error->notFound, 'err');
-                $this->output($this->lang->patch->down);
-            }
+            if(!@copy($url, $patchPath)) return $this->output($this->lang->patch->error->notFound, 'err');
+            $this->output($this->lang->patch->down);
         }
 
         $this->app->loadClass('pclzip', true);
@@ -145,7 +145,18 @@ class patch extends control
 
         $this->output($this->lang->patch->backuping);
         $fileNames = array();
-        foreach($files as $file) $fileNames[] = $this->config->zt_webDir . DS . $file['filename'];
+        $fileName = 'micro';
+        foreach($files as $file)
+        {
+            $name = $file['filename'];
+            if($fileName && mb_substr($name, 0, mb_strlen($fileName) + 1) == $fileName . DS)
+            {
+                $nameLen = mb_strlen($fileName) + 1;
+                if(mb_substr($name, 0, $nameLen) == $fileName . DS) $name = mb_substr($name, $nameLen);
+            }
+
+            if($name) $fileNames[] = $this->config->zt_webDir . DS . $name;
+        }
 
         $zip->changeFile($backupPath);
         if($zip->create($fileNames, PCLZIP_OPT_REMOVE_PATH, $this->config->zt_webDir) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
@@ -153,8 +164,9 @@ class patch extends control
 
         $this->output($this->lang->patch->installing);
         $zip->changeFile($patchPath);
-        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir, PCLZIP_OPT_REMOVE_PATH, $fileName) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
         @touch($saveDir . 'install.lock');
+        @file_put_contents($saveDir . 'patchName', $fileName);
         $this->output($this->lang->patch->installDone);
     }
 
@@ -187,7 +199,7 @@ class patch extends control
         }
 
         if(!file_exists($saveDir . 'install.lock')) return $this->output($this->lang->patch->error->notInstall, 'err');
-        if(!is_writable($saveDir)) return $this->output(sprintf($this->lang->patch->error0>notWritable, $saveDir), 'err');
+        if(!is_writable($saveDir)) return $this->output(sprintf($this->lang->patch->error->notWritable, $saveDir), 'err');
 
         $this->app->loadClass('pclzip', true);
         if(file_exists($saveDir . 'patch.zip'))
@@ -198,7 +210,18 @@ class patch extends control
             $files = $zip->listContent();
             if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-            foreach($files as $file) @unlink($this->config->zt_webDir . DS . $file['filename']);
+            $fileName = @file_get_contents($saveDir . 'patchName');
+            foreach($files as $file)
+            {
+                $name = $file['filename'];
+                if($fileName && mb_substr($name, 0, mb_strlen($fileName) + 1) == $fileName . DS)
+                {
+                    $nameLen = mb_strlen($fileName) + 1;
+                    if(mb_substr($name, 0, $nameLen) == $fileName . DS) $name = mb_substr($name, $nameLen);
+                }
+
+                if($name) $fileNames[] = $this->config->zt_webDir . DS . $name;
+            }
         }
         /* Restore files. */
         $backupPath = $saveDir . 'backup.zip';
@@ -206,7 +229,10 @@ class patch extends control
 
         $this->output($this->lang->patch->restoring);
         if($zip->extract(PCLZIP_OPT_PATH, '/') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
-        @unlink($saveDir . 'install.lock');
+
+        $zfile = $this->app->loadClass('zfile');
+        @$zfile->removeDir($saveDir);
+
         $this->output($this->lang->patch->restored);
     }
 
@@ -374,6 +400,6 @@ class patch extends control
 
         /* Release patch by api. */
         $response = $this->patch->release($patchPath, $packageName);
-        $this->output($response->message, 'err');
+        $this->output($response->message . PHP_EOL, 'err');
     }
 }

@@ -98,12 +98,12 @@ $lang->patch->downloading    = 'Downloading...' . PHP_EOL;
 $lang->patch->down           = 'Done' . PHP_EOL;
 $lang->patch->backuping      = 'Backuping...' . PHP_EOL;
 $lang->patch->installing     = 'Installing...' . PHP_EOL;
-$lang->patch->installDone    = 'Install successfuly, using "z patch list --local" to view all installed patches.' . PHP_EOL;
+$lang->patch->installDone    = 'Install successfully, using "z patch list --local" to view all installed patches.' . PHP_EOL;
 $lang->patch->restoring      = 'Restoring...' . PHP_EOL;
-$lang->patch->restored       = 'Revert successfuly' . PHP_EOL;
+$lang->patch->restored       = 'Revert successfully' . PHP_EOL;
 $lang->patch->building       = 'Building...' . PHP_EOL;
-$lang->patch->buildSuccess   = 'Build successfuly' . PHP_EOL;
-$lang->patch->releaseSuccess = 'Release successfuly' . PHP_EOL;
+$lang->patch->buildSuccess   = 'Build successfully' . PHP_EOL;
+$lang->patch->releaseSuccess = 'Release successfully' . PHP_EOL;
 $lang->patch->tryTimeLimit   = 'Please re-execute and enter' . PHP_EOL;
 $lang->patch->buildDocTpl    = <<<EOF
 ---

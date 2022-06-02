@@ -242,6 +242,14 @@ class patchModel extends model
         return $this->http($url);
     }
 
+    /**
+     * Check user.
+     *
+     * @param  string $account
+     * @param  string $password
+     * @access public
+     * @return void
+     */
     public function checkUser($account, $password)
     {
         $url  = $this->config->patch->webStoreUrl . 'user-loginByZ.json';
