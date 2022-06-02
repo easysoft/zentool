@@ -155,10 +155,11 @@ class patch extends control
         foreach($files as $file)
         {
             $name = $file['filename'];
-            if($fileName && mb_substr($name, 0, mb_strlen($fileName) + 1) == $fileName . DS)
+            if($fileName)
             {
                 $nameLen = mb_strlen($fileName) + 1;
                 if(mb_substr($name, 0, $nameLen) == $fileName . DS) $name = mb_substr($name, $nameLen);
+                if(mb_substr($name, 0, 10) == 'zentaopms' . DS)     $name = mb_substr($name, 10);
             }
 
             if($name) $fileNames[] = $this->config->zt_webDir . DS . $name;
@@ -220,10 +221,11 @@ class patch extends control
             foreach($files as $file)
             {
                 $name = $file['filename'];
-                if($fileName && mb_substr($name, 0, mb_strlen($fileName) + 1) == $fileName . DS)
+                if($fileName)
                 {
                     $nameLen = mb_strlen($fileName) + 1;
                     if(mb_substr($name, 0, $nameLen) == $fileName . DS) $name = mb_substr($name, $nameLen);
+                    if(mb_substr($name, 0, 10) == 'zentaopms' . DS)     $name = mb_substr($name, 10);
                 }
 
                 if($name) @unlink( $this->config->zt_webDir . DS . $name);
@@ -308,13 +310,13 @@ class patch extends control
         $savePath = $this->config->runDir . DS . $buildInfo->patchName;
 
         $zip = new pclzip($savePath);
-        if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath, PCLZIP_OPT_ADD_PATH, 'zentaopms') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
         $yaml = fopen($yamlFile, 'w');
         fwrite($yaml, sprintf($this->lang->patch->buildDocTpl, $name, $code, $year, $author, $desc, $desc, str_replace(',', '_', $version), $license, $changelog, $date, $version));
         fclose($yaml);
 
-        if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'zentaopms' . DS . 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
         unset($zip);
         @unlink($yamlFile);
