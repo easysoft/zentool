@@ -26,5 +26,4 @@ $lang->index->help = <<<EOF
    set：  显示和更改当前应用程序的配置信息。
 
 使用“z [feature] --help 或 -h”获取有关模块的更多信息。
-
 EOF;

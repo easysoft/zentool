@@ -77,7 +77,7 @@ class patch extends control
 
         $patchID = (int)$params['patchID'];
         $patch   = $this->patch->getPatchView($patchID);
-        if(!isset($patch->result) or $patch->result == 'fail') return $this->output(isset($patch->message) ? $patch->message . PHP_EOL : 'error', 'err');
+        if(!isset($patch->result) or $patch->result == 'fail') return $this->output(isset($patch->message) ? $patch->message : 'error', 'err');
 
         if(!isset($patch->data->id)) return $this->output($this->lang->patch->error->notFound, 'err');
 
@@ -155,7 +155,7 @@ class patch extends control
         $this->app->loadClass('pclzip', true);
         $zip   = new pclzip($patchPath);
         $files = $zip->listContent();
-        if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($files === 0) return $this->output($zip->errorInfo(), 'err');
 
         $this->output($this->lang->patch->backuping);
         $fileNames = array();
@@ -173,12 +173,12 @@ class patch extends control
         }
 
         $zip->changeFile($backupPath);
-        if($zip->create($fileNames, PCLZIP_OPT_REMOVE_PATH, $this->config->zt_webDir) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->create($fileNames, PCLZIP_OPT_REMOVE_PATH, $this->config->zt_webDir) === 0) return $this->output($zip->errorInfo(), 'err');
         $this->output($this->lang->patch->down);
 
         $this->output($this->lang->patch->installing);
         $zip->changeFile($patchPath);
-        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir, PCLZIP_OPT_REMOVE_PATH, $fileName) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir, PCLZIP_OPT_REMOVE_PATH, $fileName) === 0) return $this->output($zip->errorInfo(), 'err');
         @touch($saveDir . 'install.lock');
         @file_put_contents($saveDir . 'patchName', $fileName);
 
@@ -224,7 +224,7 @@ class patch extends control
 
             /* Remove files. */
             $files = $zip->listContent();
-            if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+            if($files === 0) return $this->output($zip->errorInfo(), 'err');
 
             foreach($files as $file)
             {
@@ -245,7 +245,7 @@ class patch extends control
         $zip = new pclzip($backupPath);
 
         $this->output($this->lang->patch->restoring);
-        if($zip->extract(PCLZIP_OPT_PATH, '/') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->extract(PCLZIP_OPT_PATH, '/') === 0) return $this->output($zip->errorInfo(), 'err');
 
         $zfile = $this->app->loadClass('zfile');
         @$zfile->removeDir($saveDir);
@@ -320,13 +320,13 @@ class patch extends control
         $savePath = $this->config->runDir . DS . $buildInfo->patchName;
 
         $zip = new pclzip($savePath);
-        if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath, PCLZIP_OPT_ADD_PATH, 'zentaopms') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->create($buildInfo->buildPath, PCLZIP_OPT_REMOVE_PATH, $buildInfo->buildPath, PCLZIP_OPT_ADD_PATH, 'zentaopms') === 0) return $this->output($zip->errorInfo(), 'err');
 
         $yaml = fopen($yamlFile, 'w');
         fwrite($yaml, sprintf($this->lang->patch->buildDocTpl, $name, $code, $year, $author, $desc, $desc, str_replace(',', '_', $version), $license, $changelog, $date, $version));
         fclose($yaml);
 
-        if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'zentaopms' . DS . 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
+        if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'zentaopms' . DS . 'doc') === 0) return $this->output($zip->errorInfo(), 'err');
         @unlink($yamlFile);
 
         return $this->output($this->lang->patch->buildSuccess);
@@ -378,7 +378,7 @@ class patch extends control
 
         /* Release patch by api. */
         $response = $this->patch->release($patchPath, $packageName);
-        $this->output($response->message . PHP_EOL, 'err');
+        $this->output($response->message, 'err');
     }
 
     /**
@@ -417,7 +417,7 @@ class patch extends control
 
                 if(!isset($loginResult->result) or $loginResult->result == 'fail')
                 {
-                    $this->output(isset($loginResult->message) ? $loginResult->message . PHP_EOL : $this->lang->patch->release->userInvalid, 'err');
+                    $this->output(isset($loginResult->message) ? $loginResult->message : $this->lang->patch->release->userInvalid, 'err');
                 }
                 else
                 {

@@ -25,5 +25,4 @@ Feature
   set:    Display and change configuration settings for current application.
 
 Use "z [feature] --help or -h" for more information about a module.
-
 EOF;
