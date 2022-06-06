@@ -228,7 +228,7 @@ class patchModel extends model
     public function getPatchView($patchID = 0, $type = 'id')
     {
         $version = $this->getZtVersion();
-        if($type == 'code') $patchID = str_replace('.', '-', $patchID);
+        if($type == 'code') $patchID = str_replace('.', '_', $patchID);
 
         $url = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
         return $this->http($url);

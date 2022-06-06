@@ -157,5 +157,5 @@ $lang->patch->error->build = new stdClass();
 $lang->patch->error->build->version   = '该版本号 %s 无效，请重新输入：';
 $lang->patch->error->build->type      = '该类型 %s 无效，请重新输入：';
 $lang->patch->error->build->id        = '该ID %s 不是有效的需求或bug ID，请重新输入：';
-$lang->patch->error->build->patch     = '该补丁包 %s 已存在，请输入其他名称：';
+$lang->patch->error->build->patch     = '该ID %s 已存在，请输入其他名称：';
 $lang->patch->error->build->buildPath = '该目录 %s 无效，请重新输入：';

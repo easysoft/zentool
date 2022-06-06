@@ -157,5 +157,5 @@ $lang->patch->error->build = new stdClass();
 $lang->patch->error->build->version   = 'The version %s is invalid, please check again:';
 $lang->patch->error->build->type      = 'The type %s is invalid, please check again:';
 $lang->patch->error->build->id        = 'The ID %s is invalid, please check again:';
-$lang->patch->error->build->patch     = 'The patchId %s is exist, please try another one:';
+$lang->patch->error->build->patch     = 'The ID %s is exist, please try another one:';
 $lang->patch->error->build->buildPath = 'The directory %s is invalid, please check again:';
