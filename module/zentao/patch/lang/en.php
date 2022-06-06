@@ -12,13 +12,13 @@
 $lang->patch = new stdclass();
 $lang->patch->help = new stdClass();
 $lang->patch->help->patch = <<<EOF
-Show list, display details or perform installation for patches fit for current zentao version.
+Show list, display details, or perform the installation for patches fit for the current zentao version
 
 Usage
   z patch <command> [options]
 
 Commands
-  list      -l                  List all avaliable patches for current zentao version.
+  list      -l                  List all available patches for the current zentao version.
   view      -v   <patchid>      View a patch.
   install   -i   <patchid>      Install a patch.
   revert    -r   <patchid>      Revert an installed patch.
@@ -31,7 +31,7 @@ Usage
   z patch list [options]
 
 Options
-  -a, --all    List all the patches (include installed).
+  -a, --all    List all the patches (including installed).
   --local      List all installed patches.
 
 Example
@@ -40,7 +40,7 @@ Example
 EOF;
 $lang->patch->help->view = <<<EOF
 Usage
-  z patch view <patchid>     View the patch details which id is patchid
+  z patch view <patchid>     View the patch details which id is patched
 
 Example
   z patch view 1
@@ -132,7 +132,7 @@ releases:
 EOF;
 
 $lang->patch->build = new stdClass();
-$lang->patch->build->versionTip   = 'Please input the current installed Zentao version, e.g. 16.5, biz6.5, max3.0.  For multi-version installed, seperated them with "," :' . PHP_EOL;
+$lang->patch->build->versionTip   = 'Please input the current installed Zentao version, e.g. 16.5, biz6.5, max3.0.  For multi-version installed, seperate them with "," :' . PHP_EOL;
 $lang->patch->build->typeTip      = 'Please set the patch type, story or bug:' . PHP_EOL;
 $lang->patch->build->idTip        = 'Please set the id of the story or bug:' . PHP_EOL;
 $lang->patch->build->buildPathTip = 'Please set the patch directory, eg /zentao/build:' . PHP_EOL;
