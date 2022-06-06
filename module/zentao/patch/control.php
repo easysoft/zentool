@@ -143,6 +143,7 @@ class patch extends control
         else
         {
             @copy($patchPath, $saveDir . 'patch.zip');
+            $fileName  = 'zentaopms';
         }
 
         $this->app->loadClass('pclzip', true);
