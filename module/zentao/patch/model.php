@@ -259,4 +259,10 @@ class patchModel extends model
         );
         return $this->http($url, $user);
     }
+
+    public function request2ZT($patchName = '', $type = 'install')
+    {
+        $res = json_decode(system(sprintf($this->config->patch->ztcliTpl, $this->config->zt_webDir, $type, $patchName)));
+        return $res->result;
+    }
 }

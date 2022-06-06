@@ -4,7 +4,7 @@
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
- * 
+ *
  *  May you do good and not evil.
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
@@ -13,7 +13,7 @@ class commonModel extends model
 {
     /**
      * The construct function.
-     * 
+     *
      * @access public
      * @return void
      */
@@ -30,7 +30,7 @@ class commonModel extends model
 
     /**
      * Start the session.
-     * 
+     *
      * @access public
      * @return void
      */
@@ -43,7 +43,7 @@ class commonModel extends model
 
     /**
      * Set the header info.
-     * 
+     *
      * @access public
      * @return void
      */
@@ -54,9 +54,9 @@ class commonModel extends model
     }
 
     /**
-     * Print the run info 
-     * 
-     * @param  int    $startTime 
+     * Print the run info
+     *
+     * @param  int    $startTime
      * @access public
      * @return void
      */

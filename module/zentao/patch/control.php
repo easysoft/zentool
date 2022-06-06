@@ -174,6 +174,8 @@ class patch extends control
         if($zip->extract(PCLZIP_OPT_PATH, $this->config->zt_webDir, PCLZIP_OPT_REMOVE_PATH, $fileName) === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
         @touch($saveDir . 'install.lock');
         @file_put_contents($saveDir . 'patchName', $fileName);
+
+        $this->patch->request2ZT($fileName);
         $this->output($this->lang->patch->installDone);
     }
 
@@ -208,6 +210,7 @@ class patch extends control
         if(!file_exists($saveDir . 'install.lock')) return $this->output($this->lang->patch->error->notInstall, 'err');
         if(!is_writable($saveDir)) return $this->output(sprintf($this->lang->patch->error->notWritable, $saveDir), 'err');
 
+        $fileName = @file_get_contents($saveDir . 'patchName');
         $this->app->loadClass('pclzip', true);
         if(file_exists($saveDir . 'patch.zip'))
         {
@@ -217,7 +220,6 @@ class patch extends control
             $files = $zip->listContent();
             if($files === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
 
-            $fileName = @file_get_contents($saveDir . 'patchName');
             foreach($files as $file)
             {
                 $name = $file['filename'];
@@ -240,6 +242,8 @@ class patch extends control
 
         $zfile = $this->app->loadClass('zfile');
         @$zfile->removeDir($saveDir);
+
+        $this->patch->request2ZT($fileName, 'revert');
 
         $this->output($this->lang->patch->restored);
     }
