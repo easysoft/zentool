@@ -16,7 +16,6 @@ You can use z app list and z app switch appName to get all applications and swit
 
 App
  'z app list':            List available applications.
- 'z app switch appName':  Switch current application to appName.
 
 Usage
   z [feature] [command] [options]
@@ -26,5 +25,4 @@ Feature
   set:    Display and change configuration settings for current application.
 
 Use "z [feature] --help or -h" for more information about a module.
-
 EOF;

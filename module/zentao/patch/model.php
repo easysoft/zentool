@@ -231,7 +231,9 @@ class patchModel extends model
     public function getPatchView($patchID = 0, $type = 'id')
     {
         $version = $this->getZtVersion();
-        $url     = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
+        if($type == 'code') $patchID = str_replace('.', '-', $patchID);
+
+        $url = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
         return $this->http($url);
     }
 
@@ -265,7 +267,7 @@ class patchModel extends model
      */
     public function recordDynamic($patchName = '', $type = 'install')
     {
-        $response = json_decode(system(sprintf($this->config->patch->ztcliTpl, $this->config->zt_webDir, $type, $patchName)));
-        return $response->result;
+        $res = json_decode(exec(sprintf($this->config->patch->ztcliTpl, $this->config->zt_webDir, $type, $patchName)));
+        return $res->result;
     }
 }

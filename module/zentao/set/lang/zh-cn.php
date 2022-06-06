@@ -14,10 +14,9 @@ $lang->set->inputDir = <<<EOF
 设置禅道配置，请按ctrl+c退出。
 
 请输入禅道目录，例如：/opt/zentao ：
-
 EOF;
 
-$lang->set->dirNotExists  = '目录%s不是禅道目录，请重新输入：' . PHP_EOL;
-$lang->set->tryTimeLimit  = '请重新运行命令并输入目录信息！' . PHP_EOL;
-$lang->set->noWriteAccess = '配置文件不可写!' . PHP_EOL;
-$lang->set->saveSuccess   = '保存成功。' . PHP_EOL;
+$lang->set->dirNotExists  = '目录%s不是禅道目录，请重新输入：';
+$lang->set->tryTimeLimit  = '请重新运行命令并输入目录信息！';
+$lang->set->noWriteAccess = '配置文件不可写!';
+$lang->set->saveSuccess   = '保存成功。';
