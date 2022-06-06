@@ -14,3 +14,4 @@ $config->patch->nameTpl = 'zentao.%s.%d.zip';
 $config->patch->webStoreUrl = 'http://www.zentao.net/';
 $config->patch->buildFields = 'version,type,id,author,desc,changelog,license,buildPath';
 $config->patch->ztcliTpl    = '%s' . DS . 'bin' . DS . 'ztcli ' . 'http://localhost/action-create-patch-%s-%s.json pathinfo';
+$config->patch->tableTitle  = array('id', 'type', 'code', 'name', 'date', 'installed');
