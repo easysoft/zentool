@@ -24,7 +24,6 @@ $lang->patch->help->patch = <<<EOF
   revert    -r   <patchid>      还原已安装的补丁。
   build     -b                  构建补丁包。
   release   -rel                发布补丁包。
-
 EOF;
 $lang->patch->help->list = <<<EOF
 用法
@@ -36,7 +35,6 @@ $lang->patch->help->list = <<<EOF
 
 例如
   z patch list -a
-
 EOF;
 $lang->patch->help->view = <<<EOF
 用法
@@ -44,7 +42,6 @@ $lang->patch->help->view = <<<EOF
 
 例如
   z patch view 1
-
 EOF;
 $lang->patch->help->install = <<<EOF
 用法
@@ -53,7 +50,6 @@ $lang->patch->help->install = <<<EOF
 例如
   z patch install 1
   z patch install /patches/zentao.bug.1.zip
-
 EOF;
 $lang->patch->help->revert = <<<EOF
 用法
@@ -62,7 +58,6 @@ $lang->patch->help->revert = <<<EOF
 例如
   z patch revert 1
   z patch revert /patches/zentao.bug.1.zip
-
 EOF;
 $lang->patch->help->build = <<<EOF
 用法
@@ -70,7 +65,6 @@ $lang->patch->help->build = <<<EOF
 
 例如
   z patch build
-
 EOF;
 $lang->patch->help->release = <<<EOF
 用法
@@ -78,7 +72,6 @@ $lang->patch->help->release = <<<EOF
 
 例如
   z patch release /patches/zentao.bug.1.zip
-
 EOF;
 $lang->patch->viewPage = <<<EOF
         ID：%s
@@ -86,7 +79,6 @@ $lang->patch->viewPage = <<<EOF
       描述：%s
   发布时间：%s
 修改的内容：%s
-
 EOF;
 $lang->patch->name           = '标题';
 $lang->patch->type           = '类型';

@@ -24,7 +24,6 @@ Commands
   revert    -r   <patchid>      Revert an installed patch.
   build     -b                  Build a patch.
   release   -rel                Release a patch.
-
 EOF;
 $lang->patch->help->list = <<<EOF
 Usage
@@ -36,7 +35,6 @@ Options
 
 Example
   z patch list -a
-
 EOF;
 $lang->patch->help->view = <<<EOF
 Usage
@@ -44,7 +42,6 @@ Usage
 
 Example
   z patch view 1
-
 EOF;
 $lang->patch->help->install = <<<EOF
 Usage
@@ -53,7 +50,6 @@ Usage
 Example
   z patch install 1
   z patch install /patches/zentao.bug.1.zip
-
 EOF;
 $lang->patch->help->revert = <<<EOF
 Usage
@@ -62,7 +58,6 @@ Usage
 Example
   z patch revert 1
   z patch revert /patches/zentao.bug.1.zip
-
 EOF;
 $lang->patch->help->build = <<<EOF
 Usage
@@ -70,7 +65,6 @@ Usage
 
 Example
   z patch build
-
 EOF;
 $lang->patch->help->release = <<<EOF
 Usage
@@ -78,7 +72,6 @@ Usage
 
 Example
   z patch release /patches/zentao.bug.1.zip
-
 EOF;
 $lang->patch->viewPage = <<<EOF
           ID: %s
@@ -86,7 +79,6 @@ $lang->patch->viewPage = <<<EOF
  Description: %s
  Create Date: %s
  Change Logs: %s
-
 EOF;
 $lang->patch->name           = 'Name';
 $lang->patch->type           = 'Type';
