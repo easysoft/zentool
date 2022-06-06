@@ -16,7 +16,6 @@ You can use z app list and z app switch appName to get all applications and swit
 
 App
  'z app list':            List available applications.
- 'z app switch appName':  Switch current application to appName.
 
 Usage
   z [feature] [command] [options]

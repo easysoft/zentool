@@ -33,7 +33,7 @@ $config->langs['en']       = 'English';
 /* 默认值设置。Default settings. */
 $config->default = new stdclass();
 $config->default->lang   = 'en';          //默认语言。 Default language.
-$config->default->module = 'index';       //默认模块。 Default module.
+$config->default->module = 'entry';       //默认模块。 Default module.
 $config->default->method = 'entry';       //默认方法。 Default method.
 
 /* 系统框架配置。Framework settings. */

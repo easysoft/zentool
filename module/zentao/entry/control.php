@@ -1,6 +1,6 @@
 <?php
 /**
- * The control file of index module of ZenTaoPHP.
+ * The control file of entry module of ZenTaoPHP.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -9,7 +9,7 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-class index extends control
+class entry extends control
 {
     /**
      * The construct function.
