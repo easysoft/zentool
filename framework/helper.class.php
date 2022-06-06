@@ -607,6 +607,21 @@ class helper
 
         return $ip;
     }
+
+    /**
+     * Get real path.
+     *
+     * @param  string $path
+     * @access public
+     * @return string
+     */
+    public static function getRealPath($path = '')
+    {
+        global $config;
+        $realPath = realpath($path);
+        if(!$realPath) $realPath = realpath($config->runDir . DS . $path);
+        return $realPath;
+    }
 }
 
 //------------------------------- 常用函数。Some tool functions.-------------------------------//

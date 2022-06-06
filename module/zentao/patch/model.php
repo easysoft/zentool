@@ -108,7 +108,7 @@ class patchModel extends model
      */
     public function checkBuildPath($path)
     {
-        if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS . $path);
+        $path = helper::getRealPath($path);
         if(!empty($path) and file_exists($path) and @opendir($path)) return $path;
 
         return '';

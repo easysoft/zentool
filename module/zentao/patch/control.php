@@ -107,7 +107,7 @@ class patch extends control
         /* Check whether the parameter is an ID or a path. */
         if(substr($params['patchID'], -4) == '.zip')
         {
-            $patchPath = $this->getRealPath($params['patchID']);
+            $patchPath = helper::getRealPath($params['patchID']);
             if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
 
             /* Verification name format. */
@@ -345,7 +345,7 @@ class patch extends control
         if(empty($params) or empty($params['patchPath']) or isset($params['help'])) return $this->printHelp('release');
 
         /* Verify that the parameters are valid. */
-        $patchPath = $this->getRealPath($params['patchPath']);
+        $patchPath = helper::getRealPath($params['patchPath']);
         if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
 
         /* Verification name format. */
