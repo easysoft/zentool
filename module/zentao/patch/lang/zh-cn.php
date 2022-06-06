@@ -40,7 +40,7 @@ $lang->patch->help->list = <<<EOF
 EOF;
 $lang->patch->help->view = <<<EOF
 用法
-  z patch view <patchid>     查看ID为1的补丁包信息
+  z patch view <patchid>     查看补丁包详细信息
 
 例如
   z patch view 1

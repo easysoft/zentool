@@ -59,6 +59,80 @@ class patchModel extends model
     }
 
     /**
+     * Check user input.
+     *
+     * @param  string $field
+     * @param  string $value
+     * @param  object $obj
+     * @access public
+     * @return bool
+     */
+    public function checkInput($field = '', $value = '', $obj = null)
+    {
+        if(empty($value)) return false;
+        if($field == 'type' and !in_array($value, array('bug', 'story'))) return false;
+
+        if(method_exists($this, 'check' . $field)) return $this->{'check' . $field}($value, $obj);
+        return true;
+    }
+
+    /**
+     * Check ID.
+     *
+     * @param  int    $id
+     * @param  object $object
+     * @access public
+     * @return bool|string
+     */
+    public function checkID($id, $object)
+    {
+        if((int)$id)
+        {
+            $patchName = sprintf($this->config->patch->nameTpl, $object->type, (int)$id);
+
+            $patch = $this->getPatchView(substr($patchName, 0, -4), 'code');
+            if(isset($patch->data->id)) return 'exists';
+
+            return $patchName;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check build path.
+     *
+     * @param  string $path
+     * @access public
+     * @return string
+     */
+    public function checkBuildPath($path)
+    {
+        if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS . $path);
+        if(!empty($path) and file_exists($path) and @opendir($path)) return $path;
+
+        return '';
+    }
+
+    /**
+     * Check user.
+     *
+     * @param  string $account
+     * @param  string $password
+     * @access public
+     * @return object
+     */
+    public function checkUser($account, $password)
+    {
+        $url  = $this->config->patch->webStoreUrl . 'user-loginByZ.json';
+        $user = array(
+            'account'  => $account,
+            'password' => $password
+        );
+        return $this->http($url, $user);
+    }
+
+    /**
      * Get zentao version.
      *
      * @access public
@@ -67,7 +141,7 @@ class patchModel extends model
     public function getZtVersion()
     {
         $versionFile = $this->config->zt_webDir . DS . 'VERSION';
-        $version = file_get_contents($versionFile);
+        $version     = file_get_contents($versionFile);
         return trim($version);
     }
 
@@ -86,31 +160,30 @@ class patchModel extends model
         if(!isset($patchs->result) or $patchs->result == 'fail') return array();
 
         $patchList = array();
-        $patchIDs  = array();
-        foreach($patchs->list as $one)
+        $patchIds  = array();
+        foreach($patchs->list as $patch)
         {
-            $patch = array();
-            $patch['id']        = $one->id;
-            $patch['code']      = $one->code;
-            $patch['type']      = strpos($one->code, 'story') ? 'story' : 'bug';
-            $patch['name']      = $one->name;
-            $patch['date']      = substr($one->updatedTime, 0, 10);
-            $patch['installed'] = 'No';
-            $patchList[] = $patch;
+            $data = array();
+            $data['id']        = $patch->id;
+            $data['code']      = $patch->code;
+            $data['type']      = strpos($patch->code, 'story') ? 'story' : 'bug';
+            $data['name']      = $patch->name;
+            $data['date']      = substr($patch->updatedTime, 0, 10);
+            $data['installed'] = 'No';
 
-            $patchIDs[] = $one->id;
+            $patchList[] = $data;
+            $patchIds[]  = $patch->id;
         }
 
         $patchPath = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch';
-
-        $zfile = $this->app->loadClass('zfile');
-        $list = $zfile->readDir($patchPath);
+        $zfile     = $this->app->loadClass('zfile');
+        $list      = $zfile->readDir($patchPath);
         foreach($list as $path)
         {
             if(strpos($path, 'install.lock'))
             {
                 $dirName = mb_substr(dirname($path), strlen($patchPath) + 1);
-                $key     = array_search($dirName, $patchIDs);
+                $key     = array_search($dirName, $patchIds);
                 if($key !== false)
                 {
                     $patchList[$key]['installed'] = 'Yes';
@@ -148,6 +221,21 @@ class patchModel extends model
     }
 
     /**
+     * Get patch view.
+     *
+     * @param  int|string $patchID
+     * @param  string     $type
+     * @access public
+     * @return object
+     */
+    public function getPatchView($patchID = 0, $type = 'id')
+    {
+        $version = $this->getZtVersion();
+        $url     = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
+        return $this->http($url);
+    }
+
+    /**
      * Release patch.
      *
      * @param  string $patchPath
@@ -169,108 +257,16 @@ class patchModel extends model
     }
 
     /**
-     * Check user input.
-     *
-     * @param  string $field
-     * @param  string $value
-     * @param  object $obj
-     * @access public
-     * @return bool
-     */
-    public function checkInput($field = '', $value = '', $obj = null)
-    {
-        if(empty($value)) return false;
-
-        if($field == 'type' and !in_array($value, array('bug', 'story'))) return false;
-
-        if(method_exists($this, 'check' . $field)) return $this->{'check' . $field}($value, $obj);
-
-        return true;
-    }
-
-    /**
-     * Check ID.
-     *
-     * @param  int    $id
-     * @param  object $object
-     * @access public
-     * @return bool|string
-     */
-    public function checkID($id, $object)
-    {
-        if((int)$id)
-        {
-            $patchName = sprintf($this->config->patch->nameTpl, $object->type, (int)$id);
-
-            $patch = $this->getPatchView(substr($patchName, 0, -4), 'code');
-            if(isset($patch->data->id)) return 'exists';
-
-            return $patchName;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check build path.
-     *
-     * @param  string $path
-     * @access public
-     * @return string
-     */
-    public function checkBuildPath($path)
-    {
-        if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS .$path);
-
-        if(!empty($path) and file_exists($path) and @opendir($path)) return $path;
-
-        return '';
-    }
-
-    /**
-     * Get patch view.
-     *
-     * @param  int|string $patchID
-     * @param  string     $type
-     * @access public
-     * @return object
-     */
-    public function getPatchView($patchID = 0, $type = 'id')
-    {
-        $version = $this->getZtVersion();
-        $url     = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
-        return $this->http($url);
-    }
-
-    /**
-     * Check user.
-     *
-     * @param  string $account
-     * @param  string $password
-     * @access public
-     * @return void
-     */
-    public function checkUser($account, $password)
-    {
-        $url  = $this->config->patch->webStoreUrl . 'user-loginByZ.json';
-        $user = array(
-            'account'  => $account,
-            'password' => $password
-        );
-        return $this->http($url, $user);
-    }
-
-    /**
-     * Request to Zentao
+     * Record dynamic to Zentao
      *
      * @param  string $patchName
      * @param  string $type
      * @access public
      * @return string
      */
-    public function request2ZT($patchName = '', $type = 'install')
+    public function recordDynamic($patchName = '', $type = 'install')
     {
-        $res = json_decode(system(sprintf($this->config->patch->ztcliTpl, $this->config->zt_webDir, $type, $patchName)));
-        return $res->result;
+        $response = json_decode(system(sprintf($this->config->patch->ztcliTpl, $this->config->zt_webDir, $type, $patchName)));
+        return $response->result;
     }
 }
