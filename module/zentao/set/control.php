@@ -33,8 +33,7 @@ class set extends control
             if(!$path) continue;
 
             $configPath = $path . DS . 'config' . DS . 'my.php';
-            $realPath   = realpath($configPath);
-            if(!$realPath) $realPath = realpath($this->config->runDir . DS . $configPath);
+            $realPath   = $this->getRealPath($configPath);
 
             if($realPath)
             {
