@@ -74,11 +74,7 @@ class patch extends control
     public function view($params)
     {
         if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('view');
-<<<<<<< HEAD
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir))  return $this->output($this->lang->patch->error->runSet, 'err');
-=======
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
->>>>>>> 7ec51eac4eb51cd13533e24be3a6d4e448e31f75
 
         $patchID = (int)$params['patchID'];
         $patch   = $this->patch->getPatchView($patchID);
