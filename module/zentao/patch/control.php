@@ -60,7 +60,7 @@ class patch extends control
 
         $patchList = $this->patch->getPatchList($params);
 
-        return $this->printList($patchList, array('id', 'type', 'code', 'name', 'date', 'installed'), $this->lang->patch);
+        return $this->printList($patchList, $this->config->patch->showFields->list, $this->lang->patch);
     }
 
     /**
@@ -72,7 +72,7 @@ class patch extends control
      */
     public function view($params)
     {
-        if(empty($params) or empty($params['patchID'] or isset($params['help'])) return $this->printHelp('view');
+        if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('view');
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         $patchID = (int)$params['patchID'];

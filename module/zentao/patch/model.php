@@ -248,7 +248,6 @@ class patchModel extends model
         $releaseInfo = array();
         $releaseInfo['name']     = $packageName;
         $releaseInfo['size']     = filesize($patchPath);
-        $releaseInfo['uuid']     = '';
         $releaseInfo['account']  = $this->config->cz_account;
         $releaseInfo['password'] = $this->config->ca_password;
         $releaseInfo['file']     = new \CURLFile($patchPath);
