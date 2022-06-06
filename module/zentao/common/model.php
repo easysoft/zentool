@@ -22,23 +22,9 @@ class commonModel extends model
         parent::__construct();
         if(!defined('FIRST_RUN'))
         {
-            if(!defined('SESSION_STARTED')) $this->startSession();
             $this->sendHeader();
             define('FIRST_RUN', true);
         }
-    }
-
-    /**
-     * Start the session.
-     *
-     * @access public
-     * @return void
-     */
-    public function startSession()
-    {
-        session_name($this->config->sessionVar);
-        if(isset($_GET[$this->config->sessionVar])) session_id($_GET[$this->config->sessionVar]);
-        session_start();
     }
 
     /**
@@ -51,21 +37,5 @@ class commonModel extends model
     {
         header("Content-Type: text/html; Language={$this->config->charset}");
         header("Cache-control: private");
-    }
-
-    /**
-     * Print the run info
-     *
-     * @param  int    $startTime
-     * @access public
-     * @return void
-     */
-    public function printRunInfo($startTime)
-    {
-        $info['timeUsed'] = round(getTime() - $startTime, 4) * 1000;
-        $info['memory']   = round(memory_get_peak_usage() / 1024, 1);
-        $info['querys']   = count(dao::$querys);
-        vprintf($this->lang->runInfo, $info);
-        return $info;
     }
 }

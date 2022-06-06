@@ -33,6 +33,13 @@ class patch extends control
         }
     }
 
+    /**
+     * Print help.
+     *
+     * @param  string $type
+     * @access public
+     * @return void
+     */
     public function printHelp($type = 'patch')
     {
         return $this->output($this->lang->patch->help->$type);
@@ -48,7 +55,7 @@ class patch extends control
     public function list($params)
     {
         global $argc;
-        if(isset($params['help']) or ($argc > 3 && empty($params))) return $this->printHelp('list');
+        if(isset($params['help']) or ($argc > 3 and empty($params))) return $this->printHelp('list');
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         $patchList = $this->patch->getPatchList($params);
@@ -65,20 +72,19 @@ class patch extends control
      */
     public function view($params)
     {
-        if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('view');
+        if(empty($params) or empty($params['patchID'] or isset($params['help'])) return $this->printHelp('view');
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
-        $patchID = $params['patchID'];
-
-        $patch = $this->patch->getPatchView($patchID);
+        $patchID = (int)$params['patchID'];
+        $patch   = $this->patch->getPatchView($patchID);
         if(!isset($patch->result) or $patch->result == 'fail') return $this->output(isset($patch->message) ? $patch->message . PHP_EOL : 'error', 'err');
 
         if(!isset($patch->data->id)) return $this->output($this->lang->patch->error->notFound, 'err');
 
-        $name  = $patch->data->extensionName;
-        $desc  = $patch->data->extensionDesc;
-        $logs  = $patch->data->changelog;
-        $date  = substr($patch->data->addedTime, 0, 10);
+        $name = $patch->data->extensionName;
+        $desc = $patch->data->extensionDesc;
+        $logs = $patch->data->changelog;
+        $date = substr($patch->data->addedTime, 0, 10);
 
         return $this->output(sprintf($this->lang->patch->viewPage, $patchID, $name, $desc, $date, $logs));
     }
@@ -92,13 +98,13 @@ class patch extends control
      */
     public function install($params)
     {
-        if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
+        if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
         if(!is_writable($this->config->zt_webDir)) return $this->output(sprintf($this->lang->patch->error->notWritable, $this->config->zt_webDir), 'err');
 
         $fileName = '';
         /* Check whether the parameter is an ID or a path. */
-        if(strpos($params['patchID'], '.zip') !== false)
+        if(substr($params['patchID'], -4) == '.zip')
         {
             $patchPath = $this->getRealPath($params['patchID']);
             if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
@@ -176,7 +182,7 @@ class patch extends control
         @touch($saveDir . 'install.lock');
         @file_put_contents($saveDir . 'patchName', $fileName);
 
-        $this->patch->request2ZT($fileName);
+        $this->patch->recordDynamic($fileName);
         $this->output($this->lang->patch->installDone);
     }
 
@@ -189,12 +195,11 @@ class patch extends control
      */
     public function revert($params)
     {
-        if(empty($params) or !isset($params['patchID']) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('revert');
-
+        if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('revert');
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         /* Check whether the parameter is an ID or a path. */
-        if(strpos($params['patchID'], '.zip') !== false)
+        if(substr($params['patchID'], -4) == '.zip')
         {
             /* Verification name format. */
             $pathList    = explode(DS, $params['patchID']);
@@ -234,6 +239,7 @@ class patch extends control
                 if($name) @unlink( $this->config->zt_webDir . DS . $name);
             }
         }
+
         /* Restore files. */
         $backupPath = $saveDir . 'backup.zip';
         $zip = new pclzip($backupPath);
@@ -244,8 +250,7 @@ class patch extends control
         $zfile = $this->app->loadClass('zfile');
         @$zfile->removeDir($saveDir);
 
-        $this->patch->request2ZT($fileName, 'revert');
-
+        $this->patch->recordDynamic($fileName, 'revert');
         $this->output($this->lang->patch->restored);
     }
 
@@ -322,8 +327,6 @@ class patch extends control
         fclose($yaml);
 
         if($zip->add($yamlFile,PCLZIP_OPT_REMOVE_PATH, $this->config->runDir, PCLZIP_OPT_ADD_PATH, 'zentaopms' . DS . 'doc') === 0) return $this->output($zip->errorInfo() . PHP_EOL, 'err');
-
-        unset($zip);
         @unlink($yamlFile);
 
         return $this->output($this->lang->patch->buildSuccess);
@@ -338,7 +341,7 @@ class patch extends control
      */
     public function release($params)
     {
-        if(empty($params) or !isset($params['patchPath']) or empty($params['patchPath']) or isset($params['help'])) return $this->printHelp('release');
+        if(empty($params) or empty($params['patchPath']) or isset($params['help'])) return $this->printHelp('release');
 
         /* Verify that the parameters are valid. */
         $patchPath = $this->getRealPath($params['patchPath']);
@@ -350,7 +353,9 @@ class patch extends control
         $packageName = $pathList[$packageKey];
         if(!$this->patch->checkPatchName($packageName)) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
 
+        /* Verify official website account. */
         $this->checkCZUser();
+
         /* Check whether the patch package exists. */
         $isExist = $this->patch->checkExist($packageName);
         if($isExist)
@@ -376,6 +381,12 @@ class patch extends control
         $this->output($response->message . PHP_EOL, 'err');
     }
 
+    /**
+     * Verify official website account.
+     *
+     * @access public
+     * @return void
+     */
     public function checkCZUser()
     {
 
@@ -387,7 +398,7 @@ class patch extends control
             if(!isset($loginResult->result) or $loginResult->result == 'fail') $needLogin = true;
         }
 
-        /* Check zentao account. */
+        /* Check official website account. */
         if($needLogin)
         {
             $this->output($this->lang->patch->release->needCzUser);

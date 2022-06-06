@@ -9,7 +9,7 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-$lang->more    = 'More &raquo;';
+$lang->more    = 'More';
 $lang->save    = 'Save';
 $lang->loading = 'Loading...';
 $lang->yes     = 'Yes';

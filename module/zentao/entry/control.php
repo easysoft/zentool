@@ -32,13 +32,15 @@ class entry extends control
     public function entry($params)
     {
         if(empty($params)) return $this->printHelp();
-
-        foreach($params as $key => $param)
-        {
-            if($key == 'help') return $this->printHelp();
-        }
+        if(isset($params['help'])) return $this->printHelp();
     }
 
+    /**
+     * Print help.
+     *
+     * @access public
+     * @return void
+     */
     public function printHelp()
     {
         return $this->output(sprintf($this->lang->index->help, $this->app->appName));

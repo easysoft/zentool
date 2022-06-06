@@ -10,12 +10,12 @@
  *  May you share freely, never taking more than you give.
  */
 /* Some global items. */
-$lang->save      = '保存';
-$lang->loading   = '稍后...';
-$lang->yes       = '是';
-$lang->no        = '否';
+$lang->save    = '保存';
+$lang->loading = '稍后...';
+$lang->yes     = '是';
+$lang->no      = '否';
 
 /* Pager items. */
 $lang->pager = new stdclass();
-$lang->pager->pre       = "上页";
-$lang->pager->next      = "下页";
+$lang->pager->pre  = "上页";
+$lang->pager->next = "下页";
