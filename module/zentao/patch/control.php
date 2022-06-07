@@ -78,7 +78,11 @@ class patch extends control
 
         $patchID = (int)$params['patchID'];
         $patch   = $this->patch->getPatchView($patchID);
-        if(!isset($patch->result) or $patch->result == 'fail') return $this->output(isset($patch->message) ? $patch->message : 'error', 'err');
+        if(!isset($patch->result) or $patch->result == 'fail')
+        {
+            $messageKey = isset($patch->message) ? $patch->message : '';
+            return $this->output(!empty($messageKey) ? $this->lang->patch->api->$messageKey : 'error', 'err');
+        }
 
         if(!isset($patch->data->id)) return $this->output($this->lang->patch->error->notFound, 'err');
 
