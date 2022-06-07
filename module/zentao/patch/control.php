@@ -59,6 +59,7 @@ class patch extends control
         if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
 
         $patchList = $this->patch->getPatchList($params);
+        if(isset($patchList->result) && $patchList->result == 'fail') return $this->output($patchList->message, 'err');
 
         return $this->printList($patchList, $this->config->patch->showFields->list, $this->lang->patch);
     }
@@ -73,7 +74,7 @@ class patch extends control
     public function view($params)
     {
         if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('view');
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
+        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir))  return $this->output($this->lang->patch->error->runSet, 'err');
 
         $patchID = (int)$params['patchID'];
         $patch   = $this->patch->getPatchView($patchID);
@@ -106,7 +107,7 @@ class patch extends control
         /* Check whether the parameter is an ID or a path. */
         if(substr($params['patchID'], -4) == '.zip')
         {
-            $patchPath = $this->getRealPath($params['patchID']);
+            $patchPath = helper::getRealPath($params['patchID']);
             if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidName, $params['patchID']), 'err');
 
             /* Verification name format. */
@@ -344,7 +345,7 @@ class patch extends control
         if(empty($params) or empty($params['patchPath']) or isset($params['help'])) return $this->printHelp('release');
 
         /* Verify that the parameters are valid. */
-        $patchPath = $this->getRealPath($params['patchPath']);
+        $patchPath = helper::getRealPath($params['patchPath']);
         if(!$patchPath) return $this->output(sprintf($this->lang->patch->error->invalidFile, $params['patchPath']), 'err');
 
         /* Verification name format. */

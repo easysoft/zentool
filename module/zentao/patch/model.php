@@ -108,7 +108,7 @@ class patchModel extends model
      */
     public function checkBuildPath($path)
     {
-        if(!empty($path) and !file_exists($path)) $path = realpath($this->config->runDir . DS . $path);
+        $path = helper::getRealPath($path);
         if(!empty($path) and file_exists($path) and @opendir($path)) return $path;
 
         return '';
@@ -157,10 +157,9 @@ class patchModel extends model
         $version = $this->getZtVersion();
         $url     = $this->config->patch->webStoreUrl . 'extension-apiBrowseRelease-' . $version . '.json';
         $patchs  = $this->http($url);
-        if(!isset($patchs->result) or $patchs->result == 'fail') return array();
+        if(isset($patchs->result) and $patchs->result == 'fail') return $patchs;
 
         $patchList = array();
-        $patchIds  = array();
         foreach($patchs->list as $patch)
         {
             $data = array();
@@ -171,8 +170,7 @@ class patchModel extends model
             $data['date']      = substr($patch->updatedTime, 0, 10);
             $data['installed'] = 'No';
 
-            $patchList[] = $data;
-            $patchIds[]  = $patch->id;
+            $patchList[$patch->id] = $data;
         }
 
         $patchPath = $this->config->zt_webDir . DS . 'tmp' . DS . 'patch';
@@ -183,16 +181,15 @@ class patchModel extends model
             if(strpos($path, 'install.lock'))
             {
                 $dirName = mb_substr(dirname($path), strlen($patchPath) + 1);
-                $key     = array_search($dirName, $patchIds);
-                if($key !== false)
+                if(isset($patchList[$dirName]))
                 {
-                    $patchList[$key]['installed'] = 'Yes';
+                    $patchList[$dirName]['installed'] = 'Yes';
                     continue;
                 }
 
                 /* If $key equal false, the patch is installed locally. */
                 $patch = array();
-                $patch['id']        = '';
+                $patch['id']        = $dirName;
                 $patch['code']      = $dirName;
                 $patch['type']      = 'bug';
                 $patch['name']      = $dirName;
@@ -231,7 +228,7 @@ class patchModel extends model
     public function getPatchView($patchID = 0, $type = 'id')
     {
         $version = $this->getZtVersion();
-        if($type == 'code') $patchID = str_replace('.', '-', $patchID);
+        if($type == 'code') $patchID = str_replace('.', '_', $patchID);
 
         $url = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
         return $this->http($url);
