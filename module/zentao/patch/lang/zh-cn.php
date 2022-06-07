@@ -159,3 +159,12 @@ $lang->patch->error->build->type      = '该类型 %s 无效，请重新输入�
 $lang->patch->error->build->id        = '该ID %s 不是有效的需求或bug ID，请重新输入：';
 $lang->patch->error->build->patch     = '该补丁包 %s 已存在，请输入其他名称：';
 $lang->patch->error->build->buildPath = '该目录 %s 无效，请重新输入：';
+
+$lang->patch->api = new stdClass();
+$lang->patch->api->notDevloper   = '你现在还不是开发者, 不能上传插件。';
+$lang->patch->api->emptyFile     = '请上传待发布的文件。';
+$lang->patch->api->uploadFail    = '文件上传失败。';
+$lang->patch->api->emptyLang     = '语言列表不能为空。';
+$lang->patch->api->emptyName     = '补丁名称不能为空。';
+$lang->patch->api->createFail    = '上传失败';
+$lang->patch->api->uploadSuccess = '上传成功';

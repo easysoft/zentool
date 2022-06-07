@@ -159,3 +159,12 @@ $lang->patch->error->build->type      = 'The type %s is invalid, please check ag
 $lang->patch->error->build->id        = 'The ID %s is invalid, please check again:';
 $lang->patch->error->build->patch     = 'The patchId %s is exist, please try another one:';
 $lang->patch->error->build->buildPath = 'The directory %s is invalid, please check again:';
+
+$lang->patch->api = new stdClass();
+$lang->patch->api->notDevloper   = 'You have no permission to release patch.';
+$lang->patch->api->emptyFile     = 'Please upload the file to be released.';
+$lang->patch->api->uploadFail    = 'Failed to upload files.';
+$lang->patch->api->emptyLang     = 'Languages cannot be empty.';
+$lang->patch->api->emptyName     = 'Patch name cannot be empty.';
+$lang->patch->api->createFail    = 'Upload fail.';
+$lang->patch->api->uploadSuccess = 'Successfully';

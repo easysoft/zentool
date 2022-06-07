@@ -377,8 +377,9 @@ class patch extends control
         }
 
         /* Release patch by api. */
-        $response = $this->patch->release($patchPath, $packageName);
-        $this->output($response->message, 'err');
+        $response   = $this->patch->release($patchPath, $packageName);
+        $messageKey = $response->message;
+        $this->output($this->lang->patch->api->$messageKey, 'err');
     }
 
     /**
