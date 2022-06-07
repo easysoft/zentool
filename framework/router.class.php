@@ -1782,7 +1782,6 @@ class router
 
         /* 触发错误(Trigger the error) */
         trigger_error($log, $exit ? E_USER_ERROR : E_USER_WARNING);
-        die($log);
     }
 
     /**
