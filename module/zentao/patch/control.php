@@ -147,8 +147,8 @@ class patch extends control
 
             $token = base64_encode($this->config->cz_account . ':' . $this->config->cz_password);
             $url = $this->config->patch->webStoreUrl . '/extension-apidownloadRelease-' . $patch->data->id . '-' . $token;
+            $this->patch->getFile($url, $saveDir, 'patch.zip', 1);
 
-            if(!@copy($url, $patchPath)) return $this->output($this->lang->patch->error->notFound, 'err');
             $this->output($this->lang->patch->down);
         }
         else
