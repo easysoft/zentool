@@ -237,14 +237,13 @@ class patch extends control
                 if($fileName)
                 {
                     $nameLen = mb_strlen($fileName) + 1;
-                    if(mb_substr($name, 0, $nameLen) == $fileName . DS) $name = mb_substr($name, $nameLen);
-                    if(mb_substr($name, 0, 10) == 'zentaopms' . DS)     $name = mb_substr($name, 10);
+                    if(mb_substr($name, 0, $nameLen) == $fileName . '/') $name = mb_substr($name, $nameLen);
                 }
-
-                if($name) @unlink( $this->config->zt_webDir . DS . $name);
+                
+                if(mb_substr($name, 0, 10) == 'zentaopms' . '/') $name = mb_substr($name, 10);
+                if($name) @unlink($this->config->zt_webDir . DS . $name);
             }
         }
-
         /* Restore files. */
         $backupPath = $saveDir . 'backup.zip';
         $zip = new pclzip($backupPath);
