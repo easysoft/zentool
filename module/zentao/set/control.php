@@ -20,31 +20,33 @@ class set extends control
      */
     public function entry($params)
     {
-        $userSet = array();
-
-        /* Check path. */
-        $this->output($this->lang->set->dirTip);
-        $tryTimes = 0;
-        while(true)
+        $userSet     = array();
+        $tryTime     = 0;
+        $fields      = $this->config->os == 'windows' ? $this->config->set->fields->windows : $this->config->set->fields->default;
+        $inputFileds = explode(',', $fields);
+        foreach($inputFileds as $field)
         {
-            if($tryTime > 2) return $this->output($this->lang->set->tryTimeLimit, 'err');
-            $dir  = $this->readInput();
-            $path = rtrim(trim($dir), DS);
-            if(!$path) continue;
-
-            $configPath = $path . DS . 'config' . DS . 'my.php';
-            $realPath   = helper::getRealPath($configPath);
-
-            if($realPath)
+            $this->output($this->lang->set->{$field . 'Tip'});
+            while(true)
             {
-                $userSet['zt_webDir'] = dirname(dirname($realPath));
-                if(!$this->setUserConfigs($userSet)) return fwrite(STDOUT, $this->lang->set->noWriteAccess);
-                break;
-            }
+                if($tryTime > 2) return $this->output($this->lang->set->tryTimeLimit, 'err');
 
-            $tryTime++;
-            $this->output(sprintf($this->lang->set->dirNotExists, $path), 'err');
+                $inputValue = $this->readInput();
+                $result     = $this->set->checkInput($field, $inputValue);
+                if($result)
+                {
+                    $tryTime  = 0;
+                    $saveName = $this->config->set->configNames[$field];
+                    $userSet[$saveName] = $result;
+                    break;
+                }
+
+                $tryTime++;
+                $this->output(sprintf($this->lang->set->{$field . 'NotReal'}, $inputValue), 'err');
+            }
         }
+
+        if(!$this->setUserConfigs($userSet)) return fwrite(STDOUT, $this->lang->set->noWriteAccess);
 
         $this->output($this->lang->set->saveSuccess);
     }

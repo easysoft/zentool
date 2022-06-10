@@ -56,7 +56,9 @@ class patch extends control
     {
         global $argc;
         if(isset($params['help']) or ($argc > 3 and empty($params))) return $this->printHelp('list');
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
+
+        $dirCheck = $this->patch->checkConfig('zt_webDir');
+        if($dirCheck) return $this->output($dirCheck, 'err');
 
         $patchList = $this->patch->getPatchList($params);
         if(isset($patchList->result) && $patchList->result == 'fail') return $this->output($patchList->message, 'err');
@@ -74,7 +76,9 @@ class patch extends control
     public function view($params)
     {
         if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('view');
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir))  return $this->output($this->lang->patch->error->runSet, 'err');
+
+        $dirCheck = $this->patch->checkConfig('zt_webDir');
+        if($dirCheck) return $this->output($dirCheck, 'err');
 
         $patchID = (int)$params['patchID'];
         $patch   = $this->patch->getPatchView($patchID);
@@ -104,8 +108,9 @@ class patch extends control
     public function install($params)
     {
         if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
-        if(!is_writable($this->config->zt_webDir)) return $this->output(sprintf($this->lang->patch->error->notWritable, $this->config->zt_webDir), 'err');
+
+        $dirCheck = $this->patch->checkConfig('zt_webDir,php_file');
+        if($dirCheck) return $this->output($dirCheck, 'err');
 
         $fileName = '';
         /* Check whether the parameter is an ID or a path. */
@@ -170,8 +175,8 @@ class patch extends control
             if($fileName)
             {
                 $nameLen = mb_strlen($fileName) + 1;
-                if(mb_substr($name, 0, $nameLen) == $fileName . DS) $name = mb_substr($name, $nameLen);
-                if(mb_substr($name, 0, 10) == 'zentaopms' . DS)     $name = mb_substr($name, 10);
+                if(mb_substr($name, 0, $nameLen) == $fileName . '/') $name = mb_substr($name, $nameLen);
+                if(mb_substr($name, 0, 10) == 'zentaopms' . '/')     $name = mb_substr($name, 10);
             }
 
             if($name) $fileNames[] = $this->config->zt_webDir . DS . $name;
@@ -201,7 +206,9 @@ class patch extends control
     public function revert($params)
     {
         if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('revert');
-        if(!isset($this->config->zt_webDir) or empty($this->config->zt_webDir)) return $this->output($this->lang->patch->error->runSet, 'err');
+
+        $dirCheck = $this->patch->checkConfig('zt_webDir,php_file');
+        if($dirCheck) return $this->output($dirCheck, 'err');
 
         /* Check whether the parameter is an ID or a path. */
         if(substr($params['patchID'], -4) == '.zip')
@@ -239,7 +246,7 @@ class patch extends control
                     $nameLen = mb_strlen($fileName) + 1;
                     if(mb_substr($name, 0, $nameLen) == $fileName . '/') $name = mb_substr($name, $nameLen);
                 }
-                
+
                 if(mb_substr($name, 0, 10) == 'zentaopms' . '/') $name = mb_substr($name, 10);
                 if($name) @unlink($this->config->zt_webDir . DS . $name);
             }

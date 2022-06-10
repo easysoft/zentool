@@ -264,7 +264,30 @@ class patchModel extends model
      */
     public function recordDynamic($patchName = '', $type = 'install')
     {
-        $res = json_decode(exec(sprintf($this->config->patch->ztcliTpl, $this->config->zt_webDir, $type, $patchName)));
+        $cmd = sprintf($this->config->patch->ztcliTpl, $this->config->zt_webDir, $type, $patchName);
+        if($this->config->os == 'windows') $cmd = $this->config->php_file . ' ' . $cmd;
+
+        $res = json_decode(exec($cmd));
         return $res->result;
+    }
+
+    /**
+     * Check zentao path.
+     *
+     * @access public
+     * @return string
+     */
+    public function checkConfig($fields = '')
+    {
+        if(empty($fields)) return '';
+
+        $checkFields = explode(',', $fields);
+        foreach($checkFields as $field)
+        {
+            if(!isset($this->config->{$field}) or empty($this->config->{$field})) return $this->lang->patch->error->runSet;
+            if($field == 'zt_webDir' and !is_writable($this->config->zt_webDir)) return sprintf($this->lang->patch->error->notWritable, $this->config->zt_webDir);
+        }
+
+        return '';
     }
 }
