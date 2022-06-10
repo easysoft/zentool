@@ -101,7 +101,7 @@ class model
      */
     public function __construct($appName = '')
     {
-        global $app, $config;
+        global $app, $config, $lang;
         $this->app     = $app;
         $this->config  = $config;
         $this->lang    = $lang;
