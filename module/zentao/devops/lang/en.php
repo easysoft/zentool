@@ -28,3 +28,11 @@ Example
  z mr master
  z devops mr master
 EOF;
+
+$lang->devops->urlTip      = 'The zentao host url, eg http://zentaopms.com:';
+$lang->devops->accountTip  = 'username:';
+$lang->devops->pwdTip      = 'password:';
+$lang->devops->checking    = 'Checking...';
+$lang->devops->logging     = 'Logging...';
+$lang->devops->urlInvalid  = 'The host %s is invalid, please check again:';
+$lang->devops->loginFailed = 'Login failed. Please check your account and password:';
