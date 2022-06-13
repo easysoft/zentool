@@ -890,7 +890,7 @@ class router
     {
         if($this->config->os == 'linux') system('stty erase ^H');
 
-        global $argv;
+        global $argv, $argc;
         if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, $this->config->version . PHP_EOL));
         if($argv[1] == 'app')
         {
@@ -902,6 +902,18 @@ class router
             die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
         }
 
+        /* Abbreviation param. */
+        if(!empty($argv[1]) and isset($this->config->abbreviations->{$this->appName}[$argv[1]]))
+        {
+            $newArgv = array();
+            foreach($argv as $key => $val)
+            {
+                if($key == 1) $newArgv[] = $this->config->abbreviations->{$this->appName}[$argv[1]];
+                $newArgv[] = $val;
+            }
+            $argv = $newArgv;
+            $argc++;
+        }
 
         $module = (empty($argv[1]) or substr($argv[1], 0, 1) == '-' or $argv[1] == 'help') ? $this->config->default->module : $argv[1];
         $method = (empty($argv[2]) or substr($argv[2], 0, 1) == '-') ? $this->config->default->method : $argv[2];

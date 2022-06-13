@@ -24,6 +24,9 @@ $config->debug      = 2;
 
 $config->apps['zentao'] = 'zentao';
 
+$config->abbreviations = new stdClass();
+$config->abbreviations->zentao['mr'] = 'devops';
+
 /* 支持的主题和语言。Supported thems and languages. */
 $config->themes['default'] = 'default';
 $config->langs['zh-cn']    = '简体';
