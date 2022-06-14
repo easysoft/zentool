@@ -55,8 +55,25 @@ class devops extends control
         if(empty($this->config->zt_url) or empty($this->config->zt_account) or empty($this->config->zt_password)) $needLogin = true;
         if(!$needLogin)
         {
-            $loginResult = $this->devops->login($this->config->zt_url, $this->config->zt_accounti, $this->config->zt_password);
-            if(!$loginResult) $needLogin = true;
+            $config = $this->devops->checkUrl($this->config->zt_url);
+            if($config)
+            {
+                $token = $this->devops->login($this->config->zt_url, $this->config->zt_account, $this->config->zt_password);
+                if($token)
+                {
+                    $userSet['zt_token']        = $token;
+                    $userSet['zt_tokenExpired'] = time() + $config->expiredTime - 100;
+                    if(!$this->setUserConfigs($userSet)) return $this->output($this->lang->devops->noWriteAccess);
+                }
+                else
+                {
+                    $needLogin = true;
+                }
+            }
+            else
+            {
+                $needLogin = true;
+            }
         }
 
         /* Check official website account. */
@@ -100,7 +117,7 @@ class devops extends control
                     $tryTime++;
                     $this->output(sprintf($this->lang->devops->dirNotExists, $path), 'err');
                     $userSet['zt_account']      = $account;
-                    $userSet['zt_password']     = md5($account);
+                    $userSet['zt_password']     = md5($password);
                     $userSet['zt_token']        = $token;
                     $userSet['zt_tokenExpired'] = time() + $config->expiredTime - 100;
                     if(!$this->setUserConfigs($userSet)) return $this->output($this->lang->devops->noWriteAccess);

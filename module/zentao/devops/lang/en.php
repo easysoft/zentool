@@ -36,3 +36,4 @@ $lang->devops->checking    = 'Checking...';
 $lang->devops->logging     = 'Logging...';
 $lang->devops->urlInvalid  = 'The host %s is invalid, please check again:';
 $lang->devops->loginFailed = 'Login failed. Please check your account and password:';
+$lang->devops->loginLimit  = 'Please contact the administrator to unlock your account or try 10 minutes later.';
