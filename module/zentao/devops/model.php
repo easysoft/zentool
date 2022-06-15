@@ -20,7 +20,7 @@ class devopsModel extends model
      * @access private
      * @return string
      */
-    private function createApiUrl($entry = ''i, $url = '')
+    private function createApiUrl($entry = '', $url = '')
     {
         if(!$url) $url = $this->config->zt_url;
         return $url . '/api.php/v1/' . $entry;
@@ -84,5 +84,58 @@ class devopsModel extends model
         if(!isset($result->pipelines)) return false;
 
         return $result->pipelines;
+    }
+
+    /**
+     * Get repo url.
+     *
+     * @access public
+     * @return array
+     */
+    public function getRepoUrl()
+    {
+        $command = "git tag 2>&1";
+        exec($command, $output, $result);
+        if($result) return array('result' => false, 'message' => $this->lang->devops->notRepository);
+
+        $command = "git remote -v";
+        exec($command, $remote);
+        preg_match('/(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+)*\.git/', $remote[1], $matches);
+
+        return array('result' => true, 'url' => $matches[0]);
+    }
+
+    /**
+     * Get remote branch.
+     *
+     * @param  string $branch
+     * @access public
+     * @return array
+     */
+    public function getRemoteBranch($branch)
+    {
+        /* Get source branch. */
+        $cmdStatus = 'git status';
+        exec($cmdStatus, $status);
+        $sourceBranch = preg_replace("/[a-zA-Z\s]+'([a-zA-z\w\/]+)'[a-zA-Z\s0-9-,\.]+/", '$1', $status[1]);
+        if(!$sourceBranch) return array('result' => false, 'message' => $this->lang->devops->noTracking);
+
+        /* Get target branch. */
+        $targetBranch = '';
+        $cmdBranch    = 'git branch -r';
+        exec($cmdBranch, $allBranch);
+        foreach($allBranch as $remoteBranch)
+        {
+            $remoteBranch = '/' . trim($remoteBranch);
+            $branchLength = strlen($branch) + 1;
+            if(substr($remoteBranch, 0 - $branchLength) == '/' . $branch)
+            {
+                $targetBranch = trim($remoteBranch, '/');
+                break;
+            }
+        }
+        if(!$targetBranch) return array('result' => false, 'message' => $this->lang->devops->noTargetBranch);
+
+        return array('result' => true, 'sourceBranch' => $sourceBranch, 'targetBranch' => $targetBranch);
     }
 }
