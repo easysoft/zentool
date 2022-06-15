@@ -18,7 +18,7 @@ $lang->devops->help->devops = <<<EOF
   z devops <command> [options]
 
 命令
-  mr  <targetbranch>    合并来自两个分支的代码，并通过流水线对其进行测试。
+  mr <targetbranch>    合并来自两个分支的代码，并通过流水线对其进行测试。
 EOF;
 $lang->devops->help->mr = <<<EOF
 用法
@@ -36,3 +36,5 @@ $lang->devops->logging     = '正在登录...';
 $lang->devops->urlInvalid  = '该网址 %s 不存在或不是禅道网址，请重新输入：';
 $lang->devops->loginFailed = '登录失败，请验证账号密码后重试：';
 $lang->devops->loginLimit  = '密码尝试次数太多，请联系管理员解锁，或10分钟后重试。';
+$lang->devops->pipelineTip  = '请输入禅道关联的流水线名称，例如 zentaoci：';
+$lang->devops->pipelineFail = '该流水线 %s 与禅道中的当前仓库没有关联，请重新输入：';

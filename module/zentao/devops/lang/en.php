@@ -18,7 +18,7 @@ Usage
   z devops <command> [options]
 
 Commands
-  mr  <targetbranch>    Merge code from two branches and test it by pipeline.
+  mr <targetbranch>    Merge code from two branches and test it by pipeline.
 EOF;
 $lang->devops->help->mr = <<<EOF
 Usage
@@ -29,11 +29,14 @@ Example
  z devops mr master
 EOF;
 
-$lang->devops->urlTip      = 'The zentao host url, eg http://zentaopms.com:';
-$lang->devops->accountTip  = 'username:';
-$lang->devops->pwdTip      = 'password:';
-$lang->devops->checking    = 'Checking...';
-$lang->devops->logging     = 'Logging...';
-$lang->devops->urlInvalid  = 'The host %s is invalid, please check again:';
-$lang->devops->loginFailed = 'Login failed. Please check your account and password:';
-$lang->devops->loginLimit  = 'Please contact the administrator to unlock your account or try 10 minutes later.';
+$lang->devops->urlTip       = 'The zentao host url, eg http://zentaopms.com:';
+$lang->devops->accountTip   = 'username:';
+$lang->devops->pwdTip       = 'password:';
+$lang->devops->checking     = 'Checking...';
+$lang->devops->logging      = 'Logging...';
+$lang->devops->urlInvalid   = 'The host %s is invalid, please check again:';
+$lang->devops->loginFailed  = 'Login failed. Please check your account and password:';
+$lang->devops->loginLimit   = 'Please contact the administrator to unlock your account or try 10 minutes later.';
+$lang->devops->pipelineTip  = 'The pipeline from zentao, eg zentaoci:';
+$lang->devops->pipelineFail = 'The %s is not associated with the current repository in zentao, please check again:';
+$lang->devops->repoNotFound = 'The repo was not found in zentao!';

@@ -20,10 +20,10 @@ class devopsModel extends model
      * @access private
      * @return string
      */
-    private function createApiUrl($entry = ''i, $url = '')
+    private function createApiUrl($entry = '', $params = array(), $url = '')
     {
         if(!$url) $url = $this->config->zt_url;
-        return $url . '/api.php/v1/' . $entry;
+        return $url . '/api.php/v1/' . $entry . '?' . http_build_query($params);
     }
 
     /**
@@ -58,7 +58,7 @@ class devopsModel extends model
             'account'  => $account,
             'password' => $password
         );
-        $user = $this->http($this->createApiUrl('tokens', $url), $data);
+        $user = $this->http($this->createApiUrl('tokens', array(), $url), $data);
         if(isset($user->token)) return $user->token;
 
         if(isset($user->error) and (mb_substr_count($user->error, '解锁') > 0 or mb_substr_count($user->error, 'unlock') > 0))
@@ -72,17 +72,39 @@ class devopsModel extends model
     }
 
     /**
-     * Api get pipelines.
+     * Api check pipeline.
      *
      * @param  string $repoUrl
+     * @param  string $pipeline
      * @access public
      * @return void
      */
-    public function apiGetPipelines($repoUrl = '')
+    public function apiCheckPipeline($repoUrl = '', $pipeline = '')
     {
-        $result = $this->http($this->createApiUrl('pipelines'));
-        if(!isset($result->pipelines)) return false;
+        /* Get repos. */
+        $params = array('repoUrl' => $repoUrl);
+        $header = array('token:' . $this->config->zt_token);
+        $repos = $this->http($this->createApiUrl('repos', $params), null, array(), $header);
+        if(!isset($repos->repos) or empty($repos->repos))
+        {
+            $message = $this->lang->devops->repoNotFound . PHP_EOL;
+            if($this->config->os == 'windows') $message = iconv("UTF-8", "GB2312", $message);
+            fwrite(STDERR, $message);
+            die;
+        }
 
-        return $result->pipelines;
+        /* Get jobs. */
+        $params = array('pipeline' => $pipeline, 'engine' => 'jenkins');
+        $header = array('token:' . $this->config->zt_token);
+        $jobs   = $this->http($this->createApiUrl('jobs', $params), null, array(), $header);
+        if(!isset($jobs->jobs) or empty($jobs->jobs)) return false;
+
+        $repoIDs = array_column($repos->repos, 'id');
+        foreach($jobs->jobs as $job)
+        {
+            if(in_array($job->repo, $repoIDs)) return true;
+        }
+
+        return false;
     }
 }
