@@ -109,7 +109,7 @@ class patch extends control
     {
         if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('install');
 
-        $dirCheck = $this->patch->checkConfig('zt_webDir,php_file');
+        $dirCheck = $this->patch->checkConfig('zt_webDir' . $this->confg->os == 'windows' ? ',php_file' : '');
         if($dirCheck) return $this->output($dirCheck, 'err');
 
         $fileName = '';
@@ -207,7 +207,7 @@ class patch extends control
     {
         if(empty($params) or empty($params['patchID']) or isset($params['help'])) return $this->printHelp('revert');
 
-        $dirCheck = $this->patch->checkConfig('zt_webDir,php_file');
+        $dirCheck = $this->patch->checkConfig('zt_webDir' . $this->confg->os == 'windows' ? ',php_file' : '');
         if($dirCheck) return $this->output($dirCheck, 'err');
 
         /* Check whether the parameter is an ID or a path. */
