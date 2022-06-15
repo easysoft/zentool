@@ -43,9 +43,25 @@ class devops extends control
         return $this->output($this->lang->devops->help->$type);
     }
 
+    /**
+     * Merge request.
+     *
+     * @param  int    $params
+     * @access public
+     * @return void
+     */
     public function mr($params)
     {
         if(empty($params) or empty($params['branch']) or isset($params['help'])) return $this->printHelp('mr');
+
+        /* Get repo url. */
+        $response = $this->devops->getRepoUrl();
+        if(!$response['result']) return $this->output($response['message'], 'err');
+        $repoUrl = $response['url'];
+
+        $remoteBranch = $this->devops->getRemoteBranch($params['branch']);
+        if(!$remoteBranch['result']) return $this->output($remoteBranch['message'], 'err');
+
         $this->login();
 
         /* Check pipeline. */
