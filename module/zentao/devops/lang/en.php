@@ -18,7 +18,7 @@ Usage
   z devops <command> [options]
 
 Commands
-  mr  <targetbranch>    Merge code from two branches and test it by pipeline.
+  mr <targetbranch>    Merge code from two branches and test it by pipeline.
 EOF;
 $lang->devops->help->mr = <<<EOF
 Usage
@@ -40,3 +40,6 @@ $lang->devops->loginLimit     = 'Please contact the administrator to unlock your
 $lang->devops->notRepository  = 'The current directory is not a git repository';
 $lang->devops->noTracking     = 'There is no tracking information for the current branch.';
 $lang->devops->noTargetBranch = 'The traget $input is not a valid branch of the repository';
+$lang->devops->pipelineTip    = 'The pipeline from zentao, eg zentaoci:';
+$lang->devops->pipelineFail   = 'The %s is not associated with the current repository in zentao, please check again:';
+$lang->devops->repoNotFound   = 'The repo was not found in zentao!';
