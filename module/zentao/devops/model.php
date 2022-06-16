@@ -84,7 +84,7 @@ class devopsModel extends model
         /* Get repos. */
         $params = array('repoUrl' => $repoUrl);
         $header = array('token:' . $this->config->zt_token);
-        $repos = $this->http($this->createApiUrl('repos', $params), null, array(), $header);
+        $repos  = $this->http($this->createApiUrl('repos', $params), null, array(), $header);
         if(!isset($repos->repos) or empty($repos->repos))
         {
             $message = $this->lang->devops->repoNotFound . PHP_EOL;
