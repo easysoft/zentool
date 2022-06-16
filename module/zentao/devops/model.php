@@ -179,7 +179,7 @@ class devopsModel extends model
         if(empty($user) or !isset($user->rights)) return false;
 
         $rights = $user->rights;
-        if(isset($right->admin) and $right->admin) return true;
+        if(isset($rights->admin) and $rights->admin) return true;
         if(!isset($rights->rights->job->exec) or !$rights->rights->job->exec) return false;
         if(!isset($rights->rights->job->browse) or !$rights->rights->job->browse) return false;
         if(!isset($rights->rights->repo->maintain) or !$rights->rights->repo->maintain) return false;
