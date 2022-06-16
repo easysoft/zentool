@@ -184,6 +184,7 @@ class devopsModel extends model
             }
         }
         if(!$targetBranch) return array('result' => false, 'message' => sprintf($this->lang->devops->noTargetBranch, $branch));
+        if($targetBranch == $sourceBranch) return array('result' => false, 'message' => $this->lang->devops->sameBranch);
 
         return array('result' => true, 'sourceBranch' => $sourceBranch, 'targetBranch' => $targetBranch);
     }

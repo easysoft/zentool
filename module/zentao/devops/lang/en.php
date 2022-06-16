@@ -46,3 +46,4 @@ $lang->devops->repoNotFound   = 'The repo was not found in zentao!';
 $lang->devops->createFail     = 'Create Fail';
 $lang->devops->createSuccess  = 'Create Success';
 $lang->devops->noAccess       = 'Access is denied, please contact your Administer to grant your permissions.';
+$lang->devops->sameBranch     = 'The target branch is the same as the current branch!';
