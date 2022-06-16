@@ -63,8 +63,56 @@ class devops extends control
         if(!$remoteBranch['result']) return $this->output($remoteBranch['message'], 'err');
 
         $this->login();
+
+        /* Check pipeline. */
+        $this->checkPipeline($repoUrl);
     }
 
+    /**
+     * Check pipeline.
+     *
+     * @param  string $repoUrl
+     * @access public
+     * @return void
+     */
+    public function checkPipeline($repoUrl = '')
+    {
+        $needPipeline = false;
+
+        if(empty($this->config->zt_pipeline)) $needPipeline = true;
+        if(!$needPipeline)
+        {
+            $repo = $this->devops->apiCheckPipeline($repoUrl, $this->config->zt_pipeline);
+            if($repo) $needPipeline = true;
+        }
+
+        if($needPipeline)
+        {
+            $this->output($this->lang->devops->pipelineTip);
+            while(true)
+            {
+                $pipeline = $this->readInput();
+                if(!$pipeline) continue;
+
+                $this->output($this->lang->devops->checking);
+                $repo = $this->devops->apiCheckPipeline($repoUrl, $pipeline);
+                if($repo)
+                {
+                    if(!$this->setUserConfigs(array('zt_pipeline' => $pipeline))) return $this->output($this->lang->devops->noWriteAccess);
+                    break;
+                }
+
+                $this->output(sprintf($this->lang->devops->pipelineFail, $pipeline), 'err');
+            }
+        }
+    }
+
+    /**
+     *  Check user logged.
+     *
+     * @access public
+     * @return void
+     */
     public function login()
     {
         $needLogin = false;
@@ -110,7 +158,6 @@ class devops extends control
                     $userSet['zt_url'] = $url;
                     break;
                 }
-                else
 
                 $this->output(sprintf($this->lang->devops->urlInvalid, $url), 'err');
             }

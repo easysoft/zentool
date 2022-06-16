@@ -18,7 +18,7 @@ $lang->devops->help->devops = <<<EOF
   z devops <command> [options]
 
 命令
-  mr  <targetbranch>    合并来自两个分支的代码，并通过流水线对其进行测试。
+  mr <targetbranch>    合并来自两个分支的代码，并通过流水线对其进行测试。
 EOF;
 $lang->devops->help->mr = <<<EOF
 用法
@@ -40,3 +40,6 @@ $lang->devops->loginLimit     = '密码尝试次数太多，请联系管理员�
 $lang->devops->notRepository  = '当前目录不是一个版本库';
 $lang->devops->noTracking     = '当前分支还未提交到远程。';
 $lang->devops->noTargetBranch = '目标分支%s不是一个有效分支。';
+$lang->devops->pipelineTip    = '请输入禅道关联的流水线名称，例如 zentaoci：';
+$lang->devops->pipelineFail   = '该流水线 %s 与禅道中的当前仓库没有关联，请重新输入：';
+$lang->devops->repoNotFound   = '未在禅道查询到该版本库！';
