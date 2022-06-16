@@ -8,3 +8,5 @@ $config->arguments['--list'] = 'list';
 $config->arguments['-v']     = 'view';
 $config->arguments['--view'] = 'view';
 $config->arguments['-i']     = 'install';
+
+$config->abbreviations->mr = 'devops';
