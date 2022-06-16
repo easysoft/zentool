@@ -132,9 +132,17 @@ class devops extends control
                 $token = $this->devops->login($this->config->zt_url, $this->config->zt_account, $this->config->zt_password);
                 if($token)
                 {
-                    $userSet['zt_token']        = $token;
-                    $userSet['zt_tokenExpired'] = time() + $config->expiredTime - 100;
-                    if(!$this->setUserConfigs($userSet)) return $this->output($this->lang->devops->noWriteAccess);
+                    if($this->devops->checkToeknAccess($token))
+                    {
+                        $userSet['zt_token']        = $token;
+                        $userSet['zt_tokenExpired'] = time() + $config->expiredTime - 100;
+                        if(!$this->setUserConfigs($userSet)) return $this->output($this->lang->devops->noWriteAccess);
+                    }
+                    else
+                    {
+                        $needLogin = true;
+                        $this->output($this->lang->devops->noAccess, 'err');
+                    }
                 }
                 else
                 {
@@ -172,6 +180,7 @@ class devops extends control
             /* Check account and password. */
             while(true)
             {
+                $showError = true;
                 $this->output($this->lang->devops->accountTip);
                 $account = $this->readInput();
                 if(!$account) continue;
@@ -184,17 +193,21 @@ class devops extends control
                 $token = $this->devops->login($url, $account, $password);
                 if($token)
                 {
-                    $tryTime++;
-                    $this->output(sprintf($this->lang->devops->dirNotExists, $path), 'err');
-                    $userSet['zt_account']      = $account;
-                    $userSet['zt_password']     = md5($password);
-                    $userSet['zt_token']        = $token;
-                    $userSet['zt_tokenExpired'] = time() + $config->expiredTime - 100;
-                    if(!$this->setUserConfigs($userSet)) return $this->output($this->lang->devops->noWriteAccess);
-                    break;
+                    if($this->devops->checkToeknAccess($token))
+                    {
+                        $this->output(sprintf($this->lang->devops->dirNotExists, $path), 'err');
+                        $userSet['zt_account']      = $account;
+                        $userSet['zt_password']     = md5($password);
+                        $userSet['zt_token']        = $token;
+                        $userSet['zt_tokenExpired'] = time() + $config->expiredTime - 100;
+                        if(!$this->setUserConfigs($userSet)) return $this->output($this->lang->devops->noWriteAccess);
+                        break;
+                    }
+                    $showError = false;
+                    $this->output($this->lang->devops->noAccess, 'err');
                 }
 
-                $this->output($this->lang->devops->loginFailed, 'err');
+                if($showError) $this->output($this->lang->devops->loginFailed, 'err');
             }
         }
     }

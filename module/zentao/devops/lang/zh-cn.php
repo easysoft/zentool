@@ -45,3 +45,4 @@ $lang->devops->pipelineFail   = '该流水线 %s 与禅道中的当前仓库没�
 $lang->devops->repoNotFound   = '未在禅道查询到该版本库！';
 $lang->devops->createFail     = '创建失败';
 $lang->devops->createSuccess  = '创建成功';
+$lang->devops->noAccess       = '权限不足，请联系管理员授予您权限。';

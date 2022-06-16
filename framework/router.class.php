@@ -903,12 +903,12 @@ class router
         }
 
         /* Abbreviation param. */
-        if(!empty($argv[1]) and isset($this->config->abbreviations->{$this->appName}[$argv[1]]))
+        if(!empty($argv[1]) and isset($this->config->abbreviations->{$argv[1]}))
         {
             $newArgv = array();
             foreach($argv as $key => $val)
             {
-                if($key == 1) $newArgv[] = $this->config->abbreviations->{$this->appName}[$argv[1]];
+                if($key == 1) $newArgv[] = $this->config->abbreviations->{$argv[1]};
                 $newArgv[] = $val;
             }
             $argv = $newArgv;

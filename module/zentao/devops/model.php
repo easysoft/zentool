@@ -187,4 +187,29 @@ class devopsModel extends model
 
         return array('result' => true, 'sourceBranch' => $sourceBranch, 'targetBranch' => $targetBranch);
     }
+
+    /**
+     * Check toekn access.
+     *
+     * @param  string $token
+     * @access public
+     * @return bool
+     */
+    public function checkToeknAccess($token = '')
+    {
+        /* Get rights. */
+        $params = array('fields' => 'rights');
+        $header = array('token:' . $token);
+        $user   = $this->http($this->createApiUrl('user', $params), null, array(), $header);
+        if(empty($user) or !isset($user->rights)) return false;
+
+        $rights = $user->rights;
+        if(isset($rights->admin) and $rights->admin) return true;
+        if(!isset($rights->rights->job->exec) or !$rights->rights->job->exec) return false;
+        if(!isset($rights->rights->job->browse) or !$rights->rights->job->browse) return false;
+        if(!isset($rights->rights->repo->maintain) or !$rights->rights->repo->maintain) return false;
+        if(!isset($rights->rights->mr->create) or !$rights->rights->mr->create) return false;
+
+        return true;
+    }
 }
