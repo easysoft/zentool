@@ -117,6 +117,7 @@ class devopsModel extends model
     public function getRepoUrl()
     {
         $command = "git tag 2>&1";
+        chdir($this->config->runDir);
         exec($command, $output, $result);
         if($result) return array('result' => false, 'message' => $this->lang->devops->notRepository);
 
@@ -138,6 +139,7 @@ class devopsModel extends model
     {
         /* Get source branch. */
         $cmdStatus = 'git status';
+        chdir($this->config->runDir);
         exec($cmdStatus, $status);
         $sourceBranch = preg_replace("/[a-zA-Z\s]+'([a-zA-z\w\/]+)'[a-zA-Z\s0-9-,\.]+/", '$1', $status[1]);
         if(!$sourceBranch) return array('result' => false, 'message' => $this->lang->devops->noTracking);
@@ -156,7 +158,7 @@ class devopsModel extends model
                 break;
             }
         }
-        if(!$targetBranch) return array('result' => false, 'message' => $this->lang->devops->noTargetBranch);
+        if(!$targetBranch) return array('result' => false, 'message' => sprintf($this->lang->devops->noTargetBranch, $branch));
 
         return array('result' => true, 'sourceBranch' => $sourceBranch, 'targetBranch' => $targetBranch);
     }
