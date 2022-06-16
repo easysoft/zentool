@@ -65,7 +65,12 @@ class devops extends control
         $this->login();
 
         /* Check pipeline. */
-        $this->checkPipeline($repoUrl);
+        $job = $this->checkPipeline($repoUrl);
+
+        /* Create MR to zentao. */
+        $response = $this->devops->createMR($job->repo, $job->id, $remoteBranch['sourceBranch'], $remoteBranch['targetBranch']);
+        if(isset($response->error)) return $this->output($this->lang->devops->createFail, 'err');
+        return $this->output($this->lang->devops->createSuccess);
     }
 
     /**
@@ -82,8 +87,8 @@ class devops extends control
         if(empty($this->config->zt_pipeline)) $needPipeline = true;
         if(!$needPipeline)
         {
-            $repo = $this->devops->apiCheckPipeline($repoUrl, $this->config->zt_pipeline);
-            if($repo) $needPipeline = true;
+            $job = $this->devops->apiCheckPipeline($repoUrl, $this->config->zt_pipeline);
+            if(!$job) $needPipeline = true;
         }
 
         if($needPipeline)
@@ -95,8 +100,8 @@ class devops extends control
                 if(!$pipeline) continue;
 
                 $this->output($this->lang->devops->checking);
-                $repo = $this->devops->apiCheckPipeline($repoUrl, $pipeline);
-                if($repo)
+                $job = $this->devops->apiCheckPipeline($repoUrl, $pipeline);
+                if($job)
                 {
                     if(!$this->setUserConfigs(array('zt_pipeline' => $pipeline))) return $this->output($this->lang->devops->noWriteAccess);
                     break;
@@ -105,6 +110,8 @@ class devops extends control
                 $this->output(sprintf($this->lang->devops->pipelineFail, $pipeline), 'err');
             }
         }
+
+        return $job;
     }
 
     /**

@@ -43,3 +43,5 @@ $lang->devops->noTargetBranch = 'The traget %s is not a valid branch of the repo
 $lang->devops->pipelineTip    = 'The pipeline from zentao, eg zentaoci:';
 $lang->devops->pipelineFail   = 'The %s is not associated with the current repository in zentao, please check again:';
 $lang->devops->repoNotFound   = 'The repo was not found in zentao!';
+$lang->devops->createFail     = 'Create Fail';
+$lang->devops->createSuccess  = 'Create Success';
