@@ -175,6 +175,8 @@ class devopsModel extends model
         exec($cmdBranch, $allBranch);
         foreach($allBranch as $remoteBranch)
         {
+            if(strpos($remoteBranch, '/HEAD')) continue;
+
             $remoteBranch = '/' . trim($remoteBranch);
             $branchLength = strlen($branch) + 1;
             if(substr($remoteBranch, 0 - $branchLength) == '/' . $branch)
