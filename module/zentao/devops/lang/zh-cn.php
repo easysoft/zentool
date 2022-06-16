@@ -39,4 +39,4 @@ $lang->devops->loginFailed    = '登录失败，请验证账号密码后重试�
 $lang->devops->loginLimit     = '密码尝试次数太多，请联系管理员解锁，或10分钟后重试。';
 $lang->devops->notRepository  = '当前目录不是一个版本库';
 $lang->devops->noTracking     = '当前分支还未提交到远程。';
-$lang->devops->noTargetBranch = '目标分支不是一个有效分支。';
+$lang->devops->noTargetBranch = '目标分支%s不是一个有效分支。';
