@@ -523,14 +523,14 @@ class control
      */
     public function readPassword()
     {
-        if($this->os != 'windows')
+        if($this->config->os != 'windows')
         {
             $ostty = `stty -g`;
             system("stty -echo -icanon min 1 time 0 2>/dev/null || " ."stty -echo cbreak");
         }
 
         $input = trim(fgets(STDIN));
-        if($this->os != 'windows') system("stty $ostty");
+        if($this->config->os != 'windows') system("stty $ostty");
         return $input;
     }
 
