@@ -67,8 +67,13 @@ class devops extends control
         /* Check pipeline. */
         $job = $this->checkPipeline($repoUrl);
 
+        /* Get diffs. */
+        chdir($this->config->runDir);
+        $diffs = shell_exec('git diff ' . $remoteBranch['targetBranch']);
+        if(!$diffs) return $this->output($this->lang->devops->noChanges, 'err');
+
         /* Create MR to zentao. */
-        $response = $this->devops->createMR($job->repo, $job->id, $remoteBranch['sourceBranch'], $remoteBranch['targetBranch']);
+        $response = $this->devops->createMR($job->repo, $job->id, $remoteBranch['sourceBranch'], $remoteBranch['targetBranch'], $diffs);
         if(isset($response->error)) return $this->output($this->lang->devops->createFail, 'err');
         return $this->output($this->lang->devops->createSuccess);
     }
