@@ -195,15 +195,16 @@ class devopsModel extends model
      * Check toekn access.
      *
      * @param  string $token
+     * @param  string $url
      * @access public
      * @return bool
      */
-    public function checkToeknAccess($token = '')
+    public function checkToeknAccess($token = '', $url = '')
     {
         /* Get rights. */
         $params = array('fields' => 'rights');
         $header = array('token:' . $token);
-        $user   = $this->http($this->createApiUrl('user', $params), null, array(), $header);
+        $user   = $this->http($this->createApiUrl('user', $params, $url), null, array(), $header);
         if(empty($user) or !isset($user->rights)) return false;
 
         $rights = $user->rights;

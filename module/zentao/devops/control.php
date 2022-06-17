@@ -193,7 +193,7 @@ class devops extends control
                 $token = $this->devops->login($url, $account, $password);
                 if($token)
                 {
-                    if($this->devops->checkToeknAccess($token))
+                    if($this->devops->checkToeknAccess($token, $url))
                     {
                         $this->output(sprintf($this->lang->devops->dirNotExists, $path), 'err');
                         $userSet['zt_account']      = $account;
