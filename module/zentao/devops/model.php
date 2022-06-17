@@ -46,7 +46,7 @@ class devopsModel extends model
         $targetBranch = substr($targetBranch, strpos($targetBranch, '/') + 1);
 
         $api    = $this->createApiUrl('mr');
-        $params = array('repoID' => $repoID, 'jobID' => $jobID, 'sourceBranch' => $sourceBranch, 'targetBranch' => $targetBranch, 'diffs' => $diffs, 'mergeStatus' => '1');
+        $params = array('repoID' => $repoID, 'jobID' => $jobID, 'sourceBranch' => $sourceBranch, 'targetBranch' => $targetBranch, 'diffs' => $diffs ? $diffs : '', 'mergeStatus' => '1');
         $header = array('token:' . $this->config->zt_token);
         return $this->http($api, $params, null, $header);
     }
