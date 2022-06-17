@@ -421,7 +421,7 @@ class patch extends control
                 if(!$account) continue;
 
                 $this->output($this->lang->patch->release->passwordTip);
-                $password = $this->readInput();
+                $password = $this->readPassword();
                 if(!$password) continue;
 
                 $password    = md5($password);

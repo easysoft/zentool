@@ -493,12 +493,15 @@ class control
      * Read user input.
      *
      * @param  string $tips
+     * @param  string $type input|password
      * @access public
      * @return string
      */
-    public function readInput($tips = '')
+    public function readInput($tips = '', $type = 'input')
     {
         if($tips) $this->output($tips);
+        if($type == 'password') return $this->readPassword();
+
         $inputValue = '';
         try
         {
@@ -509,6 +512,27 @@ class control
             $inputValue = trim(fgets(STDIN));
         }
         return $inputValue;
+    }
+
+
+    /**
+     * Read password.
+     *
+     * @access public
+     * @return string
+     */
+    public function readPassword()
+    {
+        if ($this->config->os == 'windows') {
+            $pwd      = shell_exec('C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe -Command "$Password=Read-Host -assecurestring \"Enter password\" ; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)) ; echo $PlainPassword;"');
+            $password = explode("\n", $pwd);
+            return trim($password[0]);
+        }
+
+        system("stty -echo -icanon min 1 time 0 2>/dev/null || " ."stty -echo cbreak");
+        $input = trim(fgets(STDIN));
+        system("stty echo");
+        return $input;
     }
 
     /**
