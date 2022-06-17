@@ -186,7 +186,7 @@ class devops extends control
                 if(!$account) continue;
 
                 $this->output($this->lang->devops->pwdTip);
-                $password = $this->readInput();
+                $password = $this->readPassword();
                 if(!$password) continue;
 
                 $this->output($this->lang->devops->logging);

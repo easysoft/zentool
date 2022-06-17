@@ -493,22 +493,45 @@ class control
      * Read user input.
      *
      * @param  string $tips
+     * @param  string $type input|password
      * @access public
      * @return string
      */
-    public function readInput($tips = '')
+    public function readInput($tips = '', $type = 'input')
     {
         if($tips) $this->output($tips);
+        if($type == 'password') return $this->readPassword();
+
         $inputValue = '';
         try
         {
             $inputValue = trim(readline(''), '`');
+            readline_add_history($inputValue);
         }
         catch(Exception $e)
         {
             $inputValue = trim(fgets(STDIN));
         }
         return $inputValue;
+    }
+
+    /**
+     * Read password.
+     *
+     * @access public
+     * @return string
+     */
+    public function readPassword()
+    {
+        if($this->os != 'windows')
+        {
+            $ostty = `stty -g`;
+            system("stty -echo -icanon min 1 time 0 2>/dev/null || " ."stty -echo cbreak");
+        }
+
+        $input = trim(fgets(STDIN));
+        if($this->os != 'windows') system("stty $ostty");
+        return $input;
     }
 
     /**
