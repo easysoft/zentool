@@ -256,6 +256,8 @@ class model
 
         if(!is_array($headers)) $headers = (array)$headers;
         $headers[] = "API-RemoteIP: " . helper::getRemoteIp();
+        $headers[] = 'Accept-Language: ' . $this->app->clientLang;
+
         if($dataType == 'json')
         {
             $headers[] = 'Content-Type: application/json;charset=utf-8';
