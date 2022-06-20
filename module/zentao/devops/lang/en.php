@@ -47,3 +47,4 @@ $lang->devops->createFail     = 'Create Fail';
 $lang->devops->createSuccess  = 'Create Success';
 $lang->devops->noAccess       = 'Access is denied, please contact your Administer to grant your permissions.';
 $lang->devops->sameBranch     = 'The target branch is the same as the current branch!';
+$lang->devops->noChanges      = "Currently there are no changes in this merge request's source branch. Please push new commits or use a different branch.";

@@ -33,15 +33,12 @@ class devopsModel extends model
      * @param  string $jobID
      * @param  string $sourceBranch
      * @param  string $targetBranch
+     * @param  string $diffs
      * @access public
      * @return void
      */
-    public function createMR($repoID, $jobID, $sourceBranch, $targetBranch)
+    public function createMR($repoID, $jobID, $sourceBranch, $targetBranch, $diffs = '')
     {
-        $cmdDiff = "git diff $targetBranch";
-        chdir($this->config->runDir);
-        $diffs = shell_exec($cmdDiff);
-
         $sourceBranch = substr($sourceBranch, strpos($sourceBranch, '/') + 1);
         $targetBranch = substr($targetBranch, strpos($targetBranch, '/') + 1);
 
