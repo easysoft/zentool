@@ -83,17 +83,7 @@ class devopsModel extends model
             'account'  => $account,
             'password' => $password
         );
-        $user = $this->http($this->createApiUrl('tokens', array(), $url), $data);
-        if(isset($user->token)) return $user->token;
-
-        if(isset($user->error) and (mb_substr_count($user->error, '解锁') > 0 or mb_substr_count($user->error, 'unlock') > 0))
-        {
-            $message = $this->lang->devops->loginLimit . PHP_EOL;
-            if($this->config->os == 'windows') $message = iconv("UTF-8", "GB2312", $message);
-            fwrite(STDERR, $message);
-            die;
-        }
-        return false;
+        return $this->http($this->createApiUrl('tokens', array(), $url), $data);
     }
 
     /**

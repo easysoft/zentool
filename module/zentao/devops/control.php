@@ -129,12 +129,12 @@ class devops extends control
             $config = $this->devops->checkUrl($this->config->zt_url);
             if($config)
             {
-                $token = $this->devops->login($this->config->zt_url, $this->config->zt_account, $this->config->zt_password);
-                if($token)
+                $user = $this->devops->login($this->config->zt_url, $this->config->zt_account, $this->config->zt_password);
+                if(isset($user->token))
                 {
-                    if($this->devops->checkToeknAccess($token))
+                    if($this->devops->checkToeknAccess($user->token))
                     {
-                        $userSet['zt_token']        = $token;
+                        $userSet['zt_token']        = $user->token;
                         $userSet['zt_tokenExpired'] = time() + $config->expiredTime - 100;
                         if(!$this->setUserConfigs($userSet)) return $this->output($this->lang->devops->noWriteAccess);
                     }
@@ -190,10 +190,10 @@ class devops extends control
                 if(!$password) continue;
 
                 $this->output($this->lang->devops->logging);
-                $token = $this->devops->login($url, $account, $password);
-                if($token)
+                $user = $this->devops->login($url, $account, $password);
+                if(isset($user->token))
                 {
-                    if($this->devops->checkToeknAccess($token, $url))
+                    if($this->devops->checkToeknAccess($user->token, $url))
                     {
                         $this->output(sprintf($this->lang->devops->dirNotExists, $path), 'err');
                         $userSet['zt_account']      = $account;
@@ -207,7 +207,7 @@ class devops extends control
                     $this->output($this->lang->devops->noAccess, 'err');
                 }
 
-                if($showError) $this->output($this->lang->devops->loginFailed, 'err');
+                if($showError) $this->output($user->error, 'err');
             }
         }
     }
