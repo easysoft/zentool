@@ -502,16 +502,7 @@ class control
         if($tips) $this->output($tips);
         if($type == 'password') return $this->readPassword();
 
-        $inputValue = '';
-        try
-        {
-            $inputValue = trim(readline(''), '`');
-        }
-        catch(Exception $e)
-        {
-            $inputValue = trim(fgets(STDIN));
-        }
-        return $inputValue;
+        return trim(fgets(STDIN));
     }
 
 
