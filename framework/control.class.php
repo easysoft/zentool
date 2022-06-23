@@ -540,6 +540,7 @@ class control
 
         $message = $message . PHP_EOL;
         if($type == 'out') return fwrite(STDOUT, $message);
-        return fwrite(STDERR, $message);
+
+        return fwrite(STDERR, chr(27).'[1;31m' . $message . chr(27).'[0m');
     }
 }
