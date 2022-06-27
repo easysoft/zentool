@@ -482,7 +482,9 @@ class router
             $count   = 0;
             foreach($this->config->command as $app => $features)
             {
-                if((isset($features->$feature) and in_array($command, $features->$feature)) or (isset($features->abbr) and in_array($feature, $features->abbr)))
+                $configFile = dirname(__FILE__, 2) . DS . 'config' . DS . $app . '.php';
+                $appConfig  = file_exists($configFile) ? file_get_contents($configFile) : '';
+                if((isset($features->$feature) and in_array($command, $features->$feature)) or (isset($features->abbr) and in_array($feature, $features->abbr)) or strpos($appConfig, "\$config->arguments['$command']"))
                 {
                     $this->appName = $app;
                     $count++;
