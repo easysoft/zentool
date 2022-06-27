@@ -318,16 +318,18 @@ class router
 
         $this->parseConfig('main');
         $appName = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
+
+        $this->setConfigRoot();
+        $this->loadMainConfig();
         $this->setAppName($appName);
-        $this->setAppRoot($appName, $appRoot);
+        $this->setAppRoot($appRoot);
         $this->setTmpRoot();
         $this->setCacheRoot();
         $this->setLogRoot();
-        $this->setConfigRoot();
         $this->setModuleRoot();
         $this->setWwwRoot();
         $this->setDataRoot();
-        $this->loadMainConfig();
+        $this->loadAppConfig();
         $this->setOS();
         $this->parseConfig();
         $this->setRunDir();
@@ -469,7 +471,26 @@ class router
      */
     public function setAppName($appName)
     {
+        global $argv, $argc;
+
         $this->appName = $appName;
+
+        if($argc >= 3)
+        {
+            $feature = $argv[1];
+            $command = $argv[2];
+            $count   = 0;
+            foreach($this->config->command as $app => $features)
+            {
+                if((isset($features->$feature) and in_array($command, $features->$feature)) or (isset($features->abbr) and in_array($feature, $features->abbr)))
+                {
+                    $this->appName = $app;
+                    $count++;
+                }
+            }
+
+            if($count > 1) $this->appName = $appName;
+        }
     }
 
     /**
@@ -530,14 +551,13 @@ class router
      * 设置应用的根目录。
      * Set the app root.
      *
-     * @param string $appName
      * @param string $appRoot
      * @access public
      * @return void
      */
-    public function setAppRoot($appName = 'demo', $appRoot = '')
+    public function setAppRoot($appRoot = '')
     {
-        if(empty($appRoot))  $this->appRoot = $this->basePath . 'app' . DS . $appName . DS;
+        if(empty($appRoot))  $this->appRoot = $this->basePath . 'app' . DS . $this->appName . DS;
         if(!empty($appRoot)) $this->appRoot = realpath($appRoot) . DS;
     }
 
@@ -1557,10 +1577,23 @@ class router
 
         /* 加载主配置文件。 Load the main config file. */
         $mainConfigFile = $this->configRoot . 'config.php';
-        $appConfigFile  = $this->configRoot . $this->appName . '.php';
         if(!file_exists($mainConfigFile)) $this->triggerError("The main config file $mainConfigFile not found", __FILE__, __LINE__, $exit = true);
         include $mainConfigFile;
+    }
 
+    /**
+     * 加载当前应用的配置文件。
+     * Load the common config files for the app.
+     *
+     * @access public
+     * @return void
+     */
+    public function loadAppConfig()
+    {
+        global $config;
+
+        /* 加载配置文件。 Load the app config file. */
+        $appConfigFile = $this->configRoot . $this->appName . '.php';
         if(file_exists($appConfigFile)) include $appConfigFile;
     }
 
