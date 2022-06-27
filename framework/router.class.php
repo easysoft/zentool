@@ -912,6 +912,7 @@ class router
 
         global $argv, $argc;
         if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, $this->config->version . PHP_EOL));
+
         if($argv[1] == 'app')
         {
             if($argv[2] == 'switch' && isset($argv[3]))
@@ -921,6 +922,7 @@ class router
             }
             die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
         }
+        if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setmainconfig(array('z_app' => $argv[1]))) die(fwrite(STDOUT, 'Change app successfully!' . PHP_EOL));
 
         /* Abbreviation param. */
         if(!empty($argv[1]) and isset($this->config->abbreviations->{$argv[1]}))
