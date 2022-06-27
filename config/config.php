@@ -23,6 +23,18 @@ $config->webRoot    = '';                   // URL根目录。       The root pa
 $config->debug      = 2;
 
 $config->apps['zentao'] = 'zentao';
+$config->apps['dev']    = 'dev';
+
+/* 命令配置。 Command settings. */
+$config->command = new stdclass();
+$config->command->zentao = new stdclass();
+$config->command->zentao->patch  = array('list', 'view', 'install', 'revert', 'build', 'release');
+$config->command->zentao->devops = array('mr');
+$config->command->zentao->set    = array();
+$config->command->zentao->abbr   = array('mr');
+
+$config->command->dev = new stdclass();
+$config->command->dev->zentaophp = array('create');
 
 $config->abbreviations = new stdClass();
 
