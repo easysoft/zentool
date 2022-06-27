@@ -913,7 +913,15 @@ class router
         global $argv, $argc;
         if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, $this->config->version . PHP_EOL));
 
-        if($argv[1] == 'app') die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
+        if($argv[1] == 'app')
+        {
+            if($argv[2] == 'switch' && isset($argv[3]))
+            {
+                if(!isset($this->config->apps[$argv[3]])) die(fwrite(STDOUT, 'App not exists' . PHP_EOL));
+                if($this->setMainConfig(array('z_app' => $argv[3]))) die(fwrite(STDOUT, 'Successfully' . PHP_EOL));
+            }
+            die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
+        }
         if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setmainconfig(array('z_app' => $argv[1]))) die(fwrite(STDOUT, 'Change app successfully!' . PHP_EOL));
 
         /* Abbreviation param. */
