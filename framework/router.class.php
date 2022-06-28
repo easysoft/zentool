@@ -478,13 +478,17 @@ class router
         if($argc >= 3)
         {
             $feature = $argv[1];
-            $command = $argv[2];
             $count   = 0;
             foreach($this->config->command as $app => $features)
             {
                 $configFile = dirname(__FILE__, 2) . DS . 'config' . DS . $app . '.php';
                 $appConfig  = file_exists($configFile) ? file_get_contents($configFile) : '';
-                if((isset($features->$feature) and in_array($command, $features->$feature)) or (isset($features->abbr) and in_array($feature, $features->abbr)) or strpos($appConfig, "\$config->arguments['$command']"))
+
+                $command = $argv[2];
+                preg_match('/\$config->arguments\[\'' . $command . '\'\]\s+=\s+\'(\w+)\';/', $appConfig, $commands);
+                if(count($commands) > 1) $command = $commands[1];
+
+                if((isset($features->$feature) and in_array($command, $features->$feature)) or strpos($appConfig, "\$config->abbreviations->$feature"))
                 {
                     $this->appName = $app;
                     $count++;
