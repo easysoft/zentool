@@ -11,20 +11,17 @@
  */
 $lang->entry = new stdclass();
 $lang->entry->help = <<<EOF
-欢迎使用极客Z工具。当前应用是开发。
+欢迎使用极客Z工具。当前应用是研发。
 
 您可以使用 z app list 或 z app switch appName 来获取所有应用并切换到其中一个。
 
 应用程序
-  z app list：          列出可用的应用。
+ 'z app list':            列出可用的应用。
+ 'z app switch appName':  切换当前应用。
 
 用法
-   z [功能] [命令] [选项]
+  z [功能] [命令] [选项]
 
 特征
-   patch： 安装禅道补丁。
-   devops: 执行devops操作。
-   set：   显示和更改当前应用程序的配置信息。
-
-使用“z [feature] --help 或 -h”获取有关模块的更多信息。
+  md5:  计算字符串或指定文件的md5哈希值。
 EOF;

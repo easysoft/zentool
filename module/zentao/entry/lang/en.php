@@ -15,7 +15,8 @@ Welcome to the Z tools for geeks. The current application is %s(default).
 You can use z app list and z app switch appName to get all applications and switch to one.
 
 App
- 'z app list':            List available applications.
+  'z app list':            List available applications.
+  'z app switch appName':  Switch current application to appName.
 
 Usage
   z [feature] [command] [options]
