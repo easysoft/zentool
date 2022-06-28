@@ -124,7 +124,7 @@ class patchModel extends model
      */
     public function checkUser($account, $password)
     {
-        $url  = $this->config->patch->webStoreUrl . 'user-loginByZ.json';
+        $url  = trim($this->config->patch->webStoreUrl, '/') . '/user-loginByZ.json';
         $user = array(
             'account'  => $account,
             'password' => $password
@@ -155,7 +155,7 @@ class patchModel extends model
     public function getPatchList($params = array())
     {
         $version = $this->getZtVersion();
-        $url     = $this->config->patch->webStoreUrl . 'extension-apiBrowseRelease-' . $version . '.json';
+        $url     = trim($this->config->patch->webStoreUrl, '/') . '/extension-apiBrowseRelease-' . $version . '.json';
         $patchs  = $this->http($url);
         if(isset($patchs->result) and $patchs->result == 'fail') return $patchs;
 
@@ -230,7 +230,7 @@ class patchModel extends model
         $version = $this->getZtVersion();
         if($type == 'code') $patchID = str_replace('.', '_', $patchID);
 
-        $url = $this->config->patch->webStoreUrl . 'extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
+        $url = trim($this->config->patch->webStoreUrl, '/') . '/extension-apiViewRelease-' . $version . '-' . $patchID . '-' . $type . '.json';
         return $this->http($url);
     }
 
@@ -250,7 +250,7 @@ class patchModel extends model
         $releaseInfo['account']  = $this->config->cz_account;
         $releaseInfo['password'] = $this->config->ca_password;
         $releaseInfo['file']     = new \CURLFile($patchPath);
-        $response = $this->http($this->config->patch->webStoreUrl . 'release-apiCreateRelease.json', $releaseInfo, array(), array(), 'data-form');
+        $response = $this->http(trim($this->config->patch->webStoreUrl, '/') . '/release-apiCreateRelease.json', $releaseInfo, array(), array(), 'data-form');
         return $response;
     }
 
