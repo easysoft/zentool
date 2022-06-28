@@ -486,7 +486,7 @@ class router
                 $appConfig  = file_exists($configFile) ? file_get_contents($configFile) : '';
 
                 /* Check abbr command used. */
-                if(strpos('-', $command) === 0)
+                if(strpos($command, '-') === 0)
                 {
                     /* Match by module config. */
                     $moduleFile   = dirname(__FILE__, 2) . DS . 'module' . DS . $app . DS . $feature . DS . 'config.php';
