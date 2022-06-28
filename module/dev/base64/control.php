@@ -25,7 +25,7 @@ class base64 extends control
         $method = key($params);
         if(method_exists($this, $method))
         {
-            if(isset($this->config->patch->paramKey[$method])) $params = array($this->config->patch->paramKey[$method] => $param);
+            if(isset($this->config->base64->paramKey[$method])) $params = array($this->config->base64->paramKey[$method] => $params[$method]);
             return $this->$method($params);
         }
         return $this->printHelp();
@@ -65,6 +65,9 @@ class base64 extends control
     public function decode($params)
     {
         if(empty($params) or empty($params['str']) or isset($params['help'])) return $this->printHelp('decode');
-        return $this->output(base64_decode($params['str']));
+
+        if($params['str'] == base64_encode(base64_decode($params['str']))) return $this->output(base64_decode($params['str']));
+
+        return $this->output('The string is not base64 string!', 'err');
     }
 }

@@ -25,3 +25,4 @@ Usage
 Example
   z base64 decode zentools
 EOF;
+$lang->base64->error = 'The string %s is not base64 string!';

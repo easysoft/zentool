@@ -25,3 +25,4 @@ $lang->base64->help->decode = <<<EOF
 例如：
   z base64 decode zentools
 EOF;
+$lang->base64->error = '该字符串 %s 不是一个base64字符串！';
