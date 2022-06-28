@@ -481,12 +481,26 @@ class router
             $count   = 0;
             foreach($this->config->command as $app => $features)
             {
+                $command    = $argv[2];
                 $configFile = dirname(__FILE__, 2) . DS . 'config' . DS . $app . '.php';
                 $appConfig  = file_exists($configFile) ? file_get_contents($configFile) : '';
 
-                $command = $argv[2];
-                preg_match('/\$config->arguments\[\'' . $command . '\'\]\s+=\s+\'(\w+)\';/', $appConfig, $commands);
-                if(count($commands) > 1) $command = $commands[1];
+                /* Check abbr command used. */
+                if(strpos('-', $command) === 0)
+                {
+                    /* Match by module config. */
+                    $moduleFile   = dirname(__FILE__, 2) . DS . 'module' . DS . $app . DS . $feature . DS . 'config.php';
+                    $moduleConfig = file_exists($moduleFile) ? file_get_contents($moduleFile) : '';
+                    preg_match('/\$config->arguments\[\'' . $command . '\'\]\s+=\s+\'(\w+)\';/', $moduleConfig, $commands);
+                    if(count($commands) > 1) $command = $commands[1];
+
+                    if($command == $argv[2])
+                    {
+                        /* Match by app config. */
+                        preg_match('/\$config->arguments\[\'' . $command . '\'\]\s+=\s+\'(\w+)\';/', $appConfig, $commands);
+                        if(count($commands) > 1) $command = $commands[1];
+                    }
+                }
 
                 if((isset($features->$feature) and in_array($command, $features->$feature)) or strpos($appConfig, "\$config->abbreviations->$feature"))
                 {
