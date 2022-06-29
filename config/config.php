@@ -30,10 +30,11 @@ $config->command = new stdclass();
 $config->command->zentao = new stdclass();
 $config->command->zentao->patch  = array('list', 'view', 'install', 'revert', 'build', 'release', 'help');
 $config->command->zentao->devops = array('mr');
+$config->command->zentao->basic  = array('diff');
 $config->command->zentao->set    = array();
 
 $config->command->dev = new stdclass();
-$config->command->dev->zentaophp = array('create');
+$config->command->dev->zentaophp = array('url', 'base64', 'md5');
 
 $config->abbreviations = new stdClass();
 
