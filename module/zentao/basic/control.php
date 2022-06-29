@@ -25,49 +25,36 @@ class basic extends control
 
     public function diff($params)
     {
-        $userSet     = array();
-        $inputFileds = explode(',', $this->config->basic->diff->fields);
-        foreach($inputFileds as $field)
-        {
-            $this->output($this->lang->basic->diff->{$field . 'Tip'});
-            while(true)
-            {
-                $inputValue = $this->readInput();
-                $result     = $this->basic->checkInput($field, $inputValue);
-                if($result)
-                {
-                    $userSet[$field] = $result;
-                    break;
-                }
+        if(empty($params['new']) or empty($params['diff'])) return $this->output($this->lang->basic->diff->help);
 
-                $this->output(sprintf($this->lang->basic->diff->pathNotReal, $inputValue), 'err');
-            }
-        }
-
-        $source  = $userSet['source'];
-        $target  = $userSet['target'];
-        $tmpPath = $target;
+        $source = helper::getRealPath($params['new']);
+        $target = helper::getRealPath($params['diff']);
+        if(!$source) return $this->output(sprintf($this->lang->basic->diff->pathNotReal, $params['new']), 'err');
+        if(!$target) return $this->output(sprintf($this->lang->basic->diff->pathNotReal, $params['diff']), 'err');
 
         $zfile = $this->app->loadClass('zfile');
         $files = $zfile->readDir($source);
-        if($files) $tmpPath = $this->basic->backupAndCover($target, $source);
+        if($files) $this->basic->backupAndCover($target);
 
-        $sourceLen = mb_strlen($source);
-        $filesLen  = count($files);
-        $fileIndex = 0;
+        $changeFiles = array();
+        $diffCmds    = array();
+        $sourceLen   = mb_strlen($source);
+        $filesLen    = count($files);
+        $fileIndex   = 0;
         while($fileIndex <= $filesLen)
         {
             $file        = $files[$fileIndex];
-            $compareFile = $tmpPath . substr($file, $sourceLen);
-            if(!file_exists($compareFile))
+            $compareFile = $target . substr($file, $sourceLen);
+            if(empty($file) or is_dir($file) or !file_exists($compareFile))
             {
+                if($file) $changeFiles[] = '+ ' . $file;
                 array_splice($files, $fileIndex, 1);
                 $filesLen--;
                 continue;
             }
 
-            $cmd = 'sdiff -s ' . $file . ' ' . $compareFile . ' | colordiff';
-            $this->output($cmd);
+            $cmd = 'diff -y --suppress-common-lines -W 200 ' . $file . ' ' . $compareFile;
+            if(isset($params['view'])) $this->output($cmd);
 
             $diff = shell_exec($cmd);
             if(empty($diff))
@@ -76,36 +63,64 @@ class basic extends control
                 $filesLen--;
                 continue;
             }
-            $this->output($diff);
+            $changeFiles[] = '* ' . $file;
+            $diffCmds[]    = 'vimdiff ' . $file . ' ' . $compareFile;
 
-            while(true)
+            if(isset($params['view']))
             {
-                $input = $this->readInput('Use p and n to change file, q to quit. (default: n):');
-                if($input == 'p')
+                $this->output($diff);
+
+                while(true)
                 {
-                    if($fileIndex < 2)
+                    $input = $this->readInput('Use p and n to change file, q to quit. (default: n):');
+                    if($input == 'p')
                     {
-                        $this->output('This is the first file!', 'err');
+                        if($fileIndex < 1)
+                        {
+                            $this->output('This is the first file!', 'err');
+                            continue;
+                        }
+                        $fileIndex--;
+                        break;
+                    }
+                    elseif($input == 'q')
+                    {
+                        $this->output('User quit.');
+                        die;
+                    }
+                    elseif($fileIndex >= $filesLen)
+                    {
+                        $this->output('This is the last file!', 'err');
                         continue;
                     }
-                    $fileIndex--;
+                    $fileIndex++;
                     break;
                 }
-                elseif($input == 'q')
-                {
-                    $this->output('User quit.');
-                    die;
-                }
-                elseif($fileIndex >= $filesLen)
-                {
-                    $this->output('This is the last file!', 'err');
-                    continue;
-                }
+            }
+            else
+            {
                 $fileIndex++;
-                break;
             }
         }
 
-        $zfile->removeDir($tmpPath);
+        if(!isset($params['view']))
+        {
+            $txt = '';
+            foreach($changeFiles as $file) $txt .= '# ' . $file . PHP_EOL;
+
+            if($diffCmds) $txt .= '# Diff commands:' . PHP_EOL;
+            foreach($diffCmds as $cmd)     $txt .= $cmd . PHP_EOL;
+
+            if($txt)
+            {
+                $txt      = '#!/bin/bash' . PHP_EOL . $txt;
+                $diffPath = dirname($this->config->userConfigFile, 2) . DS . 'diff' . date('YmdH') . '.sh';
+                $diffFile = @fopen($diffPath, "w");
+                fwrite($diffFile, $txt);
+                fclose($diffFile);
+
+                $this->output('The changes saved to ' . $diffPath);
+            }
+        }
     }
 }

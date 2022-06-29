@@ -61,31 +61,24 @@ class basicModel extends model
     /**
      * Backup and cover dir.
      *
-     * @param  string $oldPath
-     * @param  string $newPath
+     * @param  string $path
      * @access public
      * @return void
      */
-    public function backupAndCover($oldPath = '', $newPath = '')
+    public function backupAndCover($path = '')
     {
-        $oldPath  = helper::getRealPath($oldPath);
-        $newPath  = helper::getRealPath($newPath);
-        $pathName = explode('/', $oldPath);
-        $backPath = dirname($this->config->userConfigFile, 2) . DS . 'backcode' . DS . $pathName[count($pathName) - 1] . '.zip';
+        $path     = helper::getRealPath($path);
+        $pathName = explode('/', $path);
+        $backPath = '/tmp/backcode' . DS . $pathName[count($pathName) - 1] . date('YmdH') . '.zip';
 
-        $zfile    = $this->app->loadClass('zfile');
+        $zfile = $this->app->loadClass('zfile');
         if(!file_exists($backPath)) $zfile->mkdir(dirname($backPath));
 
         /* Backup. */
         $this->app->loadClass('pclzip', true);
         $zip = new pclzip($backPath);
-        if($zip->create($oldPath, PCLZIP_OPT_REMOVE_PATH, dirname($oldPath)) === 0) return false;
+        if($zip->create($path, PCLZIP_OPT_REMOVE_PATH, dirname($path)) === 0) return false;
 
-        $copyDir = '/tmp/' . $pathName[count($pathName) - 1];
-        $zfile->copyDir($oldPath, $copyDir);
-        $zfile->removeDir($oldPath);
-
-        $zfile->copyDir($newPath, $oldPath);
-        return $copyDir;
+        return $path;
     }
 }

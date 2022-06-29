@@ -9,4 +9,5 @@ $config->arguments['-v']     = 'view';
 $config->arguments['--view'] = 'view';
 $config->arguments['-i']     = 'install';
 
-$config->abbreviations->mr = 'devops';
+$config->abbreviations->mr   = 'devops';
+$config->abbreviations->diff = 'basic';
