@@ -51,31 +51,16 @@ class md5 extends control
      */
     public function calculate($params)
     {
-        if(empty($params) or isset($params['help']) or (empty($params['str']) and empty($params['binary']))) return $this->printHelp('calculate');
+        if(empty($params) or isset($params['help']) or empty($params['calculate'])) return $this->printHelp('calculate');
 
-        if(!empty($params['binary']))
+        $filePath = helper::getRealPath($params['calculate']);
+        if($filePath)
         {
-            $filePath = helper::getRealPath($params['binary']);
-            if($filePath)
-            {
-                return $this->output(md5_file($filePath, true));
-            }
-            else
-            {
-                return $this->output(md5($params['binary'], true));
-            }
+            return $this->output(md5_file($filePath));
         }
         else
         {
-            $filePath = helper::getRealPath($params['str']);
-            if($filePath)
-            {
-                return $this->output(md5_file($filePath));
-            }
-            else
-            {
-                return $this->output(md5($params['str']));
-            }
+            return $this->output(md5($params['str']));
         }
     }
 }

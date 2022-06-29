@@ -14,9 +14,6 @@ $lang->md5->help->calculate = <<<EOF
 Usage
   z md5 calculate [options]
 
-Options
-  -b, --binary   If use the optional, then the md5 digest is instead returned in raw binary format with a length of 16.
-
 Example
-  z md5 calculate -b
+  z md5 calculate
 EOF;

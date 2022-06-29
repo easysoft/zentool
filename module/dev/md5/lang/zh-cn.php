@@ -14,9 +14,6 @@ $lang->url->help->calculate = <<<EOF
 用法
   z md5 calculate [options]
 
-操作
-  -b, --binary   如果使用可选参数，则返回长度为16的md5二进制值。
-
 例如
-  z md5 calculate -b
+  z md5 calculate
 EOF;
