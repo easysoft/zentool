@@ -33,7 +33,9 @@ $config->command->zentao->devops = array('mr');
 $config->command->zentao->set    = array();
 
 $config->command->dev = new stdclass();
-$config->command->dev->zentaophp = array('create');
+$config->command->dev->url    = array('encode', 'decode');
+$config->command->dev->base64 = array('encode', 'decode');
+$config->command->dev->md5    = array('calculate');
 
 $config->abbreviations = new stdClass();
 
