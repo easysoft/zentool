@@ -16,12 +16,12 @@ $lang->url->help->encode = <<<EOF
   z url encode <string>
 
 例如
-  z url encode project
+  z url encode 'my=project\&are=zentao\+xuanxuan'
 EOF;
 $lang->url->help->decode = <<<EOF
 用法
   z url  decode <string>
 
 例如：
-  z url decode my=project&are=zentao+xuanxuan
+  z url decode project
 EOF;

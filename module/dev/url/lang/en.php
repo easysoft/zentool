@@ -16,12 +16,12 @@ Usage
   z url encode <string>
 
 Example
-  z url encode project
+  z url encode 'my=project\&are=zentao\+xuanxuan'
 EOF;
 $lang->url->help->decode = <<<EOF
 Usage
   z url  decode <string>
 
 Example
-  z url decode my=project&are=zentao+xuanxuan
+  z url decode project
 EOF;
