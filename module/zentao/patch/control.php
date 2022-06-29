@@ -25,7 +25,7 @@ class patch extends control
         $method = key($params);
         if(method_exists($this, $method))
         {
-            if(isset($this->config->patch->paramKey[$method])) $params = array($this->config->patch->paramKey[$method] => $param);
+            if(isset($this->config->patch->paramKey[$method])) $params = array($this->config->patch->paramKey[$method] => $params[$method]);
             return $this->$method($params);
         }
 

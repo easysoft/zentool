@@ -25,7 +25,7 @@ class devops extends control
         $method = key($params);
         if(method_exists($this, $method))
         {
-            if(isset($this->config->devops->paramKey[$method])) $params = array($this->config->devops->paramKey[$method] => $param);
+            if(isset($this->config->devops->paramKey[$method])) $params = array($this->config->devops->paramKey[$method] => $params[$method]);
             return $this->$method($params);
         }
         return $this->printHelp();
