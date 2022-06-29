@@ -11,8 +11,8 @@
  */
 $lang->entry = new stdclass();
 $lang->entry->help = <<<EOF
-Welcome to the Zentools for geeks. The current application is dev.
-You can use z app list and z app switch appName to get all applications and switch to one.
+Welcome to the ZenTools for geeks. The current application is dev.
+You can use 'z app list' and 'z app switch appName' to get all applications and switch to one.
 
 App
  'z app list':            List available applications.

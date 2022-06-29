@@ -11,9 +11,9 @@
  */
 $lang->entry = new stdclass();
 $lang->entry->help = <<<EOF
-欢迎使用极客Z工具。当前应用是研发。
+欢迎使用极客ZenTools工具。当前应用是研发。
 
-您可以使用 z app list 或 z app switch appName 来获取所有应用并切换到其中一个。
+您可以使用'z app list'或'z app switch appName'来获取所有应用并切换到其中一个。
 
 应用程序
  'z app list':            列出可用的应用。
