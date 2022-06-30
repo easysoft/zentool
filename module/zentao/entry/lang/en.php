@@ -26,5 +26,5 @@ Feature
   devops:  Perform DevOps operations.
   set:     Display and change configuration settings for current application.
 
-Use "z [feature] --help or -h" for more information about a module.
+Use "z [feature] --help or -h" for more information about a feature.
 EOF;

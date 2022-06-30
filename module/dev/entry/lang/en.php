@@ -23,6 +23,7 @@ Usage
 
 Feature
   md5:     Calculates the md5 hash of the a string or given file.
-  url:     Encodes the given string with URL or decodes a URL encoded string.
   base64:  Encodes the given string with base64 or decodes a base64 encoded string.
+  url:     Encodes the given string with URL or decodes a URL encoded string.
+  json:    Decodes a JSON string or given file.
 EOF;

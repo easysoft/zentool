@@ -24,6 +24,7 @@ $lang->entry->help = <<<EOF
 
 特征
   md5:     计算字符串或指定文件的md5哈希值。
-  url:     使用URL编码给定的字符串或解码URL编码的字符串。
   base64:  使用base64编码给定的字符串或解码base64编码的字符串。
+  url:     使用URL编码给定的字符串或解码URL编码的字符串。
+  json:    解码JSON字符串或给定的文件。
 EOF;
