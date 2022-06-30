@@ -29,14 +29,14 @@ $config->apps['dev']    = 'dev';
 $config->command = new stdclass();
 $config->command->zentao = new stdclass();
 $config->command->zentao->patch  = array('list', 'view', 'install', 'revert', 'build', 'release', 'help');
-$config->command->zentao->devops = array('mr');
+$config->command->zentao->devops = array('mr', 'help');
 $config->command->zentao->set    = array();
 
 $config->command->dev = new stdclass();
-$config->command->dev->url    = array('encode', 'decode');
-$config->command->dev->base64 = array('encode', 'decode');
-$config->command->dev->md5    = array('calculate');
-$config->command->dev->json   = array('decode');
+$config->command->dev->url    = array('encode', 'decode', 'help');
+$config->command->dev->base64 = array('encode', 'decode', 'help');
+$config->command->dev->md5    = array('calculate', 'help');
+$config->command->dev->json   = array('decode', 'help');
 
 $config->abbreviations = new stdClass();
 
