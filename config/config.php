@@ -36,6 +36,7 @@ $config->command->dev = new stdclass();
 $config->command->dev->url    = array('encode', 'decode');
 $config->command->dev->base64 = array('encode', 'decode');
 $config->command->dev->md5    = array('calculate');
+$config->command->dev->json   = array('decode');
 
 $config->abbreviations = new stdClass();
 
