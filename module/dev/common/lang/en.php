@@ -19,3 +19,10 @@ $lang->no      = 'No';
 $lang->pager = new stdclass();
 $lang->pager->pre  = "Previous";
 $lang->pager->next = "Next";
+
+$lang->setLangTip  = 'Please select your prefered language:';
+$lang->langNotReal = 'The language not supported, please check again:';
+$lang->langChanged = 'Change language successfully!';
+
+$lang->appNotReal = 'The app is not exists, please try again!';
+$lang->appChanged = 'App changed!';

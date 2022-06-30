@@ -42,7 +42,6 @@ $config->abbreviations = new stdClass();
 /* 支持的主题和语言。Supported thems and languages. */
 $config->themes['default'] = 'default';
 $config->langs['zh-cn']    = '简体';
-$config->langs['zh-tw']    = '繁体';
 $config->langs['en']       = 'English';
 
 /* 默认值设置。Default settings. */

@@ -317,7 +317,8 @@ class router
         $this->setCoreLibRoot();
 
         $this->parseConfig('main');
-        $appName = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
+        $appName    = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
+        $clientLang = isset($this->config->z_clientLang) ? $this->config->z_clientLang : '';
 
         $this->setConfigRoot();
         $this->loadMainConfig();
@@ -333,7 +334,7 @@ class router
         $this->setOS();
         $this->parseConfig();
         $this->setRunDir();
-        $this->setClientLang();
+        $this->setClientLang($clientLang);
 
         $this->loadClass('filter', $static = true);
 
@@ -717,7 +718,7 @@ class router
      */
     public function setClientLang($lang = '')
     {
-        if(!empty($lang)) $this->clientLang = $lang;
+        if(!empty($lang) and isset($this->config->langs[$lang])) $this->clientLang = $lang;
 
         if(!empty($this->clientLang))
         {
@@ -931,18 +932,8 @@ class router
         if($this->config->os == 'linux') system('stty erase ^H');
 
         global $argv, $argc;
-        if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, $this->config->version . PHP_EOL));
 
-        if($argv[1] == 'app')
-        {
-            if($argv[2] == 'switch' && isset($argv[3]))
-            {
-                if(!isset($this->config->apps[$argv[3]])) die(fwrite(STDOUT, 'App not exists' . PHP_EOL));
-                if($this->setMainConfig(array('z_app' => $argv[3]))) die(fwrite(STDOUT, 'Successfully' . PHP_EOL));
-            }
-            die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
-        }
-        if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setmainconfig(array('z_app' => $argv[1]))) die(fwrite(STDOUT, 'Change app successfully!' . PHP_EOL));
+        $this->runMainParse();
 
         /* Abbreviation param. */
         if(!empty($argv[1]) and isset($this->config->abbreviations->{$argv[1]}))
@@ -962,8 +953,52 @@ class router
         $this->setModuleName($module);
         $this->setMethodName($method);
         $this->setControlFile();
+        if($module == 'set' and $this->moduleName == 'entry') die;
 
         $this->args = $argv;
+    }
+
+    /**
+     * Run main parse.
+     *
+     * @access public
+     * @return void
+     */
+    public function runMainParse()
+    {
+        global $argv, $argc, $lang;
+        if(in_array($argv[1], array('-v', '--version'))) die(fwrite(STDOUT, $this->config->version . PHP_EOL));
+
+        /* Set app. */
+        if($argv[1] == 'app')
+        {
+            if($argv[2] == 'switch' && isset($argv[3]))
+            {
+                if(!isset($this->config->apps[$argv[3]])) die(fwrite(STDOUT, $lang->appNotReal . PHP_EOL));
+                if($this->setMainConfig(array('z_app' => $argv[3]))) die(fwrite(STDOUT, $lang->appChanged . PHP_EOL));
+            }
+            die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
+        }
+        if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setMainConfig(array('z_app' => $argv[1]))) die(fwrite(STDOUT, $lang->appChanged . PHP_EOL));
+
+        /* Set client lang. */
+        if($argv[1] == 'set')
+        {
+            fwrite(STDOUT, $lang->setLangTip . PHP_EOL);
+            foreach($this->config->langs as $key => $language) fwrite(STDOUT, $key . ': ' . $language . PHP_EOL);
+
+            while(true)
+            {
+                $input = trim(fgets(STDIN));
+                if(isset($this->config->langs[$input]) and $this->setMainConfig(array('z_clientLang' => $input)))
+                {
+                    fwrite(STDOUT, $lang->langChanged . PHP_EOL);
+                    $this->clientLang = $input;
+                    break;
+                }
+                fwrite(STDERR, $lang->langNotReal . PHP_EOL);
+            }
+        }
     }
 
     /**
