@@ -21,3 +21,4 @@ Example
   z json decode /z/example.json
   z json decode '{\"name\":\"ZenTools\",\"command\":\"z\"}'
 EOF;
+$lang->json->notJson = 'The content is not a json string or file!';

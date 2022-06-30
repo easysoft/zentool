@@ -56,8 +56,9 @@ class json extends control
         $file = helper::getRealPath($json);
         if($file) $json = file_get_contents($file);
 
-        var_dump($json);
-        $json = json_decode($json, isset($params['associative']) ? true : false);
-        return print_r($json);
+        $result = json_decode($json, isset($params['associative']) ? true : false);
+        if(empty($result)) return $this->output($this->lang->json->notJson, 'err');
+
+        return print_r($result);
     }
 }

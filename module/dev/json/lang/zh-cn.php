@@ -21,3 +21,4 @@ $lang->json->help->decode = <<<EOF
   z json decode /z/example.json
   z json decode '{\"name\":\"ZenTools\",\"command\":\"z\"}'
 EOF;
+$lang->json->notJson = '该内容不是一个json字符串或者文件！';
