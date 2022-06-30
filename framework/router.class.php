@@ -992,7 +992,6 @@ class router
                 $input = trim(fgets(STDIN));
                 if(isset($this->config->langs[$input]) and $this->setMainConfig(array('z_clientLang' => $input)))
                 {
-                    fwrite(STDOUT, $lang->langChanged . PHP_EOL);
                     $this->clientLang = $input;
                     break;
                 }

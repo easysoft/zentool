@@ -10,11 +10,7 @@
  *  May you share freely, never taking more than you give.
  */
 $lang->set = new stdclass();
-$lang->set->webDirTip = <<<EOF
-设置禅道配置，请按ctrl+c退出。
-
-请输入禅道目录，例如：/opt/zentao ：
-EOF;
+$lang->set->webDirTip = '请输入禅道目录，例如：/opt/zentao ：';
 $lang->set->phpfileTip = '请输入PHP的路径：(例如：c:\windows\php.exe)';
 
 $lang->set->webDirNotReal  = '目录%s不是禅道目录，请重新输入：';
