@@ -535,12 +535,6 @@ class control
      */
     public function output($message = '', $type = 'out')
     {
-        if(empty($message)) return;
-        if($this->config->os == 'windows') $message = iconv("UTF-8", "GB2312", $message);
-
-        $message = $message . PHP_EOL;
-        if($type == 'out') return fwrite(STDOUT, $message);
-
-        return fwrite(STDERR, chr(27).'[1;31m' . $message . chr(27).'[0m');
+        return helper::output($message, $type);
     }
 }

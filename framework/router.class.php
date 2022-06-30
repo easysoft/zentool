@@ -974,10 +974,10 @@ class router
         {
             if($argv[2] == 'switch' && isset($argv[3]))
             {
-                if(!isset($this->config->apps[$argv[3]])) die(fwrite(STDOUT, $lang->appNotReal . PHP_EOL));
-                if($this->setMainConfig(array('z_app' => $argv[3]))) die(fwrite(STDOUT, $lang->appChanged . PHP_EOL));
+                if(!isset($this->config->apps[$argv[3]])) die(helper::output($lang->appNotReal, 'err'));
+                if($this->setMainConfig(array('z_app' => $argv[3]))) die(helper::output($lang->appChanged));
             }
-            die(fwrite(STDOUT, implode(PHP_EOL, $this->config->apps) . PHP_EOL));
+            die(helper::output(implode(PHP_EOL, $this->config->apps) . PHP_EOL));
         }
         if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setMainConfig(array('z_app' => $argv[1]))) die(fwrite(STDOUT, $lang->appChanged . PHP_EOL));
 
@@ -985,7 +985,7 @@ class router
         if($argv[1] == 'set')
         {
             fwrite(STDOUT, $lang->setLangTip . PHP_EOL);
-            foreach($this->config->langs as $key => $language) fwrite(STDOUT, str_pad($key . ': ', 7) . $language . PHP_EOL);
+            foreach($this->config->langs as $key => $language) helper::output(str_pad($key . ': ', 7) . $language);
 
             while(true)
             {
@@ -995,7 +995,7 @@ class router
                     $this->clientLang = $input;
                     break;
                 }
-                fwrite(STDERR, $lang->langNotReal . PHP_EOL);
+                helper::output($lang->langNotReal, 'err');
             }
         }
     }

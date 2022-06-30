@@ -622,6 +622,26 @@ class helper
         if(!$realPath) $realPath = realpath($config->runDir . DS . $path);
         return $realPath;
     }
+
+    /**
+     * Output message.
+     *
+     * @param  string $message
+     * @param  string $type
+     * @access public
+     * @return void
+     */
+    public static function output($message = '', $type = 'out')
+    {
+        if(empty($message)) return;
+        global $config;
+        if($config->os == 'windows') $message = iconv("UTF-8", "GB2312", $message);
+
+        $message = $message . PHP_EOL;
+        if($type == 'out') return fwrite(STDOUT, $message);
+
+        return fwrite(STDERR, chr(27).'[1;31m' . $message . chr(27).'[0m');
+    }
 }
 
 //------------------------------- 常用函数。Some tool functions.-------------------------------//
