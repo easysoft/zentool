@@ -1126,6 +1126,7 @@ class router
         if($this->checkModuleName($moduleName))
         {
             $modulePath = $this->getModuleRoot($appName) . strtolower($moduleName) . DS;
+            if($moduleName == 'common') $modulePath = dirname($modulePath, 2) . DS . 'common' . DS;
             return $modulePath;
         }
     }
