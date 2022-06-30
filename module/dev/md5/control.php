@@ -60,7 +60,7 @@ class md5 extends control
         }
         else
         {
-            return $this->output(md5($params['str']));
+            return $this->output(md5($params['calculate']));
         }
     }
 }
