@@ -985,7 +985,7 @@ class router
         if($argv[1] == 'set')
         {
             fwrite(STDOUT, $lang->setLangTip . PHP_EOL);
-            foreach($this->config->langs as $key => $language) fwrite(STDOUT, $key . ': ' . $language . PHP_EOL);
+            foreach($this->config->langs as $key => $language) fwrite(STDOUT, str_pad($key . ': ', 7) . $language . PHP_EOL);
 
             while(true)
             {
