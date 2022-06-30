@@ -10,7 +10,7 @@ $lang->json->help->json = <<<EOF
 命令
   decode  -d  <string | filepath>     采用JSON编码的字符串并将其转换为PHP变量。
 EOF;
-$lang->url->help->decode = <<<EOF
+$lang->json->help->decode = <<<EOF
 用法
   z json decode <string | filepath>
 

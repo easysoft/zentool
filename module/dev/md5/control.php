@@ -25,7 +25,7 @@ class md5 extends control
         $method = key($params);
         if(method_exists($this, $method))
         {
-            if(isset($this->config->url->paramKey[$method])) $params = array($this->config->url->paramKey[$method] => $params[$method]);
+            if(isset($this->config->md5->paramKey[$method])) $params = array($this->config->md5->paramKey[$method] => $params[$method]);
             return $this->$method($params);
         }
         return $this->printHelp();
