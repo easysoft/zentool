@@ -977,14 +977,14 @@ class router
                 if(!isset($this->config->apps[$argv[3]])) die(helper::output($lang->appNotReal, 'err'));
                 if($this->setMainConfig(array('z_app' => $argv[3]))) die(helper::output($lang->appChanged));
             }
-            die(helper::output(implode(PHP_EOL, $this->config->apps) . PHP_EOL));
+            die(helper::output(implode(PHP_EOL, $this->config->apps)));
         }
-        if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setMainConfig(array('z_app' => $argv[1]))) die(fwrite(STDOUT, $lang->appChanged . PHP_EOL));
+        if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setMainConfig(array('z_app' => $argv[1]))) die(helper::output($lang->appChanged));
 
         /* Set client lang. */
         if($argv[1] == 'set')
         {
-            fwrite(STDOUT, $lang->setLangTip . PHP_EOL);
+            helper::output($lang->setLangTip);
             foreach($this->config->langs as $key => $language) helper::output(str_pad($key . ': ', 7) . $language);
 
             while(true)
