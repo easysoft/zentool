@@ -15,19 +15,19 @@ $lang->patch->help->patch = <<<EOF
 对适合当前禅道版本的补丁包进行查看列表、详细信息和安装操作。
 
 用法
-  z patch <command> [options]
+  z patch <命令> [参数]
 
 命令
   list      -l                  列出当前禅道版本的所有可用补丁包。
-  view      -v   <patchid>      查看补丁包。
-  install   -i   <patchid>      安装补丁包。
-  revert    -r   <patchid>      还原已安装的补丁。
+  view      -v   <补丁包ID>     查看补丁包。
+  install   -i   <补丁包ID>     安装补丁包。
+  revert    -r   <补丁包ID>     还原已安装的补丁。
   build     -b                  构建补丁包。
   release   -rel                发布补丁包。
 EOF;
 $lang->patch->help->list = <<<EOF
 用法
-  z patch list [options]
+  z patch list [参数]
 
 操作
   -a, --all   列出所有补丁（包括已安装的）。
@@ -38,14 +38,14 @@ $lang->patch->help->list = <<<EOF
 EOF;
 $lang->patch->help->view = <<<EOF
 用法
-  z patch view <patchid>     查看补丁包详细信息
+  z patch view <补丁包ID>     查看补丁包详细信息
 
 例如
   z patch view 1
 EOF;
 $lang->patch->help->install = <<<EOF
 用法
-  z patch install <id | path>    需要操作禅道目录的权限。
+  z patch install <补丁包ID | 本地路径>    需要操作禅道目录的权限。
 
 例如
   z patch install 1
@@ -53,7 +53,7 @@ $lang->patch->help->install = <<<EOF
 EOF;
 $lang->patch->help->revert = <<<EOF
 用法
-  z patch revert <id | path>     需要操作禅道目录的权限。
+  z patch revert <补丁包ID | 本地路径>     需要操作禅道目录的权限。
 
 例如
   z patch revert 1

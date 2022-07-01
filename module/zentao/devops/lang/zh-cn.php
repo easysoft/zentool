@@ -15,14 +15,14 @@ $lang->devops->help->devops = <<<EOF
 基于禅道执行devops操作。
 
 用法
-  z devops <command> [options]
+  z devops <命令> [参数]
 
 命令
-  mr <targetbranch>    合并来自两个分支的代码，并通过流水线对其进行测试。
+  mr <分支名称>    合并来自两个分支的代码，并通过流水线对其进行测试。
 EOF;
 $lang->devops->help->mr = <<<EOF
 用法
-  z [devops] mr <targetbranch>    合并来自两个分支的代码，并通过流水线对其进行测试。
+  z [devops] mr <分支名称>    合并来自两个分支的代码，并通过流水线对其进行测试。
 
 例如
  z mr master

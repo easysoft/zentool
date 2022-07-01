@@ -20,12 +20,12 @@ $lang->index->help = <<<EOF
   'z app switch appName':  切换当前应用。
 
 用法
-   z [功能] [命令] [选项]
+   z [功能] [命令] [参数]
 
 特征
    patch： 安装禅道补丁。
    devops: 执行devops操作。
    set：   显示和更改当前应用程序的配置信息。
 
-使用“z [feature] --help 或 -h”获取相关功能的更多信息。
+使用“z [功能] --help 或 -h”获取相关功能的更多信息。
 EOF;

@@ -8,17 +8,16 @@ Usage
   z json <command> [options]
 
 Commands
-  decode  -d  <string | filepath>     Takes a JSON encoded string and converts it into a PHP variable.
+  decode  -d  <filepath>     Takes a JSON file and converts it into a PHP variable.
 EOF;
 $lang->json->help->decode = <<<EOF
 Usage
-  z json decode <string | filepath>
+  z json decode <filepath>
 
 Options
-  -a,--associative     Use the option, JSON objects will be returned as associative arrays; otherwise, JSON objects will be returned as objects.
+  -a, --associative     Use the option, JSON objects will be returned as associative arrays; otherwise, JSON objects will be returned as objects.
 
 Example
   z json decode /z/example.json
-  z json decode '{\"name\":\"ZenTools\",\"command\":\"z\"}'
 EOF;
-$lang->json->notJson = 'The content is not a json string or file!';
+$lang->json->notJson = 'The content is not a json file!';
