@@ -22,12 +22,20 @@ class json extends control
     {
         if(empty($params) or isset($params['help'])) return $this->printHelp();
 
+        $data = array();
         foreach($params as $key => $param)
         {
-            if(isset($this->config->json->paramKey[$key])) $params = array($this->config->json->paramKey[$key] => $param);
+            if(isset($this->config->json->paramKey[$key]))
+            {
+                $data[$this->config->json->paramKey[$key]] = $param;
+            }
+            else
+            {
+                $data[$key] = '';
+            }
         }
 
-        return $this->decode($params);
+        return $this->decode($data);
     }
 
     /**
