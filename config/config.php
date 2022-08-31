@@ -24,6 +24,7 @@ $config->debug      = 2;
 
 $config->apps['zentao'] = 'zentao';
 $config->apps['dev']    = 'dev';
+$config->apps['zcode']  = 'zcode';
 
 /* 命令配置。 Command settings. */
 $config->command = new stdclass();
