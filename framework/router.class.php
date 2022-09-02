@@ -997,6 +997,7 @@ class router
                 }
                 helper::output($lang->langNotReal, 'err');
             }
+            $this->parseConfig();
         }
     }
 
