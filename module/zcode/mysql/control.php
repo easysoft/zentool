@@ -40,13 +40,6 @@ class mysql extends control
         }
 
         $dbh = $this->mysql->connectDB($mysqlConfig['host'], $mysqlConfig['dbname'], $mysqlConfig['port'], $mysqlConfig['user'], $mysqlConfig['password']);
-        $sql = 'select * from zt_config';
-        $put = $dbh->query($sql);
-        foreach($put as $v)
-        {
-            print_r($v);
-            echo "\n";
-        }
 
         if(!$this->setUserConfigs($mysqlConfig)) return fwrite(STDOUT, $this->lang->set->noWriteAccess);
 
