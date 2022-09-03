@@ -6,7 +6,6 @@ class module extends control
 
     public function init($params)
     {
-        $this->save('module', 'create', '');
         $this->moduleName = $params['moduleName'];
         $this->moduleRoot = $this->config->runDir . DS . $moduleName . DS;
 
