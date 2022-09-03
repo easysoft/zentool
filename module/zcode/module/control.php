@@ -85,8 +85,8 @@ class module extends control
         $lang   = "\$lang->{$this->moduleName} = new stdClass();" . PHP_EOL;
         $cnLang = $lang;
         $enLang = $lang;
-        include 'fields.php';
-        foreach($config->fields as $field)
+        $fields = $this->module->getFieldList($this->moduleName);
+        foreach($fields as $field)
         {
             $cnLang .= "\$lang->{$this->moduleName}->{$field['name']} = '{$field['label']}';" . PHP_EOL;
             $enLang .= "\$lang->{$this->moduleName}->{$field['name']} = '{$field['name']}';" . PHP_EOL;
