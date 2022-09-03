@@ -2,6 +2,19 @@
 class zcode
 {
     /**
+     * Create one file with content.
+     *
+     * @param  string    $file
+     * @param  string    $content
+     * @access public
+     * @return int|false
+     */
+    public function create($file, $content)
+    {
+        return file_put_contents($file, $content);
+    }
+
+    /**
      * Read file content to a string or an array.
      *
      * @param  string $file
