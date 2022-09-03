@@ -11,6 +11,7 @@ class zcode
      */
     public function create($file, $content)
     {
+        if(!is_dir(dirname($file))) mkdir(dirname($file), 0755, true);
         return file_put_contents($file, $content);
     }
 
