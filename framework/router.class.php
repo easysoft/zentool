@@ -446,8 +446,8 @@ class router
                     $config = explode('=', $val);
                     if($config[0] && $config[1])
                     {
-                        $configName = $config[0];
-                        $this->config->$configName = $config[1];
+                        $configNames = explode('->', $config[0]);
+                        $this->setMultiLevelConfig($configNames, $config[1]);
                     }
                 }
             }
@@ -458,6 +458,34 @@ class router
 
             touch($configFile);
         }
+    }
+
+    /**
+     * Set config with multi level.
+     *
+     * @param  array  $configs
+     * @param  string $configValue
+     * @param  obejct $config
+     * @access public
+     * @return void
+     */
+    public function setMultiLevelConfig($configs, $configValue, $config = null)
+    {
+        if(empty($configs) or !is_array($configs)) return;
+
+        if(is_null($config)) $config = $this->config;
+
+        $configName = $configs[0];
+        $configLen  = count($configs);
+        if($configLen == 1)
+        {
+            return $config->$configName = $configValue;
+        }
+
+        if(!isset($this->config->$configName)) $config->$configName = new stdClass();
+
+        unset($configs[0]);
+        $this->setMultiLevelConfig(array_values($configs), $configValue, $config->$configName);
     }
 
     //-------------------- 路径相关方法(Path related methods)--------------------//
