@@ -20,30 +20,28 @@ class set extends control
      */
     public function entry($params)
     {
-        $userSet     = array();
-        $tryTime     = 0;
-        $fields      = $this->config->os == 'windows' ? $this->config->set->fields->windows : $this->config->set->fields->default;
-        $inputFileds = explode(',', $fields);
-        foreach($inputFileds as $field)
+        $userSet = array();
+        $this->output($this->lang->set->inputTips->name);
+        while(true)
         {
-            $this->output($this->lang->set->{$field . 'Tip'});
-            while(true)
+            $input = $this->readInput();
+
+            if($input == ':w') break;
+
+            if(strpos($input, '=') === false)
             {
-                if($tryTime > 2) return $this->output($this->lang->set->tryTimeLimit, 'err');
+                $this->output($this->lang->set->inputTips->value);
 
-                $inputValue = $this->readInput();
-                $result     = $this->set->checkInput($field, $inputValue);
-                if($result)
-                {
-                    $tryTime  = 0;
-                    $saveName = $this->config->set->configNames[$field];
-                    $userSet[$saveName] = $result;
-                    break;
-                }
-
-                $tryTime++;
-                $this->output(sprintf($this->lang->set->{$field . 'NotReal'}, $inputValue), 'err');
+                $item  = trim($input);
+                $value = $this->readInput();
             }
+            else
+            {
+                $this->output("Input: $input");
+                list($item, $value) = explode(" = ", $input);
+            }
+
+            $userSet[$item] = $value;
         }
 
         if(!$this->setUserConfigs($userSet)) return fwrite(STDOUT, $this->lang->set->noWriteAccess);
