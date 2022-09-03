@@ -7,15 +7,16 @@ class module extends control
     public function init($params)
     {
         $this->moduleName = $params['moduleName'];
+        $this->table      = "zt_" . $this->moduleName;
         $this->moduleRoot = $this->config->runDir . DS . $this->moduleName . DS;
 
         mkdir($this->moduleRoot);
 
         $this->initControl();
+        $this->initModel();
 
         die();
         $this->initConfig();
-        $this->initModel();
         $this->initLang();
         $this->initCss();
         $this->initJs();
@@ -50,7 +51,32 @@ class module extends control
 
     public function initModel()
     {
-        touch($this->moduleRoot . 'model.php');
+        $this->view->module       = $this->moduleName;
+        $this->view->author       = $this->config->author;
+        $this->view->copyright    = $this->config->copyright;
+        $this->view->idfield      = $this->config->idfield;
+        $this->view->license      = $this->config->license;
+        $this->view->link         = $this->config->link;
+        $this->view->package      = $this->view->module;
+        $this->view->version      = $this->config->version;
+        $this->view->viewvars     = $this->config->viewvars;
+        $this->view->table        = strtoupper($this->table);
+        $this->view->createfix    = '';
+        $this->view->createfixer  = '';
+        $this->view->createreturn = '';
+        $this->view->editfix      = '';
+        $this->view->editfixer    = '';
+        $this->view->editreturn   = '';
+        $this->view->createcheck  = '';
+        $this->view->createskip   = '';
+        $this->view->editskip     = '';
+        $this->view->editcheck    = '';
+        $this->view->getbyid      = '';
+
+        $modelFile = $this->moduleRoot . 'model.php';
+
+        $modelCode = $this->parse('module', 'model.code');
+        return $this->zcode->create($modelFile, $modelCode);
     }
 
     public function initLang()
@@ -60,9 +86,14 @@ class module extends control
         touch($this->moduleRoot . 'lang/en.php');
     }
 
-    public function initView()
+    public function initView($function)
     {
-        mkdir($this->moduleRoot . 'view');
+        $pageList = array("browse", 'view', 'create');
+        foreach($pageList as $page)
+        {
+            if(method_exists($this->zcode, "init{$function}View")) call_user_func_array(array($this->zcode, "init{$function}View"), array());
+        }
+        return true;
     }
 
     public function initJs()

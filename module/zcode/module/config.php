@@ -1,5 +1,6 @@
 <?php
 $config->module->paramKey['init'] = 'moduleName';
+
 $config->author    = 'author';
 $config->copyright = 'copyright';
 $config->idfield   = 'id';
