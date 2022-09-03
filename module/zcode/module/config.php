@@ -1,6 +1,8 @@
 <?php
 $config->module->paramKey['init'] = 'moduleName';
 
+$config->module->langs = array('zh-cn', 'en');
+
 $config->author    = 'author';
 $config->copyright = 'copyright';
 $config->idfield   = 'id';

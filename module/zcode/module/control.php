@@ -14,10 +14,10 @@ class module extends control
 
         $this->initControl();
         $this->initModel();
-
-        die();
-        $this->initConfig();
         $this->initLang();
+        die();
+
+        $this->initConfig();
         $this->initCss();
         $this->initJs();
         $this->initView();
@@ -82,8 +82,21 @@ class module extends control
     public function initLang()
     {
         mkdir($this->moduleRoot . 'lang');
-        touch($this->moduleRoot . 'lang/zh-cn.php');
-        touch($this->moduleRoot . 'lang/en.php');
+        $lang   = "\$lang->{$this->moduleName} = new stdClass();" . PHP_EOL;
+        $cnLang = $lang;
+        $enLang = $lang;
+        include 'fields.php';
+        foreach($config->fields as $field)
+        {
+            $cnLang .= "\$lang->{$this->moduleName}->{$field['name']} = '{$field['label']}';" . PHP_EOL;
+            $enLang .= "\$lang->{$this->moduleName}->{$field['name']} = '{$field['name']}';" . PHP_EOL;
+        }
+
+        foreach($this->config->module->langs as $lang)
+        {
+            $langPath = $this->moduleRoot . "lang/$lang.php";
+            file_put_contents($langPath, strpos($lang, 'zh') !== false ? $cnLang : $enLang);
+        }
     }
 
     public function initView($function)
