@@ -104,6 +104,15 @@ class control
     public $devicePrefix;
 
     /**
+     * $view用于存放从control传到view视图的数据。
+     * The vars assigned to the view page.
+     *
+     * @var object
+     * @access public
+     */
+    public $view;
+
+    /**
      * 构造方法。
      *
      * 1. 将全局变量设为baseControl类的成员变量，方便baseControl的派生类调用；
@@ -147,6 +156,7 @@ class control
          * Set super vars.
          */
         $this->setSuperVars();
+        if($this->appName == 'zcode') $this->zcode = $app->loadClass('zcode');
     }
 
     //-------------------- Model相关方法(Model related methods) --------------------//
@@ -539,19 +549,20 @@ class control
     }
 
     /**
-     * Save a file template.
+     * Parse template file.
      *
-     * @param  string $methodName
+     * @param  string    $moduleName
+     * @param  string    $template
      * @access public
-     * @return void
+     * @return string
      */
-    public function save($moduleName, $methodName, $fileName)
+    public function parse($moduleName, $template)
     {
         /**
          * 设置视图文件。(PHP7有一个bug，不能直接$viewFile = $this->setViewFile())。
          * Set viewFile. (Can't assign $viewFile = $this->setViewFile() directly because one php7's bug.)
          */
-        $viewFile = $this->app->getModuleRoot($this->app->appName) . $moduleName . DS . 'view' . DS . $methodName . '.code.php';
+        $viewFile = $this->app->getModuleRoot($this->app->appName) . "$moduleName/view/$template.php";
 
         /**
          * 切换到视图文件所在的目录，以保证视图文件里面的include语句能够正常运行。
@@ -565,11 +576,12 @@ class control
          * Use extract and ob functions to eval the codes in $viewFile.
          */
         extract((array)$this->view);
-        ob_start();
-        include $viewFile;
-        $output = ob_get_contents();
-        ob_end_clean();
+        $output = file_get_contents($viewFile);
+        foreach($this->view as $code => $value)
+        {
+            $output = str_replace("%" . strtoupper($code) . "%", $value, $output);
+        }
 
-        file_put_contents($viewFile, $output);
+        return $output;
     }
 }
