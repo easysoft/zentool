@@ -537,4 +537,39 @@ class control
     {
         return helper::output($message, $type);
     }
+
+    /**
+     * Save a file template.
+     *
+     * @param  string $methodName
+     * @access public
+     * @return void
+     */
+    public function save($moduleName, $methodName, $fileName)
+    {
+        /**
+         * 设置视图文件。(PHP7有一个bug，不能直接$viewFile = $this->setViewFile())。
+         * Set viewFile. (Can't assign $viewFile = $this->setViewFile() directly because one php7's bug.)
+         */
+        $viewFile = $this->app->getModuleRoot($this->app->appName) . $moduleName . DS . 'view' . DS . $methodName . '.code.php';
+
+        /**
+         * 切换到视图文件所在的目录，以保证视图文件里面的include语句能够正常运行。
+         * Change the dir to the view file to keep the relative paths work.
+         */
+        $currentPWD = getcwd();
+        chdir(dirname($viewFile));
+
+        /**
+         * 使用extract安定ob方法渲染$viewFile里面的代码。
+         * Use extract and ob functions to eval the codes in $viewFile.
+         */
+        extract((array)$this->view);
+        ob_start();
+        include $viewFile;
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        file_put_contents($viewFile, $output);
+    }
 }

@@ -44,5 +44,20 @@ class mysqlModel extends model
         if(method_exists($this, 'check' . $field)) return $this->{'check' . $field}($value);
         return true;
     }
+
+    public function desc($table)
+    {
+        return $fields;
+    }
+
+    public function parseLang($fields)
+    {
+        return $fields;
+    }
+
+    public function getFormConfig($fields)
+    {
+        return $fields;
+    }
 }
 
