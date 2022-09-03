@@ -45,5 +45,15 @@ class mysql extends control
 
         $this->output($this->lang->set->saveSuccess);
     }
+
+    public function init($table)
+    {
+        $fields = $this->getFields($table);
+    }
+
+    public function getFields($table)
+    {
+        return $this->dbh->query("desc zt_company")->fetchAll();
+    }
 }
 

@@ -50,6 +50,15 @@ class control
     public $lang;
 
     /**
+     * $dao对象，实现sql的拼装和执行。
+     * The $dao object, used to join sql and excute sql.
+     *
+     * @var dao
+     * @access public
+     */
+    public $dao;
+
+    /**
      * $post对象，用户可以通过$this->post->key来引用$_POST变量。
      * The $post object, useer can access a post var by $this->post->key.
      *
@@ -137,10 +146,11 @@ class control
          * 将全局变量设为baseControl类的成员变量，方便baseControl的派生类调用。
          * Global the globals, and refer them as a class member.
          */
-        global $app, $config, $lang, $common, $params;
+        global $app, $config, $lang, $dbh, $common, $params;
         $this->app      = $app;
         $this->config   = $config;
         $this->lang     = $lang;
+        $this->dbh      = $dbh;
         $this->appName  = $appName ? $appName : $this->app->getAppName();
 
         /**
@@ -205,6 +215,7 @@ class control
         if(isset($loadedModels[$appName][$moduleName]))
         {
             $this->$moduleName = $loadedModels[$appName][$moduleName];
+            $this->dao         = $this->$moduleName->dao;
             return $this->$moduleName;
         }
 
@@ -218,6 +229,7 @@ class control
         {
             $this->app->loadModuleConfig($moduleName, $appName);
             $this->app->loadLang($moduleName, $appName);
+            $this->dao = new dao();
             return false;
         }
 
@@ -237,7 +249,8 @@ class control
          * Init the model object thus you can try $this->$moduleName to access it.
          */
         $loadedModels[$appName][$moduleName] = new $modelClass($appName);
-        $this->$moduleName = $loadedModels[$appName][$moduleName];
+        $this->$moduleName                   = $loadedModels[$appName][$moduleName];
+        $this->dao                           = $this->$moduleName->dao;
         return $this->$moduleName;
     }
 

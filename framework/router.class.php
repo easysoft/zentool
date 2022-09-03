@@ -249,6 +249,15 @@ class router
     public $lang;
 
     /**
+     * 全局$dbh对象，数据库连接句柄。
+     * The global $dbh object, the database connection handler.
+     *
+     * @var object
+     * @access public
+     */
+    public $dbh;
+
+    /**
      * $post对象，用于访问$_POST变量。
      * The $post object, used to access the $_POST var.
      *
@@ -335,6 +344,7 @@ class router
         $this->parseConfig();
         $this->setRunDir();
         $this->setClientLang($clientLang);
+        $this->connectDB();
 
         $this->loadClass('filter', $static = true);
 
@@ -1092,6 +1102,74 @@ class router
 
         if(class_exists('commonModel')) return new commonModel();
         return false;
+    }
+
+    /**
+     * Connect database.
+     *
+     * @access public
+     * @return void
+     */
+    public function connectDB()
+    {
+        global $config, $dbh, $slaveDBH;
+        //if(!isset($config->installed) or !$config->installed) return;
+
+        if(isset($config->db->host))      $this->dbh      = $dbh      = $this->connectByPDO($config->db);
+        if(isset($config->slaveDB->host)) $this->slaveDBH = $slaveDBH = $this->connectByPDO($config->slaveDB);
+    }
+
+    /**
+     * 使用PDO连接数据库。
+     * Connect database by PDO.
+     *
+     * @param  object    $params    the database params.
+     * @access public
+     * @return object|bool
+     */
+    public function connectByPDO($params)
+    {
+        if(!isset($params->driver)) self::triggerError('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__, $exit = true);
+        if(!isset($params->user)) return false;
+        if($params->driver == 'mysql')
+        {
+            $dsn = "mysql:host={$params->host}; port={$params->port}; dbname={$params->name}";
+        }
+        try
+        {
+            $dbPassword = $params->password;
+
+            $dbh = new PDO($dsn, $params->user, $dbPassword, array(PDO::ATTR_PERSISTENT => $params->persistant));
+            $dbh->exec("SET NAMES {$params->encoding}");
+
+            /*
+             * 如果系统是Linux，开启仿真预处理和缓冲查询。
+             * If run on linux, set emulatePrepare and bufferQuery to true.
+             **/
+            if(!isset($params->emulatePrepare) and PHP_OS == 'Linux') $params->emulatePrepare = true;
+            if(!isset($params->bufferQuery) and PHP_OS == 'Linux')    $params->bufferQuery = true;
+
+            if(defined('RUN_MODE') and RUN_MODE == 'api') $params->emulatePrepare = false;
+
+            $dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            if(isset($params->strictMode) and $params->strictMode == false) $dbh->exec("SET @@sql_mode= ''");
+            if(isset($params->emulatePrepare)) $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, $params->emulatePrepare);
+            if(isset($params->bufferQuery))    $dbh->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $params->bufferQuery);
+
+            return $dbh;
+        }
+        catch (PDOException $exception)
+        {
+            $message = $exception->getMessage();
+            if(empty($message))
+            {
+                /* Try to repair table. */
+                header("location: {$this->config->webRoot}checktable.php");
+                exit;
+            }
+            self::triggerError($message, __FILE__, __LINE__, $exit = true);
+        }
     }
 
     /**

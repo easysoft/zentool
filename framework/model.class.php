@@ -51,6 +51,15 @@ class model
     public $lang;
 
     /**
+     * 全局对象$dbh，数据库连接句柄。
+     * The global $dbh object, the database connection handler.
+     *
+     * @var object
+     * @access public
+     */
+    public $dbh;
+
+    /**
      * $post对象，用于访问$_POST变量。
      * The $post object, used to access the $_POST var.
      *
@@ -101,16 +110,18 @@ class model
      */
     public function __construct($appName = '')
     {
-        global $app, $config, $lang;
+        global $app, $config, $lang, $dbh;
         $this->app     = $app;
         $this->config  = $config;
         $this->lang    = $lang;
+        $this->dbh     = $dbh;
         $this->appName = empty($appName) ? $this->app->getAppName() : $appName;
 
         $moduleName = $this->getModuleName();
         if($this->config->framework->multiLanguage) $this->app->loadLang($moduleName, $this->appName);
         if($moduleName != 'common') $this->app->loadModuleConfig($moduleName, $this->appName);
 
+        $this->loadDAO();
         $this->setSuperVars();
     }
 
@@ -188,6 +199,18 @@ class model
         $loadedModels[$appName][$moduleName] = new $modelClass($appName);
         $this->$moduleName = $loadedModels[$appName][$moduleName];
         return $this->$moduleName;
+    }
+
+    /**
+     * 加载DAO。
+     * Load DAO.
+     *
+     * @access public
+     * @return void
+     */
+    public function loadDAO()
+    {
+        $this->dao = $this->app->loadClass('dao');
     }
 
     /**
