@@ -1,4 +1,5 @@
 <?php
+$config = new stdClass();
 $config->fields['createdBy']['name']    = 'createdBy';
 $config->fields['createdBy']['label']   = '由谁创建';
 $config->fields['createdBy']['control'] = 'select';
