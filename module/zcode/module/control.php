@@ -12,15 +12,15 @@ class module extends control
 
         mkdir($this->moduleRoot);
 
+        $this->initView(); die();
+
         $this->initControl();
         $this->initModel();
         $this->initLang();
-        die();
 
         $this->initConfig();
         $this->initCss();
         $this->initJs();
-        $this->initView();
 
         echo 'inited';
     }
@@ -99,22 +99,26 @@ class module extends control
         }
     }
 
-    public function initView($function)
+    public function initView()
     {
         $pageList = array("browse", 'view', 'create');
+        $pageList = array('view');
         foreach($pageList as $page)
         {
-            if(method_exists($this->zcode, "init{$function}View")) call_user_func_array(array($this->zcode, "init{$function}View"), array());
+            if(method_exists($this, "init{$page}View")) call_user_func_array(array($this, "init{$page}View"), array());
         }
         return true;
     }
 
     public function initViewView()
     {
-        if(file_exists('fields.php')) include 'fields.php';
-        foreach($this->config->fields as $field)
-        {
-        }
+        $action = new stdClass;
+        $action->action = 'view';
+        $action->open = '';
+        $views = $this->module->getViewFile($this->moduleName, $action);
+        foreach($views as $item => $value) $this->view->$item = $value;
+        $viewCode = $this->parse('module', 'view.view');
+        $this->zcode->create($this->moduleRoot . "view/view.html.php", $viewCode);
     }
 
     public function initJs()

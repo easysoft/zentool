@@ -9,7 +9,7 @@
  * @version     $Id$
  * @link        http://www.cnezsoft.com
  */
-class workflowModel extends model
+class moduleModel extends model
 {
     /**
      * Get model file of a module.
@@ -191,12 +191,6 @@ class workflowModel extends model
     public function getIdField($project = null, $module = null)
     {
         $idField = 'id';
-        $fields  = $this->loadModel('project')->getTableFields("$project->dbName.$project->dbPrefix$module->module");
-        foreach($fields as $field)
-        {
-            if(stripos($field->extra, 'auto_increment') !== false) $idField = $field->field;
-        }
-
         return $idField;
     }
 
@@ -406,7 +400,7 @@ class workflowModel extends model
      * @access public
      * @return string
      */
-    public function getViewFile($project = null, $module = null, $action = null)
+    public function getViewFile($module = null, $action = null)
     {
         if($action->open == 'none') return '';
 
@@ -427,27 +421,29 @@ class workflowModel extends model
             $pageFooter = "<?php include '../../common/view/footer.html.php';?>";
         }
 
-        $copyright = isset($project->settings->copyright) ? $project->settings->copyright : '';
-        $license   = isset($project->settings->license) ? $project->settings->license : '';
-        $author    = isset($project->settings->author) ? $project->settings->author : '';
-        $email     = isset($project->settings->email) ? $project->settings->email: '';
+        /*
+        $copyright = isset($config->settings->copyright) ? $config->settings->copyright : '';
+        $license   = isset($config->settings->license) ? $config->settings->license : '';
+        $author    = isset($config->settings->author) ? $config->settings->author : '';
+        $email     = isset($config->settings->email) ? $config->settings->email: '';
         $package   = $module->module;
-        $version   = isset($project->settings->version) ? $project->settings->version : '';
-        $link      = isset($project->settings->link) ? $project->settings->link : '';
-        $idField   = $this->getIdField($project, $module);
+        $version   = isset($config->settings->version) ? $config->settings->version : '';
+        $link      = isset($config->settings->link) ? $config->settings->link : '';
+        $idField   = $this->getIdField($module);
 
         if($email) $author .= " <$email>";
+         */
 
-        $fields = $this->getActionFields($module->id, $action->id, $decodeOptions = false);
+        $fields = $this->getActionFields($module, $action->action, $decodeOptions = false);
 
         $actionCode = ($action->action == 'browse' or $action->action == 'view') ? $action->action : 'operate';
-        $result   = $this->{'get' . $actionCode . 'View'}($module->module, $action, $fields, $idField);
-        $find     = array_merge(array('%ACTION%', '%MODULE%', '%PROJECT%', '%COPYRIGHT%', '%LICENSE%', '%AUTHOR%', '%PACKAGE%', '%VERSION%', '%LINK%', '%PAGEHEADER%', '%PAGEFOOTER%', '%IDFIELD%'), $result['find']);
-        $replace  = array_merge(array($action->action, $module->module, $project->code, $copyright, $license, $author, $package, $version, $link, $pageHeader, $pageFooter, $idField), $result['replace']);
-        $viewFile = file_get_contents($this->app->getWwwRoot() . 'template' . DS . 'view' .DS ."$actionCode.html.php");
-        $viewFile = str_replace($find, $replace, $viewFile);
+        $result   = $this->{'get' . $actionCode . 'View'}($module, $action, $fields, $idField);
+        $find     = array_merge(array('action', 'module', 'project', 'copyright', 'license', 'author', 'package', 'version', 'link', 'pageheader', 'pagefooter', 'idfield'), $result['find']);
+        $replace  = array_merge(array($action->action, $module, 'project', $this->config->copyright, $this->config->license, $this->config->author, $this->config->package, $this->config->version, $this->config->link, $this->config->pageHeader, $this->config->pageFooter, $this->config->idField), $result['replace']);
 
-        return $viewFile;
+        foreach($find as $index => $variable) $views[$variable] = $replace[$index];
+
+        return $views;
     }
 
     /**
@@ -1160,37 +1156,12 @@ class workflowModel extends model
     /**
      * Get field list.
      *
-     * @param  int     $moduleID
-     * @param  string  $orderBy
      * @access public
      * @return array
      */
-    public function getFieldList($moduleID, $orderBy = 'order')
+    public function getFieldList($module)
     {
-        $fields = $this->dao->select('*')->from(TABLE_WORKFLOWFIELD)
-            ->where('module')->eq($moduleID)
-            ->orderBy($orderBy)
-            ->fetchAll('id');
-
-        foreach($fields as $field)
-        {
-            $field->sql     = '';
-            $field->sqlVars = array();
-            if($field->options == 'sql')
-            {
-                $data = $this->getSqlAndVars($field->module, $field->id);
-                if($data)
-                {
-                    $field->sql     = $data->sql;
-                    $field->sqlVars = $data->vars;
-                }
-            }
-            elseif($field->options != 'user' && $field->options != 'dept' && !is_int($field->options))
-            {
-                $field->options = json_decode($field->options, true);
-            }
-        }
-
+        include __DIR__ . DS . 'fields.php';
         return $fields;
     }
 
@@ -1684,231 +1655,16 @@ class workflowModel extends model
     /**
      * Get fields of an action.
      *
-     * @param  int    $moduleID
-     * @param  int    $actionID
+     * @param  string    $module
+     * @param  string    $action
      * @param  bool   $decodeOptions
      * @access public
      * @return void
      */
-    public function getActionFields($moduleID = 0, $actionID = 0, $decodeOptions = true)
+    public function getActionFields($moduleID = 0, $action = '', $decodeOptions = true)
     {
-        $actionFields = $this->dao->select("t1.*, t2.id as fieldID, t2.name, t2.control, t2.options, t2.default, t2.placeholder, t2.canSearch, t2.desc")
-            ->from(TABLE_WORKFLOWLAYOUT)->alias('t1')
-            ->leftJoin(TABLE_WORKFLOWFIELD)->alias('t2')->on('t1.module=t2.module and t1.field=t2.field')
-            ->where('t1.module')->eq($moduleID)
-            ->andWhere('t1.action')->eq($actionID)
-            ->orderBy('t1.order')
-            ->fetchAll('field');
-
-        foreach($actionFields as $field)
-        {
-            $field->sql     = '';
-            $field->sqlVars = array();
-            if($field->options == 'sql')
-            {
-                $data = $this->getSqlAndVars($moduleID, $field->fieldID);
-                if($data)
-                {
-                    $field->sql     = $data->sql;
-                    $field->sqlVars = $data->vars;
-                }
-            }
-            elseif($field->options != 'user' && $field->options != 'dept' && !is_int($field->options))
-            {
-                $field->options = json_decode($field->options, true);
-            }
-        }
-
-        $action         = $this->getActionById($actionID);
-        $fieldPairs     = $this->getFieldPairs($moduleID);
-        $fieldList      = $this->getFieldList($moduleID);
-        $moduleChildren = $this->getPairs($projectID = 0, $moduleID);
-
-        $fields = array();
-        if(empty($actionFields))
-        {
-            foreach($fieldList as $field)
-            {
-                if(!$field) continue;
-
-                $options = $field->options;
-                if($decodeOptions)
-                {
-                    $options = $this->getFieldOptions($field);
-                    if($field->control == 'date' || $field->control == 'datetime')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultTime + $options;
-                    }
-                    elseif($field->options == 'user')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultUser + $options;
-                    }
-                    elseif($field->options == 'dept')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultDept + $options;
-                    }
-                }
-
-                $fields[$field->field] = new stdclass();
-                $fields[$field->field]->field        = $field->field;
-                $fields[$field->field]->name         = $field->name;
-                $fields[$field->field]->control      = $field->control;
-                $fields[$field->field]->show         = '1';
-                $fields[$field->field]->width        = 'auto';
-                $fields[$field->field]->position     = '';
-                $fields[$field->field]->defaultValue = '';
-                $fields[$field->field]->rules        = '';
-                $fields[$field->field]->options      = $options;
-            }
-
-            if($action->action == 'browse')
-            {
-                $fields['actions'] = new stdclass();
-                $fields['actions']->field        = 'actions';
-                $fields['actions']->name         = $this->lang->actions;
-                $fields['actions']->control      = '';
-                $fields['actions']->show         = '1';
-                $fields['actions']->width        = '120';
-                $fields['actions']->position     = '';
-                $fields['actions']->defaultValue = '';
-                $fields['actions']->rules        = '';
-                $fields['actions']->options      = '';
-            }
-            if($action->action != 'browse')
-            {
-                $fields['file'] = new stdclass();
-                $fields['file']->field        = 'file';
-                $fields['file']->name         = $this->lang->files;
-                $fields['file']->control      = '';
-                $fields['file']->show         = '0';
-                $fields['file']->width        = 'auto';
-                $fields['file']->position     = '';
-                $fields['file']->defaultValue = '';
-                $fields['file']->rules        = '';
-                $fields['file']->options      = '';
-
-                foreach($moduleChildren as $id => $name)
-                {
-                    $fields[$id] = new stdclass();
-                    $fields[$id]->field        = $id;
-                    $fields[$id]->name         = $name;
-                    $fields[$id]->control      = '';
-                    $fields[$id]->show         = '1';
-                    $fields[$id]->width        = 'auto';
-                    $fields[$id]->position     = '';
-                    $fields[$id]->defaultValue = '';
-                    $fields[$id]->rules        = '';
-                    $fields[$id]->options      = '';
-                }
-            }
-        }
-        else
-        {
-            foreach($actionFields as $key => $field)
-            {
-                if(!$field) continue;
-
-                $options = $field->options;
-                if($decodeOptions)
-                {
-                    $options = $this->getFieldOptions($field);
-                    if($field->control == 'date' || $field->control == 'datetime')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultTime + $options;
-                    }
-                    elseif($field->options == 'user')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultUser + $options;
-                    }
-                    elseif($field->options == 'dept')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultDept + $options;
-                    }
-                }
-
-                $fields[$key] = new stdclass();
-                $fields[$key]->name         = is_numeric($key) ? zget($moduleChildren, $key) : zget($fieldPairs, $key);
-                $fields[$key]->field        = $field->field;
-                $fields[$key]->control      = $field->control;
-                $fields[$key]->show         = $action == 'browse' && !$field->canSearch ? '0' : '1';
-                $fields[$key]->width        = $field->width ? $field->width : 'auto';
-                $fields[$key]->position     = $field->position;
-                $fields[$key]->defaultValue = empty($field->defaultValue) ? $field->default : $field->defaultValue;
-                $fields[$key]->rules        = $field->rules;
-                $fields[$key]->options      = $options;
-
-                if($key == 'file')    $fields[$key]->name = $this->lang->files;
-                if($key == 'actions') $fields[$key]->name = $this->lang->actions;
-            }
-
-            foreach($fieldList as $id => $field)
-            {
-                if(!$field or isset($actionFields[$field->field])) continue;
-
-                if($decodeOptions)
-                {
-                    $options = $this->getFieldOptions($field);
-                    if($field->control == 'date' || $field->control == 'datetime')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultTime + $options;
-                    }
-                    elseif($field->options == 'user')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultUser + $options;
-                    }
-                    elseif($field->options == 'dept')
-                    {
-                        $options = $this->lang->workflowaction->layout->defaultDept + $options;
-                    }
-                }
-
-                $fields[$field->field] = new stdclass();
-                $fields[$field->field]->field        = $field->field;
-                $fields[$field->field]->name         = $field->name;
-                $fields[$field->field]->control      = $field->control;
-                $fields[$field->field]->show         = '0';
-                $fields[$field->field]->width        = 'auto';
-                $fields[$field->field]->position     = '';
-                $fields[$field->field]->defaultValue = '';
-                $fields[$field->field]->rules        = '';
-                $fields[$field->field]->options      = $options;
-            }
-
-            if(!isset($fields['file']) and $action->action != 'browse')
-            {
-                $fields['file'] = new stdclass();
-                $fields['file']->field        = 'file';
-                $fields['file']->name         = $this->lang->files;
-                $fields['file']->control      = '';
-                $fields['file']->show         = '0';
-                $fields['file']->width        = 'auto';
-                $fields['file']->position     = '';
-                $fields['file']->defaultValue = '';
-                $fields['file']->rules        = '';
-                $fields['file']->options      = '';
-            }
-
-            if($action->action != 'browse')
-            {
-                foreach($moduleChildren as $id => $moduleChild)
-                {
-                    if(!$id or isset($actionFields[$id])) continue;
-
-                    $fields[$id] = new stdclass();
-                    $fields[$id]->field        = $id;
-                    $fields[$id]->name         = $moduleChild;
-                    $fields[$id]->control      = '';
-                    $fields[$id]->show         = '0';
-                    $fields[$id]->width        = 'auto';
-                    $fields[$id]->position     = '';
-                    $fields[$id]->defaultValue = '';
-                    $fields[$id]->rules        = '';
-                    $fields[$id]->options      = array();
-                }
-            }
-        }
-
-        return $fields;
+		include __DIR__ . DS . 'fields.php';
+		return $actionFields[$action];
     }
 
     /**

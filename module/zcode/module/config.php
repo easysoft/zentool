@@ -5,7 +5,7 @@ $config->module->langs = array('zh-cn', 'en');
 
 $config->author    = 'author';
 $config->copyright = 'copyright';
-$config->idfield   = 'id';
+$config->idField   = 'id';
 $config->license   = 'license';
 $config->link      = 'link';
 $config->version   = 'version';
