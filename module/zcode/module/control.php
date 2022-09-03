@@ -96,6 +96,14 @@ class module extends control
         return true;
     }
 
+    public function initViewView()
+    {
+        if(file_exists('fields.php')) include 'fields.php';
+        foreach($this->config->fields as $field)
+        {
+        }
+    }
+
     public function initJs()
     {
         mkdir($this->moduleRoot . 'js');
