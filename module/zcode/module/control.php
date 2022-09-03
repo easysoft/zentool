@@ -7,12 +7,14 @@ class module extends control
     public function init($params)
     {
         $this->moduleName = $params['moduleName'];
-        $this->moduleRoot = $this->config->runDir . DS . $moduleName . DS;
+        $this->moduleRoot = $this->config->runDir . DS . $this->moduleName . DS;
 
-        mkdir($moduleRoot);
+        mkdir($this->moduleRoot);
 
-        $this->initConfig();
         $this->initControl();
+
+        die();
+        $this->initConfig();
         $this->initModel();
         $this->initLang();
         $this->initCss();
@@ -22,15 +24,29 @@ class module extends control
         echo 'inited';
     }
 
+    public function initControl()
+    {
+        $this->view->module    = $this->moduleName;
+        $this->view->author    = $this->config->author;
+        $this->view->copyright = $this->config->copyright;
+        $this->view->idfield   = $this->config->idfield;
+        $this->view->license   = $this->config->license;
+        $this->view->link      = $this->config->link;
+        $this->view->package   = $this->view->module;
+        $this->view->version   = $this->config->version;
+        $this->view->viewvars  = $this->config->viewvars;
+
+        $controlFile = $this->moduleRoot . 'control.php';
+
+        $controlCode = $this->parse('module', 'control.code');
+        return $this->zcode->create($controlFile, $controlCode);
+    }
+
     public function initConfig()
     {
         touch($this->moduleRoot . 'config.php');
     }
 
-    public function initControl()
-    {
-        touch($this->moduleRoot . 'control.php');
-    }
 
     public function initModel()
     {
