@@ -1640,6 +1640,10 @@ class router
             {
                 $params[$paramKey] = $val;
             }
+            else
+            {
+                $params[$key - 1] = $val;
+            }
         }
 
         return array('params' => $params);
