@@ -31,7 +31,7 @@ class apicheckModel extends model
 
         $this->ztPath = $path;
         $openRes = $this->checkOpen();
-        return true;
+        return $openRes;
     }
 
     /**
@@ -54,17 +54,18 @@ class apicheckModel extends model
     {
         $zfile    = $this->app->loadClass('zfile');
         $apiFiles = $zfile->readDir($this->ztPath . DS . 'api' . DS . 'v1' . DS . 'entries' . DS);
+        $results  = array();
         foreach ($apiFiles as $key => $filePath) {
             $fileContent = file($filePath);
             $controls    = array();
             foreach ($fileContent as $line => $code) {
-                preg_match('/\$control\s=\s\$this->loadController\([\'"]([a-z]+)[\'"],\s[\'"]([a-zA-Z0-9]+)[\'"]\);/', $code, $controlNames);
+                preg_match('/\$control\s+=\s\$this->loadController\([\'"]([a-z]+)[\'"],\s[\'"]([a-zA-Z0-9]+)[\'"]\);/', $code, $controlNames);
                 if(!empty($controlNames))
                 {
                     $controls[] = $controlNames[1];
                     continue;
                 }
-                if(!preg_match('/\$control->([a-z0-9]+)\((\$[a-z0-9]+,\s|\$this->param\([\'\"][a-z0-9]+[\'\"],\s*[\'\"]?[a-z0-9-_\s]*[\'\"]?\)[,]?\s*|[\'\"]?[0-9a-z]+[\'\"]?,\s)+\)/i', $code)) continue;
+                if(!preg_match('/\$control->([a-z0-9]+)\((\$[a-z0-9]+,\s|\$this->param\([\'\"][a-z0-9]+[\'\"],\s*[\'\"]?[a-z0-9-_\s]*[\'\"]?\)[,]?\s*|[\'\"]?[0-9a-z]+[\'\"]?,\s)+\)/i', $code, $controlMethod)) continue;
 
                 $res = preg_match_all('/(\$[a-z0-9]+[,\)])|([0-9]+[,\)])|((?<!param\()[\'\"][a-z0-9-_]*[\'\"][,\)])|((?<!this)\-\>[a-z0-9]+\()/i', $code, $execControls, PREG_PATTERN_ORDER);
                 if(!empty($execControls[0]))
@@ -74,14 +75,23 @@ class apicheckModel extends model
                     $methodName = trim(trim($params[0], '->'), '(');
 
                     $module = $controls[count($controls) - 1];
-                    if(!$this->checkParamLen($module, $methodName, $pramsLen))
+                    $checkRes = $this->checkParamLen($module, $methodName, $pramsLen);
+                    if(!is_bool($checkRes))
                     {
-                        $line++;
-                        helper::output("文件 $filePath 第 {$line} 行 $module -> $methodName 参数数量不正确！", 'err');
+                        $results[] =  array(
+                            'filePath'    => $filePath,
+                            'line'        => ++$line,
+                            'moduleName'  => $module,
+                            'methodName'  => $methodName,
+                            'apiCode'     => $controlMethod[0],
+                            'controlCode' => $checkRes['lineCode'],
+                            'controlFile' => $checkRes['controlFile'],
+                        );
                     }
                 }
             }
         }
+        return empty($results) ? true : $results;
     }
 
     /**
@@ -91,7 +101,7 @@ class apicheckModel extends model
      * @param  string $method
      * @param  int    $length
      * @access public
-     * @return void
+     * @return string|bool
      */
     public function checkParamLen($module, $method, $length)
     {
@@ -107,7 +117,7 @@ class apicheckModel extends model
         $paramLen = substr_count($matches[0], '$');
         if($paramLen != $length)
         {
-            return false;
+            return array('lineCode' => $matches[0], 'controlFile' => $realFile);
         }
         else
         {
