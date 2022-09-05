@@ -1625,6 +1625,7 @@ class router
         foreach($this->args as $key => $val)
         {
             if($key == 0) continue;
+            if(!isset($this->args[$key])) continue;
             if($key < 2 and substr($val, 0, 1) != '-') continue;
 
             if(isset($this->config->arguments[$moduleName . $val]) or isset($this->config->arguments[$val]))
@@ -1639,6 +1640,11 @@ class router
             elseif($paramKey)
             {
                 $params[$paramKey] = $val;
+            }
+            elseif(substr($val, 0, 1) == '-' and substr($this->args[$key + 1], 0, 1) != '-')
+            {
+                $params[substr($val, 1)] = $this->args[$key + 1];
+                unset($this->args[$key + 1]);
             }
             else
             {
