@@ -1,8 +1,14 @@
+#!/usr/bin/env php
 <?php
-$pmsRoot = '/home/zhouxin/sites/zentaopms/';
-$extRoot    = '';
+if(count($argv) < 3) die('Usage: ' . __FILE__ . " control|model bug create,delete [extensionName]\n");
 
-$controlTemplate = <<<EOT
+define('DS', DIRECTORY_SEPARATOR);
+
+$config = new stdclass;
+$config->pmsRoot = '/home/z/sites/zentao/dev/';
+$config->extRoot = __DIR__ . DS;
+
+$config->controlTemplate = <<<EOT
 <?php
 helper::importControl('%s');
 class %s extends %s
@@ -10,7 +16,7 @@ class %s extends %s
 %s
 }
 EOT;
-$modelTemplate = <<<EOT
+$config->modelTemplate = <<<EOT
 <?php
 class %s extends %s
 {
@@ -19,6 +25,7 @@ class %s extends %s
 EOT;
 
 class control{}
+class model{}
 
 /**
  * Create a file with content.
@@ -27,7 +34,7 @@ class control{}
  * @param  string    $content
  * @return int|false
  */
-function create($file, $content)
+function createFile($file, $content)
 {
     if(!is_dir(dirname($file))) mkdir(dirname($file), 0755, true);
     return file_put_contents($file, $content);
@@ -56,64 +63,81 @@ function getFuncPosition($file, $class, $function)
 /**
  * Init.
  *
- * @param  int    $module
- * @param  int    $type
- * @param  int    $functionList
- * @param  int    $extClass
+ * @param  string   $module
+ * @param  string   $type
+ * @param  string   $functionList
+ * @param  string   $extClass
  * @access public
  * @return mixed
  */
-function init($module, $type, $functionList, $extClass)
+function init()
 {
-    global $pmsRoot, $extRoot, $controlTemplate, $modelTemplate;
+    global $config;
+    if(!is_dir(realpath($config->pmsRoot))) die("Please configure zentaopms root first\n");
 
-    if(empty($pmsRoot)) echo 'Please configure zentaopms root first';
-    if(empty($extRoot)) $extRoot = __DIR__;
+    $type         = $GLOBALS['argv'][1];
+    $module       = $GLOBALS['argv'][2];
+    $functionList = $GLOBALS['argv'][3];
 
-    if($type == 'control')
+    if($type == 'model') $extName = $GLOBALS['argv'][4];
+
+    if($type == 'control') return initControl($module, $functionList);
+    if($type == 'model') return initModel($module, $functionList, $extName);
+}
+
+function initControl($module, $functionList)
+{
+    global $config;
+
+    $functions = new stdclass;
+    $rawFile   = $config->pmsRoot . 'module/' . $module . '/control.php';
+
+    $functionList = explode(",", $functionList);
+    foreach($functionList as $function)
     {
-        $rawFile = $pmsRoot . 'module/' . $module . '/control.php';
-        $functionList = explode(",", $functionList);
-        $functions = new stdclass;
-        foreach($functionList as $function)
-        {
-            $functions->$function = getFuncPosition($rawFile, $module, $function);
-        }
-
-        foreach($functions as $functionName => $function)
-        {
-            $functionCode = `sed -n "{$function->startLine},{$function->endLine}p" $rawFile`;
-            $extClass     = 'my' . ucfirst($module);
-            $extCode      = sprintf($controlTemplate, $module, $extClass, $module, $functionCode);
-            $extFile      = $extRoot . "control/" . $functionName . ".php";
-            create($extFile, $extCode);
-        }
-
+        $functions->$function = getFuncPosition($rawFile, $module, $function);
     }
 
-    if($type == 'model')
+    foreach($functions as $functionName => $function)
     {
-        $rawFile = $pmsRoot . 'module/' . $module . '/model.php';
-        $functionList = explode(",", $functionList);
+        $functionCode = `sed -n "{$function->startLine},{$function->endLine}p" $rawFile`;
+        $extClass     = 'my' . ucfirst($module);
+        $extCode      = sprintf($config->controlTemplate, $module, $extClass, $module, $functionCode);
+        $extFile      = $config->extRoot . "$module/ext/control/" . $functionName . ".php";
 
-        $functionCode = '';
-        foreach($functionList as $function)
-        {
-            $position = getFuncPosition($rawFile, $module . 'Model', $function);
-            $functionCode .= `sed -n "{$position->startLine},{$position->endLine}p" $rawFile`;
-        }
-
-        $extendModel  = $module . 'Model';
-        $extCode      = sprintf($modelTemplate, $extClass, $extendModel, $functionCode);
-        $extFile      = $extRoot . "model/model.php";
-        create($extFile, $extCode);
+        createFile($extFile, $extCode);
     }
 }
 
-$module        = $argv[1];
-$type          = $argv[2];
-$functionList  = $argv[3];
-if($type == 'model') $extClass = $argv[4];
-$extClass = ($type == 'model' and !empty($argv[4])) ? $argc[4] : '';
+function initModel($module, $functionList, $extName)
+{
+    global $config;
 
-init($module, $type, $functionList, $extClass);
+    $functionCode = '';
+    $rawFile      = $config->pmsRoot . 'module/' . $module . '/model.php';
+
+    $functionList = explode(",", $functionList);
+    $modelFunctions = new stdClass();
+    $modelCodes = '<?php' . "\n";
+    foreach($functionList as $function)
+    {
+        $position = getFuncPosition($rawFile, $module . 'Model', $function);
+        $functionCode .= `sed -n "{$position->startLine},{$position->endLine}p" $rawFile`;
+
+        $modelFunctions->function = trim(`sed -n "{$position->startLine}p" $rawFile`);
+        $modelCodes .= $modelFunctions->function;
+        $modelCodes .= "\n{\n";
+        $modelCodes .= "    return \$this->loadExtension('" . $extName . "')->" . preg_replace("/^.*function\s+$function/i", "$function", $modelFunctions->function) . ";\n";
+        $modelCodes .= "}\n\n";
+    }
+
+    $extCode = sprintf($config->modelTemplate, $extName, $module . 'Model', $functionCode);
+    $extClassFile = $config->extRoot . "$module/ext/model/class/$extName.class.php";
+    createFile($extClassFile, $extCode);
+
+    $extModelFile = $config->extRoot . "$module/ext/model/$extName.php";
+    createFile($extModelFile, $modelCodes);
+
+}
+
+init();
