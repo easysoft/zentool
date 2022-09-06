@@ -73,11 +73,6 @@ class mysqlModel extends model
         return true;
     }
 
-    public function desc($table)
-    {
-        return $fields;
-    }
-
     public function parseLang($fields)
     {
         return $fields;
