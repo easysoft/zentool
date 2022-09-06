@@ -30,6 +30,34 @@ class mysqlModel extends model
     }
 
     /**
+     * Generate config according to table.
+     *
+     * @param  string  $table
+     * @access public
+     * @return string
+     */
+    public function parseConfigByTable($table)
+    {
+        $fields = $this->dbh->query($table)->fetchAll();
+        $config = '';
+        foreach($fields as $field)
+        {
+            $control = 'input';
+            if(strpos($field->Type, 'enum') !== false) $control = 'select';
+            if(strpos($field->Type, 'date') !== false) $control = 'date';
+            if(strpos($field->Type, 'text') !== false) $control = 'text';
+
+            $config .= "\$config->fields['$field->Field']['name']    = '$field->Field';\n";
+            $config .= "\$config->fields['$field->Field']['label']   = '$field->Field';\n";
+            $config .= "\$config->fields['$field->Field']['control'] = '$control';\n";
+            $config .= "\$config->fields['$field->Field']['options'] = '';\n";
+            $config .= "\$config->fields['$field->Field']['default'] = '';\n\n";
+        }
+
+        return $config;
+    }
+
+    /**
      * Check user input.
      *
      * @param  string $field

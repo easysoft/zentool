@@ -45,32 +45,4 @@ class mysql extends control
 
         $this->output($this->lang->set->saveSuccess);
     }
-
-    public function init($table)
-    {
-        $this->initFields($table);
-    }
-
-    public function initFields($table)
-    {
-        $fields = $this->dbh->query("desc zt_bug")->fetchAll();
-        $config = '';
-        foreach($fields as $field)
-        {
-            $control = 'input';
-            if(strpos($field->Type, 'enum') !== false) $control = 'select';
-            if(strpos($field->Type, 'date') !== false) $control = 'date';
-            if(strpos($field->Type, 'text') !== false) $control = 'text';
-
-            $config .= "\$config->fields['$field->Field']['name']    = '$field->Field';\n";
-            $config .= "\$config->fields['$field->Field']['label']   = '$field->Field';\n";
-            $config .= "\$config->fields['$field->Field']['control'] = '$control';\n";
-            $config .= "\$config->fields['$field->Field']['options'] = '';\n";
-            $config .= "\$config->fields['$field->Field']['default'] = '';\n\n";
-        }
-
-        return $config;
-        //file_put_contents('./fields.php', $config, FILE_APPEND);
-    }
 }
-
