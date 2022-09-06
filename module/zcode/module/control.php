@@ -3,11 +3,12 @@ class module extends control
 {
     public $moduleName;
     public $moduleRoot;
+    public $table;
 
-    public function init($params)
+    public function init($moduleName, $table)
     {
-        $this->moduleName = $params['moduleName'];
-        $this->table      = "zt_" . $this->moduleName;
+        $this->moduleName = $moduleName;
+        $this->table      = $table;
         $this->moduleRoot = $this->config->runDir . DS . $this->moduleName . DS;
 
         mkdir($this->moduleRoot);

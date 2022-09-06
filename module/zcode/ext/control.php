@@ -62,7 +62,6 @@ class ext extends control
             $extFile      = $this->config->ext->extRoot . "model/model.php";
             $this->zcode->create($extFile, $extCode);
         }
-
     }
 }
 
