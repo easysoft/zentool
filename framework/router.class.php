@@ -1604,7 +1604,28 @@ class router
             $defaultParams[$name] = $default;
         }
 
-        $this->params = $this->formatParams($moduleName, $methodName);
+        if(count($defaultParams) == 1 and $defaultParams['params'] == '_NOT_SET')
+        {
+            $this->params = $this->formatParams($moduleName, $methodName);
+        }
+        else
+        {
+            $index  = 0;
+            $params = array();
+            foreach($defaultParams as $param => $value)
+            {
+                if(isset($this->args[$index + 3]))
+                {
+                    $params[$param] = $this->args[$index + 3];
+                }
+                else
+                {
+                    $params[$param] = $value;
+                }
+                $index++;
+            }
+            $this->params = $params;
+        }
 
         /* 调用该方法   Call the method. */
         call_user_func_array(array($module, $methodName), $this->params);
