@@ -13,13 +13,11 @@ class module extends control
 
         mkdir($this->moduleRoot);
 
-        $this->initView(); die();
-
+        $this->initConfig();
+        $this->initView();
         $this->initControl();
         $this->initModel();
         $this->initLang();
-
-        $this->initConfig();
         $this->initCss();
         $this->initJs();
 
@@ -46,7 +44,10 @@ class module extends control
 
     public function initConfig()
     {
-        touch($this->moduleRoot . 'config.php');
+        $homeDir = dirname($this->config->userConfigFile, 2);
+        $configDir = $homeDir . "/.zconfig/.project/{$this->config->project}/{$this->moduleName}.php";
+        $configFields = $this->loadModel('mysql')->parseConfigByTable($this->table);
+        return $this->zcode->create($configDir, $configFields);
     }
 
 

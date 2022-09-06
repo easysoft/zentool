@@ -11,8 +11,8 @@ class zcode
      */
     public function create($file, $content)
     {
-        if(!is_dir(dirname($file))) mkdir(dirname($file), 0755, true);
-        return file_put_contents($file, $content);
+        if(!is_dir(dirname($file))) var_dump(mkdir(dirname($file), 0777, true));
+        return !file_put_contents($file, $content) ? false : $file;
     }
 
     /**

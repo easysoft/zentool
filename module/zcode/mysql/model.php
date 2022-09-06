@@ -38,7 +38,7 @@ class mysqlModel extends model
      */
     public function parseConfigByTable($table)
     {
-        $fields = $this->dbh->query($table)->fetchAll();
+        $fields = $this->dbh->query("desc $table")->fetchAll();
         $config = '';
         foreach($fields as $field)
         {
