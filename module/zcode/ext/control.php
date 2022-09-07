@@ -16,7 +16,7 @@ class ext extends control
         $module        = $params[2];
         $type          = $params[3];
         $functionList  = $params[4];
-        if($type == 'model') $extClass = $params[5];
+        if($type == 'model') $extName = $params[5];
 
         $this->moduleRoot = $this->config->runDir . DS . $this->moduleName . DS;
 
@@ -47,20 +47,30 @@ class ext extends control
 
         if($type == 'model')
         {
-            $rawFile = $this->config->ext->sourceRoot . 'module' . DS . $module . DS . 'model.php';
-            $functionList = explode(",", $functionList);
-
             $functionCode = '';
+            $rawFile = $this->config->ext->sourceRoot . 'module' . DS . $module . DS . 'model.php';
+
+            $functionList = explode(",", $functionList);
+            $modelFunctions = new stdClass();
+            $modelCodes = '<?php' . "\n";
             foreach($functionList as $function)
             {
-                $position = $this->zcode->getFuncPosition($rawFile, $module . 'Model', $function);
+                $position = getFuncPosition($rawFile, $module . 'Model', $function);
                 $functionCode .= `sed -n "{$position->startLine},{$position->endLine}p" $rawFile`;
+
+                $modelFunctions->function = trim(`sed -n "{$position->startLine}p" $rawFile`);
+                $modelCodes .= $modelFunctions->function;
+                $modelCodes .= "\n{\n";
+                $modelCodes .= "    return \$this->loadExtension('" . $extName . "')->" . preg_replace("/^.*function\s+$function/i", "$function", $modelFunctions->function) . ";\n";
+                $modelCodes .= "}\n\n";
             }
 
-            $extendModel  = $module . 'Model';
-            $extCode      = sprintf($this->config->ext->template->model, $extClass, $extendModel, $functionCode);
-            $extFile      = $this->config->ext->extRoot . "model/model.php";
-            $this->zcode->create($extFile, $extCode);
+            $extCode      = sprintf($this->config->ext->template->model, $extName, $module . 'Model', $functionCode);
+            $extClassFile = $this->config->ext->extRoot . "$module/ext/model/class/$extName.class.php";
+            createFile($extClassFile, $extCode);
+
+            $extModelFile = $this->config->ext->extRoot . "$module/ext/model/$extName.php";
+            createFile($extModelFile, $modelCodes);
         }
     }
 }

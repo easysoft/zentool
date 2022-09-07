@@ -5,6 +5,7 @@ $config->ext->paramKey['init-f'] = 'functionList';
 
 $config->ext = new stdclass;
 $config->ext->sourceRoot = '/home/zhouxin/sites/zentaopms/';
+$config->ext->extRoot = __DIR__ . DS;
 
 $config->ext->template = new stdclass;
 $config->ext->template->control = <<<EOT
