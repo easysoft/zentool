@@ -642,6 +642,35 @@ class helper
 
         return fwrite(STDERR, chr(27).'[1;31m' . $message . chr(27).'[0m');
     }
+
+    /**
+     * Get user home.
+     *
+     * @static
+     * @access public
+     * @return string
+     */
+    public static function getUserHome()
+    {
+        $OS = helper::getOS();
+        if(strpos($OS, 'windows') === false) return getenv('HOME') . DS;
+
+        $userHome = '';
+        if(isset($_SERVER['HOMEDRIVE']) and isset($_SERVER['HOMEPATH']))
+        {
+            $userHome = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . DS;
+        }
+        else
+        {
+            if(isset($_SERVER['TMP'])  and !empty($_SERVER['TMP']))  $userHome = realpath($_SERVER['TMP']);
+            if(isset($_SERVER['TEMP']) and !empty($_SERVER['TEMP'])) $userHome = realpath($_SERVER['TEMP']);
+            if(empty($userHome)) $userHome = dirname(__FILE__);
+
+            if(substr($userHome, -1, 1) != DS) $userHome .= DS;
+        }
+
+        return $userHome;
+    }
 }
 
 //------------------------------- 常用函数。Some tool functions.-------------------------------//
@@ -699,9 +728,7 @@ function getTime()
  */
 function a($var)
 {
-    echo "<xmp class='a-left'>";
-    print_r($var);
-    echo "</xmp>";
+    var_export($var);
 }
 
 /**

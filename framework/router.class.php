@@ -325,14 +325,18 @@ class router
         $this->setFrameRoot();
         $this->setCoreLibRoot();
 
+        $this->setUserConfigRoot();
         $this->parseConfig('main');
+
         $appName    = isset($this->config->z_app) ? $this->config->z_app : 'zentao';
         $clientLang = isset($this->config->z_clientLang) ? $this->config->z_clientLang : '';
 
         $this->setConfigRoot();
         $this->loadMainConfig();
         $this->setAppName($appName);
+        $this->setOS();
         $this->setAppRoot($appRoot);
+        $this->setUserConfigFile($appName);
         $this->setTmpRoot();
         $this->setCacheRoot();
         $this->setLogRoot();
@@ -340,7 +344,6 @@ class router
         $this->setWwwRoot();
         $this->setDataRoot();
         $this->loadAppConfig();
-        $this->setOS();
         $this->parseConfig();
         $this->setRunDir();
         $this->setClientLang($clientLang);
@@ -409,37 +412,16 @@ class router
      */
     public function parseConfig($name = '')
     {
-        if($name == 'main')
-        {
-            $this->setOS();
-        }
-        $userHome = '';
-        if($this->config->os == 'windows')
-        {
-            if(isset($_SERVER['HOMEDRIVE']) and isset($_SERVER['HOMEPATH']))
-            {
-                $userHome = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . DS;
-            }
-            else
-            {
-                if(isset($_SERVER['TMP'])  and !empty($_SERVER['TMP']))  $userHome = realpath($_SERVER['TMP']);
-                if(isset($_SERVER['TEMP']) and !empty($_SERVER['TEMP'])) $userHome = realpath($_SERVER['TEMP']);
-                if(empty($userHome)) $userHome = dirname(__FILE__);
-
-                if(substr($userHome, -1, 1) != DS) $userHome .= DS;
-                if(!is_writable($userHome)) $this->triggerError("Unable write tmp!");
-            }
-        }
-        else
-        {
-            $userHome = getenv('HOME') . DS;
-        }
-
         if(empty($name)) $name = $this->appName;
-        $this->config->userConfigRoot = $userHome . '.zconfig' . DS;
-        $configFile = $this->config->userConfigRoot . $name;
-        $this->config->userConfigFile = $configFile;
 
+        if(!is_object($this->config))
+        {
+            global $config;
+            if(!is_object($config)) $config = new config();
+            $this->config = $config;
+        }
+
+        $configFile = $this->userConfigRoot . $name;
         if(file_exists($configFile))
         {
             $userConfig = file($configFile);
@@ -454,20 +436,21 @@ class router
             {
                 if(strpos($val, '#') === false && strpos($val, '=') !== false)
                 {
-                    $config = explode('=', $val);
-                    if($config[0] && $config[1])
+                    list($key, $value) = explode('=', $val);
+                    if($key && $value)
                     {
-                        $configNames = explode('->', $config[0]);
-                        $this->setMultiLevelConfig($configNames, $config[1]);
+                        if(strpos($key, '->') !== false)
+                        {
+                            $configNames = explode('->', $key);
+                            $this->setMultiLevelConfig($configNames, $value);
+                        }
+                        else
+                        {
+                            $this->config->$key = $value;
+                        }
                     }
                 }
             }
-        }
-        else
-        {
-            if(!file_exists($userHome . '.zconfig/')) @mkdir($userHome . '.zconfig');
-
-            touch($configFile);
         }
     }
 
@@ -551,6 +534,37 @@ class router
 
             if($count > 1) $this->appName = $appName;
         }
+    }
+
+    /**
+     * Set user config root.
+     *
+     * @access public
+     * @return mixed
+     */
+    public function setUserConfigRoot()
+    {
+        $this->userConfigRoot = helper::getUserHome() . '.zconfig' . DS;
+
+        if(!file_exists($this->userConfigRoot)) @mkdir($this->userConfigRoot);
+        return true;
+    }
+
+    /**
+     * Set user Config File.
+     *
+     * @access public
+     * @return mixed
+     */
+    public function setUserConfigFile()
+    {
+        $this->mainUserConfigFile = $this->userConfigRoot . 'main';
+        $this->userConfigFile     = $this->userConfigRoot . $this->appName;
+
+        if(!file_exists($this->userConfigFile)) touch($this->userConfigFile);
+        if(!file_exists($this->mainUserConfigFile)) touch($this->mainUserConfigFile);
+
+        return true;
     }
 
     /**
@@ -767,6 +781,56 @@ class router
         else
         {
             $this->clientLang = $this->config->default->lang;
+        }
+
+        return true;
+    }
+
+    /**
+     * 设置用户配置文件。
+     * Set user config file.
+     *
+     * @param  sttring  $name
+     * @param  string   $value
+     * @access public
+     * @return bool
+     */
+    public function setUserConfig($name, $value)
+    {
+        if(!is_writable($this->userConfigFile)) return false;
+
+        $configContent = file_get_contents($this->userConfigFile);
+
+        if(isset($this->config->$name))
+        {
+            $configContent = str_replace("$name = {$this->config->$name}", "$name = $value", $configContent);
+        }
+        else
+        {
+            $configContent .= "$name = $value" . PHP_EOL;
+        }
+
+        $configFile = @fopen($this->userConfigFile, "w");
+        fwrite($configFile, $configContent);
+        fclose($configFile);
+
+        $this->parseConfig();
+        return true;
+    }
+
+    /**
+     * 设置用户配置文件。
+     * Set user config file.
+     *
+     * @param  array  $configs
+     * @access public
+     * @return bool
+     */
+    public function setUserConfigs($configs = array())
+    {
+        foreach($configs as $name => $value)
+        {
+            if(!$this->setUserConfig($name, $value)) return false;
         }
 
         return true;
@@ -1021,7 +1085,7 @@ class router
         if($argc == 2 and isset($this->config->apps[$argv[1]]) and $this->setMainConfig(array('z_app' => $argv[1]))) die(helper::output($lang->appChanged));
 
         /* Set client lang. */
-        if($argv[1] == 'set')
+        if($argv[1] == 'set' and !isset($this->config->clientLang))
         {
             helper::output($lang->setLangTip);
             foreach($this->config->langs as $key => $language) helper::output(str_pad($key . ': ', 7) . $language);
@@ -1032,6 +1096,7 @@ class router
                 if(isset($this->config->langs[$input]) and $this->setMainConfig(array('z_clientLang' => $input)))
                 {
                     $this->clientLang = $input;
+                    $this->setUserConfig('clientLang', $input);
                     break;
                 }
                 helper::output($lang->langNotReal, 'err');
@@ -1050,7 +1115,7 @@ class router
     public function setMainConfig($configs = array())
     {
         $this->parseConfig('main');
-        $mainConfigFile = dirname($this->config->userConfigFile) . DS . 'main';
+        $mainConfigFile = $this->userConfigRoot . 'main';
         if(!is_writable($mainConfigFile)) return false;
 
         $configContent = file_get_contents($mainConfigFile);
@@ -1613,11 +1678,13 @@ class router
         {
             $index  = 0;
             $params = array();
+            $methodParamPos = 3;
+            if($methodName == $this->config->default->method and ($this->args[2] != $this->config->default->method)) $methodParamPos = 2;
             foreach($defaultParams as $param => $value)
             {
-                if(isset($this->args[$index + 3]))
+                if(isset($this->args[$index + $methodParamPos]))
                 {
-                    $params[$param] = $this->args[$index + 3];
+                    $params[$param] = $this->args[$index + $methodParamPos];
                 }
                 else
                 {
