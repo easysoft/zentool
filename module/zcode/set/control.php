@@ -18,9 +18,16 @@ class set extends control
      * @access public
      * @return void
      */
-    public function entry($params)
+    public function entry($item = '', $value = '')
     {
+        $this->fixBasicConfig();
         $userSet = array();
+        if(!empty($item))
+        {
+            $userSet = array($item => $value);
+            return $this->setUserConfigs($userSet);
+        }
+
         $this->output($this->lang->set->inputTips->name);
         while(true)
         {
@@ -47,5 +54,24 @@ class set extends control
         if(!$this->setUserConfigs($userSet)) return fwrite(STDOUT, $this->lang->set->noWriteAccess);
 
         $this->output($this->lang->set->saveSuccess);
+    }
+
+    /**
+     * Fix basic config
+     *
+     * @access public
+     * @return mixed
+     */
+    public function fixBasicConfig()
+    {
+        $basicItems  = array('project', 'module', 'author', 'email');
+        $basicConfig = array();
+
+        foreach($basicItems as $item)
+        {
+            if(!isset($this->config->$item))
+            $basicConfig[$item] = $this->readInput('Please input ' . $item . ' : ');
+        }
+        $this->setUserConfigs($basicConfig);
     }
 }
