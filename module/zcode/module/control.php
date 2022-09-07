@@ -38,7 +38,7 @@ class module extends control
 
         $controlFile = $this->moduleRoot . 'control.php';
 
-        $controlCode = $this->parse('module', 'control.code');
+        $controlCode = $this->parse('control');
         return $this->zcode->create($controlFile, $controlCode);
     }
 
@@ -77,7 +77,7 @@ class module extends control
 
         $modelFile = $this->moduleRoot . 'model.php';
 
-        $modelCode = $this->parse('module', 'model.code');
+        $modelCode = $this->parse('model');
         return $this->zcode->create($modelFile, $modelCode);
     }
 
@@ -119,7 +119,7 @@ class module extends control
         $action->open = '';
         $views = $this->module->getViewFile($this->moduleName, $action);
         foreach($views as $item => $value) $this->view->$item = $value;
-        $viewCode = $this->parse('module', 'view.view');
+        $viewCode = $this->parse('view', 'view');
         $this->zcode->create($this->moduleRoot . "view/view.html.php", $viewCode);
     }
 

@@ -564,31 +564,17 @@ class control
     /**
      * Parse template file.
      *
-     * @param  string    $moduleName
      * @param  string    $template
+     * @param  string    $type
      * @access public
      * @return string
      */
-    public function parse($moduleName, $template)
+    public function parse($template, $type = '')
     {
-        /**
-         * 设置视图文件。(PHP7有一个bug，不能直接$viewFile = $this->setViewFile())。
-         * Set viewFile. (Can't assign $viewFile = $this->setViewFile() directly because one php7's bug.)
-         */
-        $viewFile = $this->app->getModuleRoot($this->app->appName) . "$moduleName/view/$template.php";
+        $viewFile = $this->config->userConfigRoot . DS . "/template/{$this->config->project}/{$type}/$template.tpl";
 
-        /**
-         * 切换到视图文件所在的目录，以保证视图文件里面的include语句能够正常运行。
-         * Change the dir to the view file to keep the relative paths work.
-         */
-        $currentPWD = getcwd();
-        chdir(dirname($viewFile));
-
-        /**
-         * 使用extract安定ob方法渲染$viewFile里面的代码。
-         * Use extract and ob functions to eval the codes in $viewFile.
-         */
         extract((array)$this->view);
+
         $output = file_get_contents($viewFile);
         foreach($this->view as $code => $value)
         {
