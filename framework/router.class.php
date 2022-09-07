@@ -436,7 +436,8 @@ class router
         }
 
         if(empty($name)) $name = $this->appName;
-        $configFile = $userHome . '.zconfig/' . $name;
+        $this->config->userConfigRoot = $userHome . '.zconfig' . DS;
+        $configFile = $this->config->userConfigRoot . $name;
         $this->config->userConfigFile = $configFile;
 
         if(file_exists($configFile))
