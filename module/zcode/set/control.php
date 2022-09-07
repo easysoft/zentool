@@ -21,12 +21,7 @@ class set extends control
     public function entry($item = '', $value = '')
     {
         $this->fixBasicConfig();
-        $userSet = array();
-        if(!empty($item))
-        {
-            $userSet = array($item => $value);
-            return $this->setUserConfigs($userSet);
-        }
+        if(!empty($item)) return $this->app->setUserConfig($item, $value);
 
         $this->output($this->lang->set->inputTips->name);
         while(true)
