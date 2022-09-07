@@ -40,7 +40,7 @@ class mysqlModel extends model
     {
         $fields = $this->dbh->query("desc $table")->fetchAll();
 
-        $config = '';
+        $config = "<?php\n";
         $configTypes = array('common', 'action', 'required', 'search');
 
         foreach($configTypes as $type)
@@ -111,7 +111,7 @@ class mysqlModel extends model
                 $config .= "\$config->actions->{$action}['{$field->Field}']['show']         = 1;\n";
                 $config .= "\$config->actions->{$action}['{$field->Field}']['width']        = 'auto';\n";
                 $config .= "\$config->actions->{$action}['{$field->Field}']['position']     = 1;\n";
-                $config .= "\$config->actions->{$action}['{$field->Field}']['defaultValue'] = '';\n\n";
+                $config .= "\$config->actions->{$action}['{$field->Field}']['defaultValue'] = '';\n";
                 $config .= "\$config->actions->{$action}['{$field->Field}']['rules']        = '';\n\n";
             }
             $config .= "/* Items for {$action} end.*/\n";
