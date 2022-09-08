@@ -728,7 +728,7 @@ function getTime()
  */
 function a($var)
 {
-    var_export($var);
+    var_dump($var);
 }
 
 /**
