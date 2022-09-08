@@ -113,6 +113,27 @@ class zcode
         return $position;
     }
 
+    /**
+     * Get all method name of a class.
+     *
+     * @param  string    $file
+     * @param  string    $class
+     * @access public
+     * @return array
+     */
+    public function getMethodsByClass($file, $class)
+    {
+        if(!class_exists($class)) include $file;
+
+        $reflection        = new ReflectionClass("$class");
+        $reflectionMethods = $reflection->getMethods();
+
+        $methods = array();
+        foreach($reflectionMethods as $method) $methods[] = $method->name;
+
+        return $methods;
+    }
+
     public function test($file)
     {
         /* Check synatex by 'php -l' or sonarqube */
